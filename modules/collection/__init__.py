@@ -1,3 +1,4 @@
 #!/usr/bin/python
 import twitter.main
-__all__ = ['twitter']
+import reddit.main
+__all__ = ['twitter', 'reddit']

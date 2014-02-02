@@ -1,0 +1,13 @@
+#!/usr/bin/python
+'''
+Fill in your values for oauth keys and rename this file to config.py (without .example)
+'''
+
+STG = {
+	"oauth": {
+		"reddit" : {
+			"client_id" : "",
+			"secret": ""
+		}
+	}
+}
