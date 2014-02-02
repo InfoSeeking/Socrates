@@ -1,0 +1,81 @@
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\\  TWITTER SEARCH MODULE  \\
+\\                         \\
+\\   V: For ContextMiner   \\
+\\                         \\
+\\ By: Ziad Matni, Rutgers \\
+\\     zmatni@rutgers.edu  \\
+\\                         \\
+\\ Last mod: 10/30/13      \\
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+/////////////////
+// DESCRIPTION //
+/////////////////
+
+This module utilizes the Twitter Search API (v.1.1) - see https://dev.twitter.com/docs/using-search
+The inputs are done with 1 query, plus 6 options (thinking of changing to 5) = 7 inputs
+The outputs can either be 15 lines (-d sc) or 2 lines (-d db)
+All I/O can be treated as strings
+
+Required scripts/files:
+    tw_search.py
+    argparse.py
+    auth.k
+Required library:
+    tweepy
+
+IMPORTANT NOTE: tweepy will not work in Python3.3
+
+/////////////////
+// USEAGE:     //
+/////////////////
+
+usage: tw_search.py [-h] [-g LOCA] [-l L] [-t T] [-c C] query
+
+Twitter Search
+
+positional arguments:
+  query             Search term string
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -g LOCA           Location (lo, nyl, nym, nyu, dc, sf, nb)    DEFAULT = None 
+  -l L              Language (en = English, fr = French, etc.)  DEFAULT = en
+  -t T              Search type: mixed, recent, or popular      DEFAULT = recent
+  -c C              Tweet count (must be <=50)                  DEFAULT = 1
+  -d D              Output destination: (sc)reen or (db)        DEFAULT = sc
+
+/////////////////
+// NOTES:      //
+/////////////////
+    1. -g gives options for (lo)ndon, (ny)lower/middle/upper, washington (dc), san francisco (sf), new brunswick (nb). This option does not need to be defined (i.e. it is optional).
+    2. -l gives options for en (English), fr (French), es (Spanish), po (Portuguese), ko (Korean), ar (Arabic)
+    3. The -d sc show information about the tweet (the first 7 shown in example below), the user (the next 6), and the technology (the last 2)
+
+/////////////////
+// EXAMPLES:   //
+/////////////////
+
+$ ./tw_search.py nyc
+
+CREATED_AT: 2013-10-29 19:12:56
+TEXT::::::: @johncusack People are drafted into wars all over the world. Draft riots in NYC didn't end US Civil War; draft protests didn't end 'Nam war.
+TWEET_ID::: 395267021203865600
+COORDS::::: None
+RETWEET_CT: 0
+HASHTAG:::: None
+URLS::::::: None
+USER_NAME:: Tim Gatewood
+USER_SINCE: 2011-10-06 20:09:53
+FOLLOWERS:: 284
+FRIENDS:::: 454
+USER_ID:::: 386180668
+USER_LOC::: Memphis, Tennessee, USA 
+GEO_ENABLE: False
+TECH_SRCE:: Twitter for BlackBerry®
+
+$ ./tw_search.py nyc -d db
+
+Sneaker Con NYC You Already Know What It Is! http://t.co/VVc3y3f9Gw @sneakercon #fashion #kotd #events #nyc #music #blog #pr #style','http://t.co/VVc3y3f9Gw','https://www.twitter.com/MissEventsPR/statuses/395634982879633408','Shalita Washington','https://www.twitter.com/MissEventsPR','2013-10-30','19:35:05','','1','', '2', '0')
+
