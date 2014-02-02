@@ -2,6 +2,8 @@ import time, datetime, sys
 import re, math, argparse
 import urllib, urlparse
 import tweepy
+import os
+import sys
 #import simplejson
 #import MySQLdb
 
@@ -15,23 +17,33 @@ def tw_oauth(authfile):
     return tweepy.API(auth1)
 
 def tw_search(query, cnt=5, lang='en'):
-    authfile = './auth.k'
+    #If this is run as a script, __name__  is main, so argv[0] is file path
+    if __name__ == '__main__':
+        path = os.path.split(sys.argv[0])[0]
+    #Else the module was imported and it has a __file__ attribute that will be the full path of the module.
+    else:
+        path = os.path.split(__file__)[0]
+    path += "/"
+
+    authfile = path + 'auth.k'
     api = tw_oauth(authfile)
     results = {}
     meta = {
-        'username': 'text',
-        'usersince': 'date',
-        'followers': 'numeric',
-        'friends': 'numeric',
-        'authorid': 'text',
-        'authorloc': 'text',
-        'geoenable': 'boolean',
-        'source': 'text',
-        'created': 'text',
-        'text': 'text',
-        'tweet_id': 'text',
-        'cords': 'geo',
-        'retwc': 'numeric'
+        'fields': {
+            'username': 'text',
+            'usersince': 'date',
+            'followers': 'numeric',
+            'friends': 'numeric',
+            'authorid': 'text',
+            'authorloc': 'text',
+            'geoenable': 'boolean',
+            'source': 'text',
+            'created': 'text',
+            'content': 'text',
+            'tweet_id': 'text',
+            'cords': 'geo',
+            'retwc': 'numeric'
+        }
     }
     data = []
     maxTweets = cnt
@@ -39,7 +51,7 @@ def tw_search(query, cnt=5, lang='en'):
     for tweet in tweepy.Cursor(api.search, q=query, count=cnt, lang=lang).items():
         dTwt = {}
         dTwt['created'] = tweet.created_at   #tweet created
-        dTwt['text']    = tweet.text         #tweet text
+        dTwt['content']    = tweet.text         #tweet text
         dTwt['tweet_id'] = tweet.id          #tweet ID# (not author ID#)
         dTwt['cords']   = tweet.coordinates  #geographic co-ordinates
         dTwt['retwc']   = tweet.retweet_count #re-tweet count

@@ -1,5 +1,5 @@
 #!/usr/bin/python
 
-import modules.collection.twitter.tw_search
+from modules.collection import *
 
-#modules.collection.twitter.tw_search.test()
+twitter.main.tw_search("Test", lang='en')
