@@ -50,13 +50,13 @@ def tw_search(query, cnt=5, lang='en'):
     cnt = 0
     for tweet in tweepy.Cursor(api.search, q=query, count=cnt, lang=lang).items():
         dTwt = {}
-        dTwt['created'] = tweet.created_at   #tweet created
+        dTwt['created'] = str(tweet.created_at)   #tweet created
         dTwt['content']    = tweet.text         #tweet text
         dTwt['tweet_id'] = tweet.id          #tweet ID# (not author ID#)
         dTwt['cords']   = tweet.coordinates  #geographic co-ordinates
         dTwt['retwc']   = tweet.retweet_count #re-tweet count
         dTwt['username'] = tweet.author.name
-        dTwt['usersince'] = tweet.author.created_at      #author/user profile creation date
+        dTwt['usersince'] = str(tweet.author.created_at)      #author/user profile creation date
         dTwt['followers'] = tweet.author.followers_count #number of author/user followers (inlink)
         dTwt['friends']   = tweet.author.friends_count   #number of author/user friends (outlink)
         dTwt['authorid']  = tweet.author.id              #author/user ID#
