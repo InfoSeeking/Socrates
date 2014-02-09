@@ -1,14 +1,49 @@
-#!/usr/bin/python
-
-from rauth import OAuth2Service
-from hashlib import sha1
-from random import random
-
-import re
 import json
-import webbrowser
+import praw
 import config
 
-def fetchPosts():
-	auth_url = 'https://ssl.reddit.com/api/v1/'
-	reddit = OAuth2Service(config.STG['oauth']['reddit']['client_id'], config.STG['oauth']['reddit']['secret'],  authorize_url=auth_url + 'authorize', access_token_url=auth_url + 'access_token', base_url='https://oauth.reddit.com/api/v1/')
+def _getPraw():
+	r = praw.Reddit(user_agent="Socrates data collection bot by /u/kevinAlbs")
+	r.login(config.CREDS["reddit"]["uname"], config.CREDS["reddit"]["pass"])
+	return r
+
+def fetchPosts(sub,count=10):
+	meta = {
+        'fields': {
+        	"content": "text",
+        	"title": "text",
+			"upvotes": "numeric",
+			"downvotes": "numeric",
+			"user": "text",
+			"nsfw": "boolean",
+			"id": "text",
+			"stickied": "boolean",
+			"url" : "text",
+			"domain": "text",
+			"created_utc": "numeric"
+		}
+    }
+
+	praw = _getPraw()
+	posts = praw.get_subreddit(sub).get_top(limit=count)
+	pList = []
+	for p in posts:
+		post = {
+			"content": p.selftext,
+			"title": p.title,
+			"upvotes": p.ups,
+			"downvotes": p.downs,
+			"user": p.name,
+			"nsfw": p.over_18,
+			"id": p.id,
+			"stickied": p.stickied,
+			"url" : p.url,
+			"domain": p.domain,
+			"created_utc": p.created_utc
+		}
+		pList.append(post)
+	results = {
+		"meta" : meta,
+		"data" : pList
+	}
+	return results
