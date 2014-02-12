@@ -7,23 +7,9 @@ def _getPraw():
 	r.login(config.CREDS["reddit"]["uname"], config.CREDS["reddit"]["pass"])
 	return r
 
-def fetchPosts(sub,count=10):
-	meta = {
-        'fields': {
-        	"content": "text",
-        	"title": "text",
-			"upvotes": "numeric",
-			"downvotes": "numeric",
-			"user": "text",
-			"nsfw": "boolean",
-			"id": "text",
-			"stickied": "boolean",
-			"url" : "text",
-			"domain": "text",
-			"created_utc": "numeric"
-		}
-    }
-
+def fetchPosts(param=False):
+	sub = param['sub']
+	count = param['count']
 	praw = _getPraw()
 	posts = praw.get_subreddit(sub).get_top(limit=count)
 	pList = []
@@ -42,8 +28,4 @@ def fetchPosts(sub,count=10):
 			"created_utc": p.created_utc
 		}
 		pList.append(post)
-	results = {
-		"meta" : meta,
-		"data" : pList
-	}
-	return results
+	return pList
