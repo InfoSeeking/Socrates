@@ -1,16 +1,28 @@
 #!/usr/bin/python
-from flask import Flask
+from flask import Flask, request
 #from modules import *
 import json
 from pprint import pprint
-from translation import MODULES
+import socrates as SO
 
 app = Flask(__name__)
-@app.route("/", methods=['GET', 'POST'])
-def test():
- #   working_set = collection.twitter.tw_search("Test", lang="en")
-  #  analysis.text.sentiment(working_set, "content")
-    return json.dumps(MODULES)
+@app.route("/specs")
+def getSpecs():
+	return SO.getSpecs()
+
+@app.route("/op/<type>/<mod>/<fn>", methods=['GET', 'POST'])
+def operator(type, mod, fn):
+	if request.method == 'GET':
+		return 'Please use a POST request'
+	
+	if type == "analysis":
+		print "Fetching data"
+
+	param = request.form #post data
+	#return "%s %s %s %s " % (type, mod, fn, param)
+	print "About to run"
+	return json.dumps(SO.run(type, mod, fn, param))
+	#return "Testing\n"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

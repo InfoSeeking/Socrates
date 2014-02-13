@@ -17,11 +17,10 @@ def tw_oauth(authfile):
     return tweepy.API(auth1)
 
 def tw_search(param=False):
-    defaults.update(param)
-    param = defaults
     query = param['query']
-    cnt=param['count']
+    cnt=int(param['count'])
     lang=param['lang']
+
     #If this is run as a script, __name__  is main, so argv[0] is file path
     if __name__ == '__main__':
         path = os.path.split(sys.argv[0])[0]
@@ -33,24 +32,6 @@ def tw_search(param=False):
     authfile = path + 'auth.k'
     api = tw_oauth(authfile)
     results = {}
-    meta = {
-        'source': 'twitter',
-        'fields': {
-            'username': 'text',
-            'usersince': 'date',
-            'followers': 'numeric',
-            'friends': 'numeric',
-            'authorid': 'text',
-            'authorloc': 'text',
-            'geoenable': 'boolean',
-            'source': 'text',
-            'created': 'text',
-            'content': 'text',
-            'tweet_id': 'text',
-            'cords': 'geo',
-            'retwc': 'numeric'
-        }
-    }
     data = []
     maxTweets = cnt
     cnt = 0

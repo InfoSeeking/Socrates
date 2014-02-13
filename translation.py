@@ -9,6 +9,10 @@ def checkConstraints(param, paramSpecs, working_set=None):
 def applyDefaults(param, paramSpecs):
 	return
 
+#this will apply the proper conversion since all param values are initially strings
+def getParam(param, prop):
+	return
+
 MODULES = {
 	'analysis': {
 		'text': {
@@ -89,7 +93,22 @@ MODULES = {
 		                },
 		                'default': 'en'
 		            }
-		        }
+		        },
+		        'returns': {
+		            'username': 'text',
+		            'usersince': 'date',
+		            'followers': 'numeric',
+		            'friends': 'numeric',
+		            'authorid': 'text',
+		            'authorloc': 'text',
+		            'geoenable': 'boolean',
+		            'source': 'text',
+		            'created': 'text',
+		            'content': 'text',
+		            'tweet_id': 'text',
+		            'cords': 'geo',
+		            'retwc': 'numeric'  
+		    	}
 			}
 		}
 	}
