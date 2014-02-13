@@ -4,13 +4,16 @@ from flask import Flask, request
 import json
 from pprint import pprint
 import socrates as SO
+from crossdomain import crossdomain
 
 app = Flask(__name__)
 @app.route("/specs")
+@crossdomain(origin='*')
 def getSpecs():
 	return SO.getSpecs()
 
 @app.route("/op/<type>/<mod>/<fn>", methods=['GET', 'POST'])
+@crossdomain(origin='*')
 def operator(type, mod, fn):
 	if request.method == 'GET':
 		return 'Please use a POST request'
