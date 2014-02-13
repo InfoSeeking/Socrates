@@ -3,10 +3,11 @@ The purpose of the translation module is to check for correct parameters, apply 
 '''
 
 #given the passed parameters, check if the parameters meet the specified constraints
-def checkConstraints(param, paramSpecs,working_set=None):
+def checkConstraints(param, paramSpecs, working_set=None):
 	return True
 
-def applyDefaults
+def applyDefaults(param, paramSpecs):
+	return
 
 MODULES = {
 	'analysis': {
@@ -24,7 +25,7 @@ MODULES = {
 					'max_word_count' : 'numeric',
 					'word_counts': 'array numeric'
 				}
-			}
+			},
 			'sentiment' : {
 				'param' : {
 					'field': {
@@ -70,10 +71,6 @@ MODULES = {
 		},
 		'twitter': {
 			'tw_search' : {
-				'defaults' : {
-			        'count': 5,
-			        'lang': 'en'
-			    },
 				'param' : {
 		            'query': {
 		                'type': 'text',
@@ -81,14 +78,16 @@ MODULES = {
 		            },
 		            'count': {
 		                'type': 'numeric',
-		                'comment': 'Number of results'
+		                'comment': 'Number of results',
+		                'default': 5
 		            },
 		            'lang': {
 		                'type': 'text',
 		                'comment': "Language of results",
 		                'constraints': {
 		                    'choices': ['en', 'pt', 'it', 'es', 'tr', 'ko', 'fr', 'ru', 'de', 'ja']
-		                }
+		                },
+		                'default': 'en'
 		            }
 		        }
 			}

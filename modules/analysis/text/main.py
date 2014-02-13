@@ -41,7 +41,7 @@ def sentiment(result, param):
 		polarities.append(post.sentiment.polarity)
 		subjectivities.append(post.sentiment.subjectivity)
 
-	return res = {
+	return {
 		'polarities' : polarities,
 		'subjectivities': subjectivities
 	}
