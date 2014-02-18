@@ -7,7 +7,7 @@ import socrates as SO
 from crossdomain import crossdomain
 
 app = Flask(__name__)
-@app.route("/specs")
+@app.route("/specs", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def getSpecs():
 	return SO.getSpecs()

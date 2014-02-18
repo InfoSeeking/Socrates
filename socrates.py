@@ -21,8 +21,7 @@ The run method ties together the running of operators.
 It will run the operator, store results, and return appropriate data to be sent back to user.
 It will store/retrieve stored collection data
 '''
-def run(typ, mod, fn, param):
-	working_set=None
+def run(typ, mod, fn, param, working_set=None):
 	if typ in MODULES and mod in MODULES[typ] and fn in MODULES[typ][mod]:
 		#if this is an analysis call, check if the user has already stored data
 		if typ == 'analysis':
@@ -63,12 +62,10 @@ def main():
 	#working_set = collection.reddit.fetchPosts("onetruegod", 10)
 	#analysis.text.word_count(working_set, "title")
 	#pprint(working_set)
-	working_set = collection.twitter.tw_search({'query': "Test", 'lang': 'en', 'count': 1})
-	
-	analysis.text.sentiment(working_set, {'field': "content"})
+	working_set = run("collection", "twitter", "tw_search", {'query': "Test", 'lang': 'en', 'count': 3})
+	working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
 	pprint(working_set)
-	json.dumps(working_set)
-#main()
+main()
 '''
 results = run('collection', 'reddit', 'fetchPosts', {'sub': 'askscience', 'count': 1})
 pprint(results)
