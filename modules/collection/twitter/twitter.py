@@ -7,6 +7,46 @@ import sys
 #import simplejson
 #import MySQLdb
 
+SPECS = {
+    'functions': {
+            'tw_search' : {
+                'param' : {
+                    'query': {
+                        'type': 'text',
+                        'comment': 'Search query'
+                    },
+                    'count': {
+                        'type': 'numeric',
+                        'comment': 'Number of results',
+                        'default': 5
+                    },
+                    'lang': {
+                        'type': 'text',
+                        'comment': "Language of results",
+                        'constraints': {
+                            'choices': ['en', 'pt', 'it', 'es', 'tr', 'ko', 'fr', 'ru', 'de', 'ja']
+                        },
+                        'default': 'en'
+                    }
+                },
+                'returns': {
+                    'username': 'text',
+                    'usersince': 'date',
+                    'followers': 'numeric',
+                    'friends': 'numeric',
+                    'authorid': 'text',
+                    'authorloc': 'text',
+                    'geoenable': 'boolean',
+                    'source': 'text',
+                    'created': 'text',
+                    'content': 'text',
+                    'tweet_id': 'text',
+                    'cords': 'geo',
+                    'retwc': 'numeric'  
+                }
+            }
+    }
+}
 # AUTHENTICATION (OAuth)
 def tw_oauth(authfile):
     with open(authfile, "r") as f:

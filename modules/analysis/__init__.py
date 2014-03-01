@@ -1,3 +1,3 @@
 #!/usr/bin/python
-import text.main
+import text.text
 __all__ = ["text"]

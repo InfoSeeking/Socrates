@@ -1,14 +1,14 @@
 #!/usr/bin/python
-from modules import *
+import modules
 from pprint import pprint
 import json
 import inspect
-from translation import MODULES, checkConstraints, applyDefaults
+from translation import *
 
 
 #should return a JSON object of the functions and their parameters
 def getSpecs():
-	return json.dumps(MODULES)
+	return getAllSpecs()
 
 def err(msg):
 	return {
@@ -22,28 +22,29 @@ It will run the operator, store results, and return appropriate data to be sent 
 It will store/retrieve stored collection data
 '''
 def run(typ, mod, fn, param, working_set=None):
-	if typ in MODULES and mod in MODULES[typ] and fn in MODULES[typ][mod]:
+	if typ in MODULE_LIST and mod in MODULE_LIST[typ]:
 		#if this is an analysis call, check if the user has already stored data
 		if typ == 'analysis':
 			if working_set is None:
 				return err("Data not provided")
-		#validate parameters from constraints
-		if checkConstraints(param, MODULES[typ][mod][fn]['param']) is False:
-			return err("Parameters are not valid") #get better error from constraint function
-		applyDefaults(param, MODULES[typ][mod][fn]['param'])
-		#call method
-		callingTyp = collection
-		if typ == 'analysis':
-			callingTyp = analysis
+
+		#get module/function references
+		callingTyp = getattr(modules, typ)
 		callingMod = getattr(callingTyp, mod)
 		callingFn = getattr(callingMod, fn)
+		fn_specs = callingMod.SPECS['functions']
+		#validate parameters from constraints
+		if checkConstraints(param, fn_specs[fn]) is False:
+			return err("Parameters are not valid") #get better error from constraint function
+
+		applyDefaults(param, fn_specs[fn]['param'])
 		#call and augment with meta information
 		if typ == 'analysis':
 			results = callingFn(working_set, param)
-			if 'aggregate_result' in  MODULES[typ][mod][fn]:
-				results['aggregate_meta'] = MODULES[typ][mod][fn]['aggregate_result']
-			if 'entry_result' in  MODULES[typ][mod][fn]:
-				results['entry_meta'] = MODULES[typ][mod][fn]['entry_result']
+			if 'aggregate_result' in  fn_specs[fn]:
+				results['aggregate_meta'] = fn_specs[fn]['aggregate_result']
+			if 'entry_result' in  fn_specs[fn]:
+				results['entry_meta'] = fn_specs[fn]['entry_result']
 			if 'analysis' in working_set:
 				working_set['analysis'].append(results)
 			else:
@@ -51,7 +52,7 @@ def run(typ, mod, fn, param, working_set=None):
 		elif typ == 'collection':
 			working_set = {
 				'data' : callingFn(param),
-				'meta' : MODULES[typ][mod][fn]['returns']
+				'meta' : fn_specs[fn]['returns']
 			}
 			#Store this data
 		return working_set
@@ -59,9 +60,10 @@ def run(typ, mod, fn, param, working_set=None):
 def test():
 	working_set = run("collection", "twitter", "tw_search", {'query': "Test", 'lang': 'en', 'count': 2})
 	#working_set = run("collection", "reddit", "fetchPosts", {'sub': "askscience", 'count': 2})
-	working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set)
+	#working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set)
 	#working_set = run("analysis", "text", "word_count", {'field': 'source'}, working_set)
-	working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
+	#working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
+	#working_set = getSpecs()
 	pprint(working_set)
 test()
 '''

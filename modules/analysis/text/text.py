@@ -1,6 +1,45 @@
 #!/usr/bin/python
 from textblob import TextBlob
 
+SPECS = {
+	'description' : 'Provides functions for textual analysis',
+	'functions' : {
+		'word_count' : {
+			'param': {
+				'field': {
+					'type' : 'field_reference text',
+					'comment': 'The text to count words from',
+				},
+				'ignore_stopwords': {
+					'type' : 'boolean',
+					'comment': 'If true, stopwords are ignored in counting'
+				}
+			},
+			'aggregate_result': {
+				'total': 'numeric',
+				'avg_word_count' : 'numeric',
+				'min_word_count' : 'numeric',
+				'max_word_count' : 'numeric'
+			},
+			'entry_result': {
+				'word_counts': 'numeric'
+			}
+		},
+		'sentiment' : {
+			'param' : {
+				'field': {
+					'type' : 'field_reference text',
+					'comment': 'The text to analyze',
+				}
+			},
+			'entry_result' : {
+				'polarities' : 'array numeric',
+				'subjectivities': 'array numeric'
+			}
+		}
+	}
+}
+
 def word_count(result, param=False):
 	field = param['field']
 	data = result['data']

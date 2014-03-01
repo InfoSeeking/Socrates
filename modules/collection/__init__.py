@@ -1,4 +1,4 @@
 #!/usr/bin/python
-import twitter.main
-import reddit.main
+import twitter.twitter
+import reddit.reddit
 __all__ = ['twitter', 'reddit']

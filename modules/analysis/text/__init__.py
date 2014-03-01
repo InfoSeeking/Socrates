@@ -1,2 +1,2 @@
 #!/usr/bin/python
-from main import *
+from text import *

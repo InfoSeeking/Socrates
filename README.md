@@ -29,10 +29,8 @@ There are two types of results from analysis:
 - Aggregate: a single value describing all of the data (e.g. a sum of all word counts)
 
 
-Plans for data:
-
-After collection:
-
+Snapshot of JSON after collection and analysis:
+```
 {
 	meta: {}
 	data: [{},{},...],
@@ -43,7 +41,7 @@ After collection:
 		aggregate_meta: {}
 	}]
 }
-
+```
 
 #TODO:
 - figure out how the modules will access and add/modify the working JSON
