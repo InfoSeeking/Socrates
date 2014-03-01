@@ -40,17 +40,15 @@ def run(typ, mod, fn, param, working_set=None):
 		#call and augment with meta information
 		if typ == 'analysis':
 			results = callingFn(working_set, param)
-			meta = {
-				'source'
-				'fields': MODULES[typ][mod][fn]['returns'] #TODO: maybe copy for safety
-			}
+			if 'aggregate_result' in  MODULES[typ][mod][fn]:
+				results['aggregate_meta'] = MODULES[typ][mod][fn]['aggregate_result']
+			if 'entry_result' in  MODULES[typ][mod][fn]:
+				results['entry_meta'] = MODULES[typ][mod][fn]['entry_result']
 			if 'analysis' in working_set:
-				working_set['analysis'].update(results)
-				working_set['analysis']['meta'].update(meta) #TODO: maybe separate meta with module name to prevent conflict
+				working_set['analysis'].append(results)
 			else:
-				working_set['analysis'] = results
-				working_set['analysis']['meta'] = meta
-		else:
+				working_set['analysis'] = [results]
+		elif typ == 'collection':
 			working_set = {
 				'data' : callingFn(param),
 				'meta' : MODULES[typ][mod][fn]['returns']
@@ -58,14 +56,14 @@ def run(typ, mod, fn, param, working_set=None):
 			#Store this data
 		return working_set
 
-def main():
-	#working_set = collection.reddit.fetchPosts("onetruegod", 10)
-	#analysis.text.word_count(working_set, "title")
-	#pprint(working_set)
-	working_set = run("collection", "twitter", "tw_search", {'query': "Test", 'lang': 'en', 'count': 3})
+def test():
+	working_set = run("collection", "twitter", "tw_search", {'query': "Test", 'lang': 'en', 'count': 2})
+	#working_set = run("collection", "reddit", "fetchPosts", {'sub': "askscience", 'count': 2})
+	working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set)
+	#working_set = run("analysis", "text", "word_count", {'field': 'source'}, working_set)
 	working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
 	pprint(working_set)
-main()
+test()
 '''
 results = run('collection', 'reddit', 'fetchPosts', {'sub': 'askscience', 'count': 1})
 pprint(results)

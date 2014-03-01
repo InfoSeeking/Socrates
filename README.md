@@ -20,3 +20,37 @@ Possibly allow additional fields such as multidimensional arrays (if they will b
 
 #Issues
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox.
+
+
+#Analysis
+
+There are two types of results from analysis:
+- Per Entry: this will likely be more common and will give a value to each entry in the data set. The analysis data will be directly added to the entry under an analysis property
+- Aggregate: a single value describing all of the data (e.g. a sum of all word counts)
+
+
+Plans for data:
+
+After collection:
+
+{
+	meta: {}
+	data: [{},{},...],
+	analysis: [{
+		aggregate_analysis: {},
+		entry_analysis: [{},{}...],
+		entry_meta: {},
+		aggregate_meta: {}
+	}]
+}
+
+
+#TODO:
+- figure out how the modules will access and add/modify the working JSON
+- add multiple analysis + aggregate
+- separate translation.py on per module basis
+
+- Each module will have a single Python file which handles:
+	- Specification of whether it is a collection or analysis module and a description
+	- Specification of parameters and return values
+	- Initial call, it should have a function run(param, working_set) which gets the data

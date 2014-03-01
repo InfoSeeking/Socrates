@@ -22,11 +22,15 @@ def word_count(result, param=False):
 
 	avg_word_count /= len(data)
 	return {
-		'meta' : res_meta,
-		'avg_word_count' : avg_word_count,
-		'min_word_count' : min_word_count,
-		'max_word_count' : max_word_count,
-		'word_counts': word_counts
+		#'meta' : res_meta,
+		'aggregate_analysis': {
+			'avg_word_count' : avg_word_count,
+			'min_word_count' : min_word_count,
+			'max_word_count' : max_word_count,
+		},
+		'entry_analysis': {
+			'word_counts': word_counts
+		}
 	}
 
 def sentiment(result, param):
@@ -42,6 +46,8 @@ def sentiment(result, param):
 		subjectivities.append(post.sentiment.subjectivity)
 
 	return {
-		'polarities' : polarities,
-		'subjectivities': subjectivities
+		'entry_analysis' : {
+			'polarities' : polarities,
+			'subjectivities': subjectivities
+		}
 	}

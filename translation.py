@@ -21,13 +21,20 @@ MODULES = {
 					'field': {
 						'type' : 'field_reference text',
 						'comment': 'The text to count words from',
+					},
+					'ignore_stopwords': {
+						'type' : 'boolean',
+						'comment': 'If true, stopwords are ignored in counting'
 					}
 				},
-				'returns': {
+				'aggregate_result': {
+					'total': 'numeric',
 					'avg_word_count' : 'numeric',
 					'min_word_count' : 'numeric',
-					'max_word_count' : 'numeric',
-					'word_counts': 'array numeric'
+					'max_word_count' : 'numeric'
+				},
+				'entry_result': {
+					'word_counts': 'numeric'
 				}
 			},
 			'sentiment' : {
@@ -37,7 +44,7 @@ MODULES = {
 						'comment': 'The text to analyze',
 					}
 				},
-				'returns' : {
+				'entry_result' : {
 					'polarities' : 'array numeric',
 					'subjectivities': 'array numeric'
 				}
