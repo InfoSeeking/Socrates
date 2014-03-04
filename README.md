@@ -57,3 +57,6 @@ Snapshot of JSON after collection and analysis:
 #Useful commands:
 Fetch twitter posts:
 curl http://localhost:5000/op/collection/twitter/tw_search -d "lang=en&count=1&query=derp"
+
+Sentiment Analysis:
+curl http://localhost:5000/op/analysis/text/sentiment -d "field=content&reference_id=<ref id>"
