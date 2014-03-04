@@ -33,8 +33,8 @@ SPECS = {
 				}
 			},
 			'entry_result' : {
-				'polarities' : 'array numeric',
-				'subjectivities': 'array numeric'
+				'polarity' : 'numeric',
+				'subjectivity': 'numeric'
 			}
 		}
 	}
@@ -86,7 +86,7 @@ def sentiment(result, param):
 
 	return {
 		'entry_analysis' : {
-			'polarities' : polarities,
-			'subjectivities': subjectivities
+			'polarity' : polarities,
+			'subjectivity': subjectivities
 		}
 	}

@@ -53,3 +53,7 @@ Snapshot of JSON after collection and analysis:
 	- Specification of whether it is a collection or analysis module and a description
 	- Specification of parameters and return values
 	- Initial call, it should have a function run(param, working_set) which gets the data
+
+#Useful commands:
+Fetch twitter posts:
+curl http://localhost:5000/op/collection/twitter/tw_search -d "lang=en&count=1&query=derp"
