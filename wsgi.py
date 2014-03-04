@@ -10,21 +10,18 @@ app = Flask(__name__)
 @app.route("/specs", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def getSpecs():
-	return SO.getSpecs()
+	return json.dumps(SO.getSpecs())
 
-@app.route("/op/<type>/<mod>/<fn>", methods=['GET', 'POST'])
+@app.route("/op/<typ>/<mod>/<fn>", methods=['GET', 'POST'])
 @crossdomain(origin='*')
-def operator(type, mod, fn):
+def operator(typ, mod, fn):
 	if request.method == 'GET':
 		return 'Please use a POST request'
-	
-	if type == "analysis":
-		print "Fetching data"
-
 	param = request.form #post data
+	print param
 	#return "%s %s %s %s " % (type, mod, fn, param)
 	print "About to run"
-	return json.dumps(SO.run(type, mod, fn, param))
+	return json.dumps(SO.run(typ, mod, fn, param))
 	#return "Testing\n"
 
 if __name__ == "__main__":

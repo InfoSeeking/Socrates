@@ -4,7 +4,11 @@ from pprint import pprint
 import json
 import inspect
 from translation import *
+from pymongo import MongoClient
 
+
+client = MongoClient()
+db = client.socrates
 
 #should return a JSON object of the functions and their parameters
 def getSpecs():
@@ -50,8 +54,15 @@ def run(typ, mod, fn, param, working_set=None):
 			else:
 				working_set['analysis'] = [results]
 		elif typ == 'collection':
+			data = callingFn(param)
+			#wrap data to be inserted in JSON so it does not insert as separate items for each entry
+			wrapped = {
+				"data" : data
+			}
+			insert_id = db.collectionData.insert(wrapped)
 			working_set = {
-				'data' : callingFn(param),
+				'reference_id' : str(insert_id),
+				'data' : data, #only if specified
 				'meta' : fn_specs[fn]['returns']
 			}
 			#Store this data
@@ -65,7 +76,8 @@ def test():
 	#working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
 	#working_set = getSpecs()
 	pprint(working_set)
-test()
+#test()
+getAllSpecs()
 '''
 results = run('collection', 'reddit', 'fetchPosts', {'sub': 'askscience', 'count': 1})
 pprint(results)

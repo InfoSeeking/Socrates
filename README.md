@@ -47,6 +47,7 @@ Snapshot of JSON after collection and analysis:
 - figure out how the modules will access and add/modify the working JSON
 - add multiple analysis + aggregate
 - separate translation.py on per module basis
+- implement MongoDB and get working front-end
 
 - Each module will have a single Python file which handles:
 	- Specification of whether it is a collection or analysis module and a description
