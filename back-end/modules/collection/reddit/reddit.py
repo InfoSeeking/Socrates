@@ -41,7 +41,7 @@ def _getPraw():
 
 def fetchPosts(param=False):
 	sub = param['sub']
-	count = param['count']
+	count = int(param['count'])
 	praw = _getPraw()
 	posts = praw.get_subreddit(sub).get_top(limit=count)
 	pList = []

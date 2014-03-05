@@ -42,6 +42,7 @@ def operator(typ, mod, fn):
 		working_set["_id"] = ObjectId(param['reference_id'])
 		db.collectionData.save(working_set) #overwrite in database
 		del working_set['_id']
+		working_set['reference_id'] = str(param['reference_id'])
 
 	return json.dumps(working_set) + "\n"
 

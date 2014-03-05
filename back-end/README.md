@@ -19,8 +19,9 @@ Possibly allow additional fields such as multidimensional arrays (if they will b
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
 
 #Issues
-- On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox.
-
+- On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
+- When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw_search)
+- Total for word count is undefined
 
 #Analysis
 
@@ -44,10 +45,14 @@ Snapshot of JSON after collection and analysis:
 ```
 
 #TODO:
-- figure out how the modules will access and add/modify the working JSON
-- add multiple analysis + aggregate
-- separate translation.py on per module basis
-- implement MongoDB and get working front-end
+- figure out how the modules will access and add/modify the working JSON [done]
+- add multiple analysis + aggregate [done]
+- separate translation.py on per module basis [done]
+- implement MongoDB [done]
+- get front-end working
+	+ Add validation of data
+	+ Add option to NOT download entire data set (not necessarily front-end problem)
+- add ability to analyze on analysis fields
 
 - Each module will have a single Python file which handles:
 	- Specification of whether it is a collection or analysis module and a description
