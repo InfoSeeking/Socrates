@@ -59,10 +59,12 @@ def word_count(result, param=False):
 			max_word_count = n
 		word_counts.append(n)
 
+	total = avg_word_count
 	avg_word_count /= len(data)
 	return {
 		#'meta' : res_meta,
 		'aggregate_analysis': {
+			'total': total,
 			'avg_word_count' : avg_word_count,
 			'min_word_count' : min_word_count,
 			'max_word_count' : max_word_count,
