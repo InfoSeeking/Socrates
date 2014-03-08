@@ -21,9 +21,12 @@ def getSpecs():
 @app.route("/download", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def getData():
+	if request.method == 'GET':
+		return 'Please use a POST request'
+	param = request.form #post data
 	if 'reference_id' not in param:
 			return "Database id not included"
-	data = db.collectionData.find_one({"_id" : ObjectId(param['reference_id'])})
+	working_set = db.collectionData.find_one({"_id" : ObjectId(param['reference_id'])})
 	del working_set['_id']
 	working_set['reference_id'] = str(param['reference_id'])
 	return json.dumps(working_set) + "\n"

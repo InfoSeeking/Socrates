@@ -104,6 +104,17 @@
     border-top: none;
     margin-top: 10px;
   }
+  #view{
+    border-top: 5px black solid;
+    padding-top: 10px;
+    margin-top: 40px;
+  }
+  #view textarea{
+    display: none;
+    margin-top: 20px;
+    width: 440px;
+    min-height: 200px;
+  }
   </style>
 
   <!--[if lt IE 9]>
@@ -128,6 +139,11 @@
         </div>
         <div id="forms"></div>
         <div id="subs"></div>
+        <div id="view">
+          <label>Reference ID</label><input id="refID" /><br/>
+          <a class="btn" id="download" href="#">Download Data</a><br/>
+          <textarea></textarea>
+        </div>
       </div>
     
       <div id="right">
@@ -257,13 +273,11 @@
     return form;
   }
 
-  var gData = {};
     $.ajax({
       url: "http://127.0.0.1:5000/specs",
       dataType: "json",
       type: "POST",
       success : function(data, stat, jqXHR){
-        gData = data;
         console.log(data);
         /*
         - generate the forms
@@ -351,6 +365,21 @@
         });
       }
     });
+
+  $("#download").click(function(e){
+    e.preventDefault();
+    $("#view textarea").fadeIn();
+    $.ajax({
+            url: "http://127.0.0.1:5000/download",
+            dataType: "json",
+            type: "POST",
+            data: {'reference_id': $("#view #refID").val(), 'returnAllData': "true"},
+            success : function(data, stat, jqXHR){
+              console.log(data);
+              $("#view textarea").html(JSON.stringify(data));
+            },
+        });
+  });
   </script>
 </body>
 </html>
