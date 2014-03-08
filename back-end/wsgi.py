@@ -18,6 +18,16 @@ app = Flask(__name__)
 def getSpecs():
 	return json.dumps(SO.getSpecs())
 
+@app.route("/download", methods=['GET', 'POST'])
+@crossdomain(origin='*')
+def getData():
+	if 'reference_id' not in param:
+			return "Database id not included"
+	data = db.collectionData.find_one({"_id" : ObjectId(param['reference_id'])})
+	del working_set['_id']
+	working_set['reference_id'] = str(param['reference_id'])
+	return json.dumps(working_set) + "\n"
+
 @app.route("/op/<typ>/<mod>/<fn>", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def operator(typ, mod, fn):
@@ -32,17 +42,27 @@ def operator(typ, mod, fn):
 		insert_id = db.collectionData.insert(working_set)
 		del working_set["_id"] #for some reason ObjectID is not JSON serializable
 		working_set['reference_id'] = str(insert_id)
-
 	elif typ == "analysis":
 		if 'reference_id' not in param:
-			print "Database id not included"
-			return
+			return "Database id not included"
 		data = db.collectionData.find_one({"_id" : ObjectId(param['reference_id'])})
 		working_set = SO.run(typ, mod, fn, param, data)
 		working_set["_id"] = ObjectId(param['reference_id'])
 		db.collectionData.save(working_set) #overwrite in database
 		del working_set['_id']
 		working_set['reference_id'] = str(param['reference_id'])
+
+	if 'returnAllData' not in param or param['returnAllData'] == "false":
+		#remove all data except first entry
+		working_set["data"] = working_set["data"][0:1]
+		if "analysis" in working_set:
+			for i in range(len(working_set["analysis"])):
+				a = working_set["analysis"][i]
+				if "entry_analysis" in a:
+					for p in a['entry_analysis']:
+						a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
+		
+		
 
 	return json.dumps(working_set) + "\n"
 

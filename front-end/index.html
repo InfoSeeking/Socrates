@@ -118,6 +118,7 @@
       
       <div id="left">
         <div id="menu">
+          <input id="allData" type="checkbox" /><label for="allData">&nbsp;Return all data</label>
           <div id="collection">
             <h2>Collection</h2>
           </div>
@@ -304,6 +305,7 @@
               mod = div.attr("data-mod"),
               fn = div.attr("data-fn"),
               params = {};
+          params['returnAllData'] = $("#allData").prop("checked") ? "true" : "false";
           for(var i = 0; i < inputs.size(); i++){
             var inp = $(inputs.get(i));
             params[inp.attr("name")] = inp.val();
