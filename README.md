@@ -56,7 +56,7 @@ Snapshot of JSON after collection and analysis:
 	+ Add option to NOT download entire data set (not necessarily front-end problem)
 - add ability to analyze on analysis fields
 - add statistics analysis module
-- migrate the modules from context miner
+- migrate the modules from context miner [After looking at the scripts, since they heavily depend on MySQL, and I would have to code the bridge between python and PHP, I think it would be easier to recreate the scripts (Youtube, Flickr, Twitter)
 
 - Each module will have a single Python file which handles:
 	- Specification of whether it is a collection or analysis module and a description

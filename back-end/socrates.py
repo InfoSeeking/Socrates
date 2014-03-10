@@ -58,12 +58,8 @@ def run(typ, mod, fn, param, working_set=None):
 		return working_set
 
 def test():
-	#working_set = run("collection", "twitter", "tw_search", {'query': "Test", 'lang': 'en', 'count': 2})
-	working_set = run("collection", "reddit", "fetchPosts", {'sub': "askscience", 'count': 2})
+	working_set = run("collection", "reddit", "fetchComments", {'submission_id': "xbfwb", 'onlyTop': "false"})
 	#working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set)
-	#working_set = run("analysis", "text", "word_count", {'field': 'source'}, working_set)
-	#working_set = run("analysis", "text", "sentiment", {'field': 'content'}, working_set)
-	#working_set = getSpecs()
 	pprint(working_set)
 #test()
 '''

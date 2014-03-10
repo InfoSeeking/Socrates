@@ -40,9 +40,14 @@ def operator(typ, mod, fn):
 	#return "%s %s %s %s " % (type, mod, fn, param)
 	print "About to run"
 	if typ == "collection":
+		print "1"
+		pprint(param)
+		print typ, mod, fn, param
 		working_set = SO.run(typ, mod, fn, param)
+		print "2"
 		#TODO: storing working_set unnecessarily stores meta data (for simplicity). Later, this should be altered to save space.
 		insert_id = db.collectionData.insert(working_set)
+		print "3"
 		del working_set["_id"] #for some reason ObjectID is not JSON serializable
 		working_set['reference_id'] = str(insert_id)
 	elif typ == "analysis":
