@@ -19,6 +19,7 @@ Possibly allow additional fields such as multidimensional arrays (if they will b
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
+- Cache the working_set to reduce redundant downloading
 
 #Issues
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
