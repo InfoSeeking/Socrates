@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from textblob import TextBlob
+import translation
 
 SPECS = {
 	'description' : 'Provides functions for textual analysis',
@@ -40,17 +41,15 @@ SPECS = {
 	}
 }
 
-def word_count(result, param=False):
-	field = param['field']
-	data = result['data']
-
+def word_count(working_set, param=False):
+	fieldVals = param['field'] #remember, this has been converted to an array of the referenced field values
 	avg_word_count = -1
 	min_word_count = -1
 	max_word_count = -1
 	word_counts = []
 
-	for r in data:
-		words = r[field].split() #default splits by whitespace
+	for r in fieldVals:
+		words = r.split() #default splits by whitespace
 		n = float(len(words))
 		avg_word_count += n
 		if min_word_count == -1 or n < min_word_count:
@@ -60,7 +59,7 @@ def word_count(result, param=False):
 		word_counts.append(n)
 
 	total = avg_word_count
-	avg_word_count /= len(data)
+	avg_word_count /= len(fieldVals)
 	return {
 		#'meta' : res_meta,
 		'aggregate_analysis': {
@@ -74,15 +73,15 @@ def word_count(result, param=False):
 		}
 	}
 
-def sentiment(result, param):
-	field = param['field']
-	data = result['data']
+def sentiment(working_set, param):
+	fieldVals = param['field']
+	arr = working_set['data']
 
 	polarities = []
 	subjectivities = []
 
-	for r in data:
-		post = TextBlob(r[field])
+	for r in fieldVals:
+		post = TextBlob(r)
 		polarities.append(post.sentiment.polarity)
 		subjectivities.append(post.sentiment.subjectivity)
 

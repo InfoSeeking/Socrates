@@ -1,3 +1,5 @@
+- Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
+
 #Currently Working on
 - figure out how the modules will access and add/modify the working JSON [done]
 - add multiple analysis + aggregate [done]

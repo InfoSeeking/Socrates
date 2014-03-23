@@ -33,7 +33,7 @@ def run(typ, mod, fn, param, working_set=None):
 		callingFn = getattr(callingMod, fn)
 		fn_specs = callingMod.SPECS['functions']
 		#validate parameters from constraints
-		if checkConstraints(param, fn_specs[fn]) is False:
+		if enforceAndConvert(param, fn_specs[fn]['param'], working_set) is False:
 			return err("Parameters are not valid") #get better error from constraint function
 
 		applyDefaults(param, fn_specs[fn]['param'])
@@ -59,9 +59,10 @@ def run(typ, mod, fn, param, working_set=None):
 
 def test():
 	working_set = run("collection", "reddit", "fetchComments", {'submission_id': "xbfwb", 'onlyTop': "false"})
-	#working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set)
+	working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set=working_set)
+	working_set = run("analysis", "text", "word_count", {'field': 'analysis[0].word_counts'}, working_set)
 	pprint(working_set)
-#test()
+test()
 '''
 results = run('collection', 'reddit', 'fetchPosts', {'sub': 'askscience', 'count': 1})
 pprint(results)

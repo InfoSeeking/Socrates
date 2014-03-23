@@ -130,8 +130,11 @@
     width: 300px;
     padding: 10px;
   }
+  #vis{
+    margin: 20px 0px 0px 25px;
+  }
   svg{
-    outline: 1px red solid;
+    outline: 1px black solid;
   }
   </style>
 
@@ -146,8 +149,11 @@
     <div id="container">
       
       <div id="left">
+        
         <div id="menu">
-          <input id="allData" type="checkbox" /><label for="allData">&nbsp;Return all data</label>
+          <small>If you click 'Return all data' all data will be returned on each request, by default only the first entry is returned</small><br/>
+          <input id="allData" type="checkbox" /><label for="allData">&nbsp;Return all data</label><br/>
+          <small>Click a module to reveal it's functions</small>
           <div id="collection">
             <h2>Collection</h2>
           </div>
@@ -161,6 +167,7 @@
         <div id="forms"></div>
         <div id="subs"></div>
         <div id="view">
+          <small>Use the database reference id to download data</small><br/>
           <label>Reference ID</label><input id="refID" /><br/>
           <a class="btn" id="download" href="#">Download Data</a><br/>
           <textarea></textarea>
@@ -171,7 +178,8 @@
       <div id="right">
         <div id="working_set">
           <p id="num_entries"><b></b> entries returned</p>
-          <p id="ref">Reference ID: <b></b></p>
+          <small>Use the following reference id to refer to datasets</small>
+          <p id="ref">Database Reference ID: <b></b></p>
           <div id="metadata">
             <h3>Collection Data</h3>
             <table>
