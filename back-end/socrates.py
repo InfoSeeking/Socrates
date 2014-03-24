@@ -62,7 +62,7 @@ def test():
 	working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set=working_set)
 	working_set = run("analysis", "text", "word_count", {'field': 'analysis[0].word_counts'}, working_set)
 	pprint(working_set)
-test()
+#test()
 '''
 results = run('collection', 'reddit', 'fetchPosts', {'sub': 'askscience', 'count': 1})
 pprint(results)

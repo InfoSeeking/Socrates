@@ -5,6 +5,17 @@ import modules
 import re
 from pprint import *
 
+#returns boolean telling whether key is a special parameter which is not a parameter being fed to a function
+def isSpecialParam(key):
+	return key == 'returnAllData' or key == 'reference_id'
+
+#given a param/return spec, return it's type depending on whether it is a string or an object
+def getType(val):
+	if('type' in val):
+		return val['type']
+	else:
+		return val
+
 #a basic type is a 'primitive'
 def convertBasicType(typ, val):
 	if typ == 'numeric':
@@ -19,12 +30,17 @@ def convertBasicType(typ, val):
 		else:
 			raise TypeError("Boolean value not valid")
 	else:
+		print "Error on " + typ + " for value " + val
 		raise TypeError("Parameter type '" + typ + "' not valid")
 
 #given the passed parameters, check if the parameters meet the specified constraints
 def enforceAndConvert(param, paramSpecs, working_set=None):
 	try:
 		for key in param:
+			if isSpecialParam(key):
+				#then this parameter is not being fed to our function, so do not check it
+				continue
+
 			fr = re.compile("^field_reference\s+(\w+)$")
 			match = fr.match(paramSpecs[key]['type'])
 
@@ -40,19 +56,31 @@ def enforceAndConvert(param, paramSpecs, working_set=None):
 					#analysis field
 					index = int(match.group(1))
 					field = match.group(2)
+					if field not in working_set['analysis'][index]['entry_analysis']:
+						raise TypeError("Reference to analysis field " + field + " does not exist")
+					if getType(working_set['analysis'][index]['entry_meta'][field]) != typ:
+						raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
 					for d in working_set['analysis'][index]['entry_analysis'][field]: #this is an array of the values
 						value.append(d)
 				else:
 					#data field
-					print "FIELD : " + field
+					if(len(working_set['data']) > 0):
+						if field not in working_set['data'][0]:
+							raise TypeError("Reference to data field " + field + " does not exist")
+						if getType(working_set['meta'][field]) != typ:
+							raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
 					for d in working_set['data']:
 						value.append(d[field])
-				#TODO: actually check if the field is in the working_set and error otherwise
 				param[key] = value
 			else:
 				#assume basic type for now
-				param[key] = convertBasicType(paramSpecs[key]['type'], param[key])
-	except TypeError:
+				typ = paramSpecs[key]
+				if 'type' in paramSpecs[key]:
+					typ = paramSpecs[key]['type']
+				param[key] = convertBasicType(typ, param[key])
+	except TypeError as te:
+		print "TypeError caught in translation:"
+		print te
 		return False
 
 	return True
@@ -80,6 +108,6 @@ def getAllSpecs():
 	return finalSpecs
 
 MODULE_LIST = {
-	'analysis' : ['text'],#name of imported module
+	'analysis' : ['text', 'stats'],#name of imported module
 	'collection': ['reddit', 'twitter']
 }
