@@ -91,16 +91,16 @@ var VIS = {
 	    }).attr("y", function(d){
 	    	return h - hScale(d) + 15;
 	    }).attr("fill", "white");
-/*
-I need to read up a bit more on d3
-	    svg.selectAll("text").data(toPlot).enter().append("text").text(function(d,i){
-	    	return Math.random(range * i) + " - " + Math.random(range * (i+1));
+
+//I need to read up a bit more on d3
+	    svg.selectAll("text.tnode").data(toPlot).enter().append("text").classed(".tnode", true).text(function(d,i){
+	    	return Math.round(range * i) + " - " + Math.round(range * (i+1));
 	    }).attr("x", function(d, i){
-	    	return (barW * i);
+	    	return (barW * i) + 1;
 	    }).attr("y", function(d){
 	    	return h - 20;
-	    }).attr("fill", "white");
-*/
+	    }).attr("fill", "red").attr("font-size", "10px");
+
 	}
 	VIS.addFunction("graph", "histogram", fn);
 }())

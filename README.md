@@ -18,13 +18,15 @@
 - make sure that errors are handled well in back-end, add logging
 - add ability to have objects and nested structures in data (objects within objects, arrays within objects, etc.)
 - polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
+- add API limits to meta of module specifications, this should facilitate campaign creation later
+
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
 - Each module will have a single Python file which handles:
 	- Specification of whether it is a collection or analysis module and a description
 	- Specification of parameters and return values
 	- Initial call, it should have a function run(param, working_set) which gets the data
-- Cache the working_set to reduce redundant downloading
+- Cache the working_set to reduce redundant downloading [done]
 
 #Issues
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
