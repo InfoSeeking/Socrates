@@ -1,4 +1,5 @@
 - Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
+- Fields defined in the specs for parameters and return values can be either strings or objects
 
 #Currently Working on
 - figure out how the modules will access and add/modify the working JSON [done]
@@ -7,13 +8,16 @@
 - implement MongoDB [done]
 - get front-end working
 	+ Add validation of data
-	+ Add option to NOT download entire data set (not necessarily front-end problem)
-- add ability to analyze on analysis fields
-- add statistics analysis module
+	+ Add option to NOT download entire data set (not necessarily front-end problem) [done]
+- add ability to analyze on analysis fields [done]
+- add statistics analysis module [done]
 - migrate the modules from context miner [After looking at the scripts, since they heavily depend on MySQL, and I would have to code the bridge between python and PHP, I think it would be easier to recreate the scripts (Youtube, Flickr, Twitter)
 - add ability to get multiple sources for visualization modules (might be tricky)
 - add documentation
-
+- add ability to visualize on analysis fields (low priority, pretty much copy of back-end portion in JS)
+- make sure that errors are handled well in back-end, add logging
+- add ability to have objects and nested structures in data (objects within objects, arrays within objects, etc.)
+- polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
 - Each module will have a single Python file which handles:
