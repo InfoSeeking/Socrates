@@ -1,23 +1,30 @@
-var VIS = {
-	specs : {},//module list
-	functionReferences : {},
-	addModule: function(mod, specs){
+var VIS = (function(){
+	function parseParams(param){
+
+	}
+
+	var that = {};
+	that.specs = {};//module list
+	that.functionReferences = {};
+	that.addModule = function(mod, specs){
 		VIS.specs[mod] = specs;
 		VIS.functionReferences[mod] = {};//stores actual functions
-	},
-	addFunction: function(mod, fnName, fn){
+	};
+	that.addFunction = function(mod, fnName, fn){
 		if(!VIS.specs.hasOwnProperty(mod)){
 			return;
 		}
 		VIS.functionReferences[mod][fnName] = fn
-	},
-	callFunction: function(display, mod, fnName, param, callback){
+	};
+	that.callFunction = function(display, mod, fnName, param, callback){
 		//get working_set
+		parseParams(param);
 		getWorkingSet(param['reference_id'], function(ws){
 			VIS.functionReferences[mod][fnName].call(window, display, ws, param);
 		});
-	}
-};
+	};
+	return that;
+}());
 
 //add a test module
 (function(){
@@ -38,13 +45,18 @@ var VIS = {
 		}
 	};
 	VIS.addModule("graph", specs);
+
 	var fn = function(display, working_set, param){
 		var data = working_set.data;
 		var out = "";
 		var f = param['field'];
+		var num_splits = parseInt(param['num_splits'], 10);
 		var max = data[0][f];
 		var min = data[0][f];
+		var w = 500, h = 200;
+		var values = [];
 		for(var i = 0; i < data.length; i++){
+			values.push(data[i][f]);
 			if(data[i][f] > max){
 				max = data[i][f];
 			}
@@ -52,54 +64,54 @@ var VIS = {
 				min = data[i][f];
 			}
 		}
-		var num_splits = parseInt(param['num_splits'], 10);
-		var range = (max - min)/(num_splits-1);
-		if(range <= 0){
-			//slight problem
-			return $("<p class='err'>Range error</p>");
-		}
-		console.log("range " + range);
-		var toPlot = new Array(num_splits);
-		for(var i = 0; i < toPlot.length; i++){toPlot[i] = 0;}
-		for(var i = 0; i < data.length; i++){
-			//console.log(data[i][f]);
-			var point = Math.floor((data[i][f] - min)/range);
-			console.log(point);
-			toPlot[point] = toPlot[point] + 1;
-		}
-		console.log(toPlot);
-		var w = 500, h = 200;
-		var max = d3.max(toPlot);
-		var hScale = d3.scale.linear().domain([0, max]).range([0, h]);
-		var cScale = d3.scale.linear().domain([0, max]).range([0, 220]);
-		var svg = d3.select(display).append("svg").attr("width", w).attr("height", h);
-		var barW = (w/toPlot.length);
-		svg.selectAll("rect").data(toPlot).enter().append("rect").attr("class", "bar").attr("height", function(d){
-	        return hScale(d);
-	    }).attr("x", function(d, i){
-	    	return barW * i
-	    }).attr("width", barW).attr("y", function(d){
-	    	return h - hScale(d);
-	    }).attr("fill", function(d){
-	    	return "rgb(0," + Math.round(cScale(d)) + ",0)";
-	    });
-	    //add text
-	    svg.selectAll("text").data(toPlot).enter().append("text").text(function(d, i){
-	    	return d;
-	    }).attr("x", function(d, i){
-	    	return (barW * i) + (barW/2) - 4;
-	    }).attr("y", function(d){
-	    	return h - hScale(d) + 15;
-	    }).attr("fill", "white");
+		// A formatter for counts.
+		var formatCount = d3.format(",.0f");
 
-//I need to read up a bit more on d3
-	    svg.selectAll("text.tnode").data(toPlot).enter().append("text").classed(".tnode", true).text(function(d,i){
-	    	return Math.round(range * i) + " - " + Math.round(range * (i+1));
-	    }).attr("x", function(d, i){
-	    	return (barW * i) + 1;
-	    }).attr("y", function(d){
-	    	return h - 20;
-	    }).attr("fill", "red").attr("font-size", "10px");
+		var margin = {top: 10, right: 30, bottom: 30, left: 30};
+
+		var x = d3.scale.linear()
+		    .domain([0, max+1])
+		    .range([0, w]);
+
+		// Generate a histogram using twenty uniformly-spaced bins.
+		var data = d3.layout.histogram().bins(x.ticks(num_splits))(values);
+
+		var y = d3.scale.linear()
+		    .domain([0, d3.max(data, function(d) { return d.y; })])
+		    .range([h, 0]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var svg = d3.select(display).append("svg")
+		    .attr("width", w + margin.left + margin.right)
+		    .attr("height", h + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var bar = svg.selectAll(".bar")
+		    .data(data)
+		  .enter().append("g")
+		    .attr("class", "bar")
+		    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+		bar.append("rect")
+		    .attr("x", 1)
+		    .attr("width", x(data[0].dx) - 1)
+		    .attr("height", function(d) { return h - y(d.y); });
+
+		bar.append("text")
+		    .attr("dy", ".75em")
+		    .attr("y", 6)
+		    .attr("x", x(data[0].dx) / 2)
+		    .attr("text-anchor", "middle")
+		    .text(function(d) { return formatCount(d.y); });
+
+		svg.append("g")
+		    .attr("class", "x axis")
+		    .attr("transform", "translate(0," + h + ")")
+		    .call(xAxis);
 
 	}
 	VIS.addFunction("graph", "histogram", fn);

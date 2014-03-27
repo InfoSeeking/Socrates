@@ -82,4 +82,4 @@ def operator(typ, mod, fn):
 	return json.dumps(working_set) + "\n"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0")
