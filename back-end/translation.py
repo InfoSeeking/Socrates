@@ -42,7 +42,8 @@ def enforceAndConvert(param, paramSpecs, working_set=None):
 				continue
 
 			fr = re.compile("^field_reference\s+(\w+)$")
-			match = fr.match(paramSpecs[key]['type'])
+			paramType = getType(paramSpecs[key])
+			match = fr.match(paramType)
 
 			if match:
 				typ = match.group(1)
@@ -56,7 +57,7 @@ def enforceAndConvert(param, paramSpecs, working_set=None):
 					#analysis field
 					index = int(match.group(1))
 					field = match.group(2)
-					if field not in working_set['analysis'][index]['entry_analysis']:
+					if "analysis" not in working_set or field not in working_set['analysis'][index]['entry_analysis']:
 						raise TypeError("Reference to analysis field " + field + " does not exist")
 					if getType(working_set['analysis'][index]['entry_meta'][field]) != typ:
 						raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
@@ -68,16 +69,13 @@ def enforceAndConvert(param, paramSpecs, working_set=None):
 						if field not in working_set['data'][0]:
 							raise TypeError("Reference to data field " + field + " does not exist")
 						if getType(working_set['meta'][field]) != typ:
-							raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
+							raise TypeError("Reference to data field " + field + " is not of type " + typ)
 					for d in working_set['data']:
 						value.append(d[field])
 				param[key] = value
 			else:
 				#assume basic type for now
-				typ = paramSpecs[key]
-				if 'type' in paramSpecs[key]:
-					typ = paramSpecs[key]['type']
-				param[key] = convertBasicType(typ, param[key])
+				param[key] = convertBasicType(paramType, param[key])
 	except TypeError as te:
 		print "TypeError caught in translation:"
 		print te

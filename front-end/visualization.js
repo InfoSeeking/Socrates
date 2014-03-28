@@ -1,8 +1,4 @@
 var VIS = (function(){
-	function parseParams(param){
-
-	}
-
 	var that = {};
 	that.specs = {};//module list
 	that.functionReferences = {};
@@ -18,9 +14,14 @@ var VIS = (function(){
 	};
 	that.callFunction = function(display, mod, fnName, param, callback){
 		//get working_set
-		parseParams(param);
 		getWorkingSet(param['reference_id'], function(ws){
-			VIS.functionReferences[mod][fnName].call(window, display, ws, param);
+			try{
+				TRANS.parseParams(param, that.specs[mod]["functions"][fnName]["param"], ws);
+				VIS.functionReferences[mod][fnName].call(window, display, ws, param);
+			}
+			catch(e){
+				console.log("Exception: " + e);
+			}
 		});
 	};
 	return that;
@@ -49,19 +50,18 @@ var VIS = (function(){
 	var fn = function(display, working_set, param){
 		var data = working_set.data;
 		var out = "";
-		var f = param['field'];
+		var values = param['field'];
+		console.log(values);
 		var num_splits = parseInt(param['num_splits'], 10);
-		var max = data[0][f];
-		var min = data[0][f];
+		var max = values[0];
+		var min = values[0];
 		var w = 500, h = 200;
-		var values = [];
-		for(var i = 0; i < data.length; i++){
-			values.push(data[i][f]);
-			if(data[i][f] > max){
-				max = data[i][f];
+		for(var i = 0; i < values.length; i++){
+			if(values[i] > max){
+				max = values[i];
 			}
-			if(data[i][f] < min){
-				min = data[i][f];
+			if(values[i] < min){
+				min = values[i];
 			}
 		}
 		// A formatter for counts.
