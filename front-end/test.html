@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="Kevin Albertson">
+  <style type="text/css">
+	.axis path, .axis line {
+	    fill: none;
+	    stroke: black;
+	    shape-rendering: crispEdges;
+	}
+
+	.axis text {
+	    font-family: sans-serif;
+	    font-size: 11px;
+	}
+  </style>
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <script src="d3.js"></script>
+  <script>
+
+
+			//Width and height
+			var w = 500;
+			var h = 300;
+			var padding = 30;
+			
+
+			var x = [1, 2, 3, 4, 5, 6];
+			var y = [5, 4, 3, 2, 1, 5];
+
+			//Create scale functions
+			var xScale = d3.scale.linear()
+								 .domain([0, d3.max(x)])
+								 .range([padding, w - padding * 2]);
+
+			var yScale = d3.scale.linear()
+								 .domain([0, d3.max(y)])
+								 .range([h - padding, padding]);
+
+			var rScale = d3.scale.linear()
+								 .domain([0, d3.max(y)])
+								 .range([2, 5]);
+
+			var formatAsPercentage = d3.format(".1");
+
+			//Define X axis
+			var xAxis = d3.svg.axis()
+							  .scale(xScale)
+							  .orient("bottom")
+							  .ticks(5)
+							  .tickFormat(formatAsPercentage);
+
+			//Define Y axis
+			var yAxis = d3.svg.axis()
+							  .scale(yScale)
+							  .orient("left")
+							  .ticks(5)
+							  .tickFormat(formatAsPercentage);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Create circles
+			svg.selectAll("circle")
+			   .data(x)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(xV) {
+			   		return xScale(xV);
+			   })
+			   .attr("cy", function(xV, i) {
+			   		return yScale(y[i]);
+			   })
+			   .attr("r", function(xV, i) {
+			   		return rScale(y[i]);
+			   });
+
+			/*
+			//Create labels
+			svg.selectAll("text")
+			   .data(x)
+			   .enter()
+			   .append("text")
+			   .text(function(xV, i) {
+			   		return xV + "," + y[i];
+			   })
+			   .attr("x", function(xV) {
+			   		return xScale(xV);
+			   })
+			   .attr("y", function(xV, i) {
+			   		return yScale(y[i]);
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "11px")
+			   .attr("fill", "red");
+		  	*/
+			
+			//Create X axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis);
+			
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
+
+		
+  </script>
+</body>
+</html>

@@ -118,18 +118,6 @@
   #close{
     display: none;
   }
-  div.bar{
-    display: inline-block;
-    width: 20px;
-    height: 75px;
-    background-color: rgb(13,50,255);
-    margin-right: 2px;
-  }
-  #graph{
-    border: 1px black solid;
-    width: 300px;
-    padding: 10px;
-  }
   #vis{
     margin: 20px 0px 0px 25px;
   }
@@ -150,6 +138,17 @@
     stroke: #000;
     shape-rendering: crispEdges;
   }
+
+  #vis[data-vis=graph-scatterplot] .axis path, #vis[data-vis=graph-scatterplot] .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+  }
+  #vis[data-vis=graph-scatterplot] .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+  }
+  
   </style>
 
   <!--[if lt IE 9]>

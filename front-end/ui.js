@@ -85,7 +85,7 @@ function genForm(data, type){
   var form = $("<form></form>");
   if(type == "analysis" || type == "visualization"){
     //add reference to database
-    form.append("<div class='r'><label>Reference ID</label><input type='text' value='5334acc939827c11cfb98913' class='toSend' name='reference_id'/></div>");
+    form.append("<div class='r'><label>Reference ID</label><input type='text' class='toSend' name='reference_id'/></div>");
   }
   for(var p in data){
     if(!data.hasOwnProperty(p)){continue;}

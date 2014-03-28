@@ -20,7 +20,7 @@ var TRANS = (function(){
 			return parseFloat(val);
 		}
 		else if(typ == 'text'){
-			return val
+			return val;
 		}
 		else if(typ == 'boolean'){
 			if(/^true$/i.test(val)){
