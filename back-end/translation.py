@@ -16,6 +16,11 @@ def getType(val):
 	else:
 		return val
 
+def isOptional(spec):
+	if("optional" in spec and spec["optional"] is True):
+		return True
+	return False
+	
 #a basic type is a 'primitive'
 def convertBasicType(typ, val):
 	if typ == 'numeric':
@@ -39,6 +44,8 @@ def enforceAndConvert(param, paramSpecs, working_set=None):
 		for key in param:
 			if isSpecialParam(key):
 				#then this parameter is not being fed to our function, so do not check it
+				continue
+			if param[key] == "" and isOptional(paramSpecs[key]):
 				continue
 
 			fr = re.compile("^field_reference\s+(\w+)$")

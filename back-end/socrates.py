@@ -58,9 +58,17 @@ def run(typ, mod, fn, param, working_set=None):
 		return working_set
 
 def test():
-	working_set = run("collection", "reddit", "fetchComments", {'submission_id': "xbfwb", 'onlyTop': "false"})
-	working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set=working_set)
-	working_set = run("analysis", "text", "word_count", {'field': 'analysis[0].word_counts'}, working_set)
+	working_set = run("collection", "twitter", "tw_search", {
+		"count" : 10,
+		"query" : "love",
+		"lang" : "en",
+		"longitude" : "",
+		"latitude" : 40.67,
+		"radius" : 200
+		})
+	#working_set = run("collection", "reddit", "fetchComments", {'submission_id': "xbfwb", 'onlyTop': "false"})
+	#working_set = run("analysis", "text", "word_count", {'field': 'content'}, working_set=working_set)
+	#working_set = run("analysis", "text", "word_count", {'field': 'analysis[0].word_counts'}, working_set)
 	pprint(working_set)
 #test()
 '''

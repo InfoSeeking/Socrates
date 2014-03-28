@@ -101,7 +101,7 @@ function genForm(data, type){
         inputType = "number";
       }
     }
-    form.append("<div class='r'><label>" + p + "</label><input class='toSend' type='" + inputType + "' name='" + p + "'/></div>");
+    form.append("<div class='r'><label>" + p + "</label><input class='toSend' type='" + inputType + "' step='any' name='" + p + "'/></div>");
   }
   form.append("<input type='submit' />");
   return form;

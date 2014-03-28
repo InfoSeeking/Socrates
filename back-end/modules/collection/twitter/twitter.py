@@ -27,6 +27,19 @@ SPECS = {
                             'choices': ['en', 'pt', 'it', 'es', 'tr', 'ko', 'fr', 'ru', 'de', 'ja']
                         },
                         'default': 'en'
+                    },
+                    "longitude" : {
+                        "type" : "numeric",
+                        "optional": True
+                    },
+                    "latitude" : {
+                        "type" : "numeric",
+                        "optional": True
+                    },
+                    "radius" : {
+                        "type" : "numeric",
+                        "optional": True,
+                        "comment": "Radius in kilometers"
                     }
                 },
                 'returns': {
@@ -60,6 +73,14 @@ def tw_search(param=False):
     query = param['query']
     cnt=int(param['count'])
     lang=param['lang']
+    geo = False
+    if "longitude" in param and param["longitude"] != "":
+        lon = param["longitude"]
+        if "latitude" in param and param["latitude"] != "":
+            lat = param["latitude"]
+            if "radius" in param and param["radius"] != "":
+                rad = param["radius"]
+                geo = "%f,%f,%fkm" % (lat, lon, rad)
 
     #If this is run as a script, __name__  is main, so argv[0] is file path
     if __name__ == '__main__':
@@ -75,7 +96,14 @@ def tw_search(param=False):
     data = []
     maxTweets = cnt
     cnt = 0
-    for tweet in tweepy.Cursor(api.search, q=query, count=cnt, lang=lang).items():
+
+    if(not geo):
+        tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang)
+    else:
+        print "Searching from " + geo
+        tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang, geocode=geo)
+
+    for tweet in tResults.items():
         dTwt = {}
         dTwt['created'] = str(tweet.created_at)   #tweet created
         dTwt['content']    = tweet.text         #tweet text

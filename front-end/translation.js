@@ -12,6 +12,14 @@ var TRANS = (function(){
 			return val;
 		}
 	}
+	function isOptional(spec){
+		if(typeof(val) == "object" && val.hasOwnProperty("optional") && val["optional"]){
+			return val["optional"];
+		}
+		else{
+			return false;
+		}
+	}
 	function isSpecialParam(key){
 		return key == "returnAllData" || key == "reference_id";
 	}
@@ -41,6 +49,9 @@ var TRANS = (function(){
 	}
 	that.parseParams = function(param, paramSpecs, working_set){
 		for(var key in param){
+			if(param[key] == "" && isOptional(paramSpecs[key])){
+				continue;
+			}
 			if(param.hasOwnProperty(key) && !isSpecialParam(key)){
 				var fr = /^field_reference\s+(\w+)$/i;
 				var paramType = getType(paramSpecs[key]);
