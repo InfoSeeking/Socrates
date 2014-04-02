@@ -1,9 +1,11 @@
+import sys
+
 import time, datetime, sys
 import re, math, argparse
 import urllib, urlparse
 import tweepy
 import os
-import sys
+
 #import simplejson
 #import MySQLdb
 

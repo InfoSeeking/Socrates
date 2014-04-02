@@ -1,0 +1,3 @@
+- Added socrates.com to hosts
+- Added virtualhost to apache
+- Error when importing tweepy, however, even upon removing going to socrates.com/specs just hangs (even when setting wsgi.py port to 80)

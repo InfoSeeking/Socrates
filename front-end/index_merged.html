@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Socrates</title>
+  <meta name="description" content="">
+  <meta name="author" content="Kevin Albertson">
+  <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href="style.css" type="text/css" rel="stylesheet" />
+  <style type="text/css">
+  *{
+    margin: 0;
+    padding: 0;
+    font-family: "Alegreya Sans", "Helvetica", "Arial", "sans-serif";
+  }
+  .type-instructions{
+    display: none;
+  }
+  .type-instructions .button{
+    display: none;
+  }
+  #vis{
+    margin: 20px 0px 0px 25px;
+  }
+  svg{
+
+  }
+  .bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+  }
+
+  .bar text {
+    fill: #fff;
+  }
+
+  .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  #vis[data-vis=graph-scatterplot] .axis path, #vis[data-vis=graph-scatterplot] .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+  }
+  #vis[data-vis=graph-scatterplot] .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+  }
+  
+  </style>
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div id="container">
+    <div id="wrapper">
+      <div id="workspace">
+        <h2>Workspace</h2>
+      </div>
+    </div><!--/#wrapper -->
+    <aside id="sidebar">
+      <h1>Socrates</h1>
+      <div class="inner">
+        <div id="ref">Reference ID: <b></b></div>
+        <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
+        <div id="topbar">
+          <div class="active item c">
+            <div class="circle"></div>
+            <span>Collection</span>
+          </div>
+          <div class="item a">
+            <div class="circle"></div>
+            <span>Analysis</span>
+          </div>
+          <div class="item v">
+            <div class="circle"></div>
+            <span>Visualization</span>
+          </div>
+        </div>
+        <div class="type-instructions visualization">
+          <h2>Visualization</h2>
+            <div class="sub mod">
+              Choose a module <span class="chosen"></span>
+              <div class="sub fn">
+                Choose a function <span class="chosen"></span>
+              </div>
+            </div>
+            <div class="modules"></div><div class="functions"></div>
+        </div>
+        <div class="type-instructions analysis">
+          <h2>Analysis</h2>
+            <div class="sub mod">
+              Choose a module <span class="chosen"></span>
+              <div class="sub fn">
+                Choose a function <span class="chosen"></span>
+              </div>
+            </div>
+            <div class="modules"></div><div class="functions"></div>
+        </div>
+        <div class="type-instructions collection">
+          <h2>Collection</h2>
+            <div class="sub mod">
+              Choose a module <span class="chosen"></span>
+              <div class="sub fn">
+                Choose a function <span class="chosen"></span>
+              </div>
+            </div>
+            <div class="modules"></div><div class="functions"></div>
+        </div>
+        <div class="ruler"></div>
+
+        <div id="forms">
+        </div>
+
+      </div><!--/.inner -->
+      
+    </aside>
+    <footer id="footer"></footer>
+  </div><!--/#container -->
+
+  <script src="jquery.js"></script>
+  <script src="d3.js"></script>
+  <script src="isotope.js"></script>
+  <script src="utils.js"></script>
+  <script src="translation.js"></script>
+  <script src="visualization.js"></script>
+  <script src="ui_merged.js"></script>
+</body>
+</html>

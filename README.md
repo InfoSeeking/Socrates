@@ -19,6 +19,7 @@
 - add ability to have objects and nested structures in data (objects within objects, arrays within objects, etc.)
 - polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
 - add API limits to meta of module specifications, this should facilitate campaign creation later
+- Add mod_wsgi and integrate flask with apache
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.

@@ -17,8 +17,7 @@ SPECS = {
 				'average' : 'numeric',
 				'variance' : 'numeric',
 				'standard_deviation' : 'numeric'
-			},
-			'entry_result': {}
+			}
 		}
 	}
 }
