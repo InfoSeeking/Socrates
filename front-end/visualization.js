@@ -144,11 +144,11 @@ var VIS = (function(){
 
 			//Create scale functions
 			var xScale = d3.scale.linear()
-								 .domain([0, d3.max(x)])
+								 .domain([d3.min(x), d3.max(x)])
 								 .range([padding, w - padding * 2]);
 
 			var yScale = d3.scale.linear()
-								 .domain([0, d3.max(y)])
+								 .domain([d3.min(y), d3.max(y)])
 								 .range([h - padding, padding]);
 
 			var rScale = d3.scale.linear()

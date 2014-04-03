@@ -12,7 +12,7 @@
 	+ show all of working set (except visualization)
 - Add ability to manage multiple working sets/have users
 - [done] Add pagination on collection/analysis sample data (or show overlay of table of data)
-- Change visualization to exploration
+- [done] Change visualization to exploration
 - Save visualization data
 - Add median to stats
 - Add info on entry vs aggregate data

@@ -1,4 +1,5 @@
 var curRefId = null;
+var curChooser = null;//current field chooser
 
 function tLoad(val){
   if(val){
@@ -128,13 +129,14 @@ function createTable(type, set){
       if((typeof(sample) == "string") && sample.length > 30){
         sample = sample.substring(0, 30) + "...";
       }
-      var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
+      var row = $("<tr><td><span class='field' data-type='collection' data-fieldtype='" + type + "'>" + field + "</span></td><td>" + type + "</td><td>" + sample + "</td></tr>");
       table.find("tbody").append(row);
       section = table;
     }
   }
   else if(type == "analysis"){
-    var an = set.analysis[set.analysis.length - 1];
+    var index = set.analysis.length - 1;
+    var an = set.analysis[index];
     var a_section = $("<div class='analysis_section'></div>");
     if(an.hasOwnProperty("aggregate_meta")){
       //check for aggregate data
@@ -170,7 +172,7 @@ function createTable(type, set){
         if(an.entry_analysis[field].length > 0){
           sample = an.entry_analysis[field][0];
         }
-        var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
+        var row = $("<tr><td><span class='field' data-type='analysis' data-index='" + index + "' data-fieldtype='" + type + "'>" + field + "</span></td><td>" + type + "</td><td>" + sample + "</td></tr>");
         table.find("tbody").append(row);
       }
       a_section.append(table);
@@ -218,85 +220,6 @@ function showResults(data, type){
   $("#workspace").isotope('insert' , box);
 }
 
-function showWorkingSet(set){
-  $(".analysis_section").detach();
-  var ws = $("#working_set");
-  ws.find("#ref b").html(set.reference_id);
-  ws.find("#num_entries b").html(set.data.length);
-  var table = ws.find("table");
-  table.find("tbody").empty();
-
-  //TODO: separate meta parsing to rows as a separate helper function to be more DRY
-  for(var field in set.meta){
-    if(!set.meta.hasOwnProperty(field)){continue;}
-    var type = set.meta[field];
-    if(typeof(type) == "object"){
-      type = type.type;//lol
-    }
-    var sample = "";
-    if(set.data.length > 0){
-      sample = set.data[0][field];
-    }
-    var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
-    table.find("tbody").append(row);
-    $("#working_set").fadeIn();
-  }
-
-
-  //now show analysis data
-  if(set.hasOwnProperty("analysis")){
-    for(var i = 0; i < set.analysis.length; i++){
-        var an = set.analysis[i];
-        var a_section = $("<div class='analysis_section'></div>");
-        if(i == 0){
-          a_section.addClass("first");
-        }
-        if(an.hasOwnProperty("aggregate_meta")){
-          //check for aggregate data
-          a_section.append("<h4>Aggregate Data</h4>");
-          var ag_table = table.clone();
-          ag_table.addClass("analysis_table");
-          ag_table.find("tbody").empty();
-          ag_table.find("thead tr th:nth-child(3)").html("Value");
-          for(var field in an.aggregate_meta){
-            if(!an.aggregate_meta.hasOwnProperty(field)){continue;}
-            var type = an.aggregate_meta[field];
-            if(typeof(type) == "object"){
-              type = type.type;//lol
-            }
-            var sample = an.aggregate_analysis[field];
-            var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
-            ag_table.find("tbody").append(row);
-          }
-          
-          a_section.append(ag_table);
-        }
-
-        if(an.hasOwnProperty("entry_meta")){
-          //show entry data
-          a_section.append("<h4>Entry Data</h4>");
-          var en_table = table.clone();
-          en_table.addClass("analysis_table");
-          en_table.find("tbody").empty();
-          for(var field in an.entry_meta){
-            if(!an.entry_meta.hasOwnProperty(field)){continue;}
-            var type = an.entry_meta[field];
-            if(typeof(type) == "object"){
-              type = type.type;//lol
-            }
-            var sample = "";
-            if(an.entry_analysis[field].length > 0){
-              sample = an.entry_analysis[field][0];
-            }
-            var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
-            en_table.find("tbody").append(row);
-          }
-          a_section.append(en_table);
-        }
-        ws.append(a_section);
-      }
-    }
-}
 /*
 data should be an object containing fields
 fields can either be strings or objects
@@ -311,13 +234,16 @@ function genForm(data, type){
     if(!data.hasOwnProperty(p)){continue;}
     //For now, just make them all text fields. This will obviously be changed later.
     var inputType = "text";
+    var fieldType = "";
     var extra = "";
     if(typeof(data[p]) == "string"){
+      fieldType = data[p];
       if(data[p] == "numeric"){
         inputType = "number";
       }
     }
     else if(typeof(data[p] == "object")){
+      fieldType = data[p].type;
       if(data[p].type == "numeric"){
         inputType = "number";
       }
@@ -332,10 +258,27 @@ function genForm(data, type){
         extra += "<p class='comment'>" + optional + "</p>";
       }
     }
-    form.append("<div class='row'><label>" + p + "</label><input class='toSend' type='" + inputType + "' step='any' name='" + p + "'/>" + extra + "</div>");
+    var input = "";
+    var fr = /^field_reference\s+(\w+)$/i;
+    var match = fr.exec(fieldType);
+    if(match){
+      input = "<input type='hidden' class='toSend' name='" + p + "'/><span class='fieldChooser' data-fieldtype='" + match[1] + "'>Choose a Field</span>";
+    }
+    else{
+      input = "<input class='toSend' type='" + inputType + "' step='any' name='" + p + "'/>";
+    }
+    form.append("<div class='row'><label>" + p + "</label>" + input + extra + "</div>");
   }
   form.append("<input type='submit' class='button' />");
   return form;
+}
+
+
+function showFields(type){
+  $(".field").removeClass("option");
+  if(type !== null){
+    $(".field[data-fieldtype=" + type + "]").addClass("option");
+  }
 }
 
 $.ajax({
@@ -409,7 +352,7 @@ $.ajax({
       if(type == "visualization"){
         $("#vis").empty();
         var b = createBox('visualization');
-        b.find("h2").html("Visualization Results");
+        b.find("h2").html("Exploration Results");
 
         VIS.callFunction(b[0], mod, fn, params,
           function(){
@@ -466,6 +409,27 @@ $.ajax({
       $(".type-instructions .functions .button, #forms .function").hide();
       $("#forms .function[data-type=" + type + "][data-mod=" + mod + "][data-fn=" + fn + "]").fadeIn();
     });
+
+    $(".fieldChooser").click(function(){
+      var fType = $(this).attr("data-fieldtype");
+      curChooser = $(this);
+      showFields(fType);
+    });
+
+    $("#workspace").delegate(".field.option", "click" ,function(){
+      console.log("HERE");
+      if(curChooser != null){
+        //set input
+        var type = $(this).attr('data-type');
+        var finalStr = $(this).html();
+        curChooser.html(finalStr);
+        if(type == "analysis"){
+          finalStr = "analysis[" + $(this).attr("data-index") + "]." + finalStr; 
+        }
+        curChooser.siblings("input").val(finalStr);
+        showFields(null);
+      }
+    })
     showType("collection"); //initially show collection
 
     test();
@@ -535,3 +499,6 @@ function test(){
   f.find("input[name=lang]").val("en");
   f.find("form").submit()
 }
+
+
+$("#last-modified").html("Page last updated on " + document.lastModified);
