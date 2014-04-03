@@ -26,6 +26,18 @@ aside#sidebar .inner{
 	color: #FFF;
 	margin: 25px;
 }
+#next-buttons .button{
+	font-size: 18px;
+	padding: 10px 20px;
+	margin-left: 25px;
+	margin-right: 25px;
+	margin-top: 20px;
+	display: inline-block;
+}
+#next-buttons{
+	display: none;
+	margin-bottom: 20px;
+}
 .button{
 	background: #0195cc;
 	color: #FFF;
@@ -34,7 +46,7 @@ aside#sidebar .inner{
 	cursor: pointer;
 	border: none;
 	border-radius: 4px;
-
+	text-decoration: none;
 }
 .button:hover{
 	background: #5ecff9;
@@ -63,7 +75,9 @@ form .row .comment{
 form .row .comment .optional{
 	color: #0195cc;
 }
-
+#ref{
+	display: none;
+}
 .type-instructions h2{
 	padding-left: 24px;
 	font-size: 18px;
@@ -76,6 +90,7 @@ form .row .comment .optional{
 	background: url("img/visualization.png") no-repeat 0px 4px;
 }
 .type-instructions .sub{
+	cursor: pointer;
 	padding-left: 15px;
 	margin-left: 10px;
 	background: url("img/arrow.png") no-repeat 0px 4px;
@@ -98,6 +113,7 @@ form .row .comment .optional{
 	background: #8f4ff0;
 }
 #topbar{
+	display: none;
 	position: relative;
 	margin-bottom: 30px;
 }
@@ -161,7 +177,10 @@ form .row .comment .optional{
 	background: #FFF;
 	margin: 10px;
 }
-
+#workspace .results .button{
+	margin: 10px;
+	display: inline-block;
+}
 #workspace .results h4{
 	padding: 10px;
 }
@@ -178,6 +197,13 @@ form .row .comment .optional{
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 	padding: 10px;
+}
+#workspace #intro{
+	width: 80%;
+	margin-top: 5%;
+	margin-left: 5%;
+	background: #FFF;
+	padding: 5%;
 }
 .button.menu{
 	width: 30px;
@@ -207,9 +233,47 @@ form .row .comment .optional{
 	cursor: pointer;
 }
 
-#workspace h2{
-	margin-left: 10px;
+
+#loader{
+	position: absolute;
+	right: 20px;
+	bottom: 5px;
+	display: none;
+}
+
+#overlay{
+	position: absolute;
+	z-index: 10;
+	top: 0px;
+	left: 0px;
+	display: none;
+	background: rgba(0,0,0,.9);
+}
+#overlay table{
 	margin-top: 10px;
+}
+#overlay .close{
+	position: absolute;
+	right: 10px;
+	color: #0195cc;
+}
+
+#overlay tr:nth-child(even) td{
+	background: rgba(100,100,100,.7);
+}
+#overlay td, #overlay th{
+	text-align: left;
+	padding: 3px;
+	font-size: 12px;
+}
+#overlay th{
+	font-size: 14px;
+}
+#overlay *{
+	color: #FFF;
+}
+#overlay th.a{
+	color: #F00;
 }
 /*
 screws up visualization for some reason

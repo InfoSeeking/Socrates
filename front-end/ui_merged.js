@@ -1,3 +1,102 @@
+var curRefId = null;
+
+function tLoad(val){
+  if(val){
+    $("#loader").show();
+  }
+  else{
+    $("#loader").hide();
+  }
+}
+
+$("#overlay .close").on("click", function(){
+  $("#overlay").hide();
+})
+
+/*
+index only necessary if it is an analysis type
+*/
+function showAllData(working_set, typ, index){
+  console.log("Showing data for " + typ + "," + index);
+  var aData = null;
+  var ws = working_set;//easier
+  if(typ == "analysis"){
+    //show the entry data alongside collection data 
+    if(index !== null){
+      //show only one
+      aData = new Array(ws["analysis"][index]);
+    }
+    else{
+      aData = ws["analysis"];
+    }
+  }
+
+  var cData = ws["data"];
+  //build the top row
+  var thead = $("<tr><th>Index</th></tr>");
+  for(var f in ws["meta"]){
+    if(ws["meta"].hasOwnProperty(f)){
+      thead.append("<th>" + f + "</th>");
+    }
+  }
+  //add heading for every analysis
+  if(aData){
+    console.log(aData);
+    for(var i = 0; i < aData.length; i++){
+      for(var f in aData[i]["entry_meta"]){
+        if(aData[i]["entry_meta"].hasOwnProperty(f)){
+          thead.append("<th class='a'>" + f + "</th>");
+        }
+      }
+    }
+  }
+  var tbody = $("<tbody></tbody>");
+  for(var i = 0; i < cData.length; i++){
+    var row = $("<tr><td> " + i + "</td></tr>");
+    for(var f in ws["meta"]){
+      if(ws["meta"].hasOwnProperty(f)){
+        row.append("<td>" + cData[i][f] + "</td>");
+      }
+    }
+    if(aData){
+      for(var j = 0; j < aData.length; j++){
+        for(var f in aData[j]["entry_meta"]){
+          if(aData[j]["entry_meta"].hasOwnProperty(f)){
+            row.append("<td class='a'>" + aData[j]["entry_analysis"][f][i] + "</td>");
+          }
+        }
+      }
+    }
+    tbody.append(row);
+  }
+
+  //now add rows
+  $("#overlay table").empty().append(thead).append(tbody);
+  $("#overlay").fadeIn();
+}
+
+function handleDataButton(e){
+  tLoad(true);
+  var btn = $(this);
+  getWorkingSet(curRefId, function(ws){
+      var typ = btn.attr("data-type");
+      var index = btn.attr("data-index");
+      if(index){
+        index = parseInt(index);
+      }
+      showAllData(ws, typ, index);
+      
+      tLoad(false);
+  })
+
+  e.preventDefault();
+}
+function showAllDataBtn(){
+  return $("<a href='#' class='button'>Show All of this Data</a>").on("click", handleDataButton);
+}
+
+$("#showAllData").on("click", handleDataButton);
+
 function showType(type){
   $(".type-instructions").hide();
   var typ = $(".type-instructions." + type).show();
@@ -23,7 +122,10 @@ function createTable(type, set){
       if(set.data.length > 0){
         sample = set.data[0][field];
       }
-      if(sample.length > 30){
+      else{
+        return section;
+      }
+      if((typeof(sample) == "string") && sample.length > 30){
         sample = sample.substring(0, 30) + "...";
       }
       var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
@@ -77,7 +179,7 @@ function createTable(type, set){
   }
   return section;
 }
-function createBox(type){
+function createBox(type, index){
   //create a new empty box
   return $("<div class='results " + type + "'><div class='bar'><h2></h2></div></div>");
 }
@@ -86,7 +188,7 @@ var first = true;
 function showResults(data, type){
   if(first){
     first = false;
-    $("#workspace h2").detach();
+    $("#workspace #intro").detach();
     $("#workspace").isotope({
       itemSelector: '.results', 
       layoutMode: 'masonry'
@@ -99,12 +201,19 @@ function showResults(data, type){
   var box = createBox(type);
   var h2 = box.find("h2");
   if(type == "collection"){
+    curRefId = data["reference_id"];
     h2.html("Collection Data");
     box.append(createTable(type, data));
+    box.append(showAllDataBtn().attr("data-type", "collection"));
   }
   else if(type == "analysis"){
     h2.html("Analysis Data");
     box.append(createTable(type, data));
+    var curIndex = data["analysis"].length - 1;
+    if(data["analysis"][curIndex].hasOwnProperty("entry_meta")){
+      //show all data button
+      box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
+    }
   }
   $("#workspace").isotope('insert' , box);
 }
@@ -196,7 +305,7 @@ function genForm(data, type){
   var form = $("<form></form>");
   if(type == "analysis" || type == "visualization"){
     //add reference to database
-    form.append("<div class='row'><label>Reference ID</label><input type='text' class='toSend' name='reference_id'/></div>");
+    //form.append("<div class='row'><label>Reference ID</label><input type='text' class='toSend' name='reference_id'/></div>");
   }
   for(var p in data){
     if(!data.hasOwnProperty(p)){continue;}
@@ -268,7 +377,7 @@ $.ajax({
     }
 
     //add listeners on submission
-    $(".function form").on("submit", function(e){
+    $(".function form").on("submit", function(e){0
       e.preventDefault();
       var form = $(this),
           div = form.parent(),
@@ -277,7 +386,20 @@ $.ajax({
           mod = div.attr("data-mod"),
           fn = div.attr("data-fn"),
           params = {};
+      $(this).parent().hide();
+      $(".type-instructions").hide();
+      $(".topbar .item").removeClass("active");
+      //show next steps
+      $("#next-buttons").fadeIn()
+      //show analysis/visualization buttons
+      
+
+
       params['returnAllData'] = $("#allData").prop("checked") ? "true" : "false";
+      if((type == "analysis" || type == "visualization") && curRefId != null){
+        //add current reference id
+        params["reference_id"] = curRefId;
+      }
       for(var i = 0; i < inputs.size(); i++){
         var inp = $(inputs.get(i));
         params[inp.attr("name")] = inp.val();
@@ -292,9 +414,7 @@ $.ajax({
         VIS.callFunction(b[0], mod, fn, params,
           function(){
             $("#workspace").isotope("insert", b);
-            
           });
-        
       }
       else{
         //clear cache
@@ -347,6 +467,9 @@ $.ajax({
       $("#forms .function[data-type=" + type + "][data-mod=" + mod + "][data-fn=" + fn + "]").fadeIn();
     });
     showType("collection"); //initially show collection
+
+    test();
+
   }
 });
 
@@ -387,3 +510,28 @@ $("#topbar .v").click(function(){
   $(this).addClass("active");
 })
 
+
+$(".sub.mod, .sub.fn").on("click", function(){
+  $(this).find(".chosen").html("");
+  showType($(this).attr("data-type"));
+  $("#topbar .item").removeClass("active");
+  $("#topbar .item.c").addClass("active");
+});
+
+$("#next-buttons .button").on("click", function(){
+  if($(this).attr("data-type") == "a"){
+    showType('analysis');
+  }
+  else{
+    showType('visualization');
+  }
+});
+
+
+function test(){
+  var f = $("div[data-fn=tw_search]");
+  f.find("input[name=count]").val(10);
+  f.find("input[name=query]").val("test");
+  f.find("input[name=lang]").val("en");
+  f.find("form").submit()
+}

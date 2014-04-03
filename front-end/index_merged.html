@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Socrates</title>
+  <title>SOCRATES</title>
   <meta name="description" content="">
   <meta name="author" content="Kevin Albertson">
   <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -57,10 +57,19 @@
   <![endif]-->
 </head>
 <body>
+  <div id="overlay">
+    <h2>Data View <a href="#" class="close">Close</a></h2>
+    <table></table>
+  </div>
   <div id="container">
     <div id="wrapper">
+      <div id="loader">Loading <img src="img/loader.gif" alt=""/></div>
       <div id="workspace">
-        <h2>Workspace</h2>
+        <div id="intro">
+          <h2>Getting Started</h2>
+          <p>If this is your first time using SOCRATES explore the features by first collecting data.</p>
+          <p>To learn more visit the <a href="http://peopleanalytics.org/socrates/" title="SOCRATES" target="_blank">SOCRATES website</a>.</p>
+        </div>
       </div>
     </div><!--/#wrapper -->
     <aside id="sidebar">
@@ -79,12 +88,16 @@
           </div>
           <div class="item v">
             <div class="circle"></div>
-            <span>Visualization</span>
+            <span>Exploration</span>
           </div>
         </div>
+        <div id="next-buttons">
+          <p>Continue to work on</p>
+          <a href="#" class="button" data-type="a">Analysis</a> or <a href="#" class="button" data-type="v">Exploration</a>
+        </div>
         <div class="type-instructions visualization">
-          <h2>Visualization</h2>
-            <div class="sub mod">
+          <h2>Exploration</h2>
+            <div data-type="visualization" class="sub mod">
               Choose a module <span class="chosen"></span>
               <div class="sub fn">
                 Choose a function <span class="chosen"></span>
@@ -94,7 +107,7 @@
         </div>
         <div class="type-instructions analysis">
           <h2>Analysis</h2>
-            <div class="sub mod">
+            <div data-type="analysis" class="sub mod">
               Choose a module <span class="chosen"></span>
               <div class="sub fn">
                 Choose a function <span class="chosen"></span>
@@ -104,7 +117,7 @@
         </div>
         <div class="type-instructions collection">
           <h2>Collection</h2>
-            <div class="sub mod">
+            <div data-type="collection" class="sub mod">
               Choose a module <span class="chosen"></span>
               <div class="sub fn">
                 Choose a function <span class="chosen"></span>
@@ -116,7 +129,7 @@
 
         <div id="forms">
         </div>
-
+        
       </div><!--/.inner -->
       
     </aside>
