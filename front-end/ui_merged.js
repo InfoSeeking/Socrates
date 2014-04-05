@@ -204,6 +204,7 @@ function showResults(data, type){
   var h2 = box.find("h2");
   if(type == "collection"){
     curRefId = data["reference_id"];
+    $("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
     h2.html("Collection Data");
     box.append(createTable(type, data));
     box.append(showAllDataBtn().attr("data-type", "collection"));
@@ -370,6 +371,10 @@ $.ajax({
             success : function(data, stat, jqXHR){
               console.log("Operator output:");
               console.log(data);
+              if(data.hasOwnProperty("error")){
+                showError(data.message);
+                return;
+              }
               showResults(data, type);
               if(params['showAllData']){
                 //then this can be put in cache
@@ -432,7 +437,7 @@ $.ajax({
     })
     showType("collection"); //initially show collection
 
-    test();
+    //test();
 
   }
 });
@@ -502,3 +507,22 @@ function test(){
 
 
 $("#last-modified").html("Page last updated on " + document.lastModified);
+
+
+var page = "default";
+$("#settings-btn").click(function(){
+  if(page == "settings"){
+    page = "default";
+    //go back
+    $(this).html("Settings");
+    $(".screen").hide();
+    $(".screen.default").show();
+  }
+  else{
+    $(this).html("Back");
+    page = "settings";
+    $(".screen").hide();
+    $(".screen.settings").show();
+  }
+});
+

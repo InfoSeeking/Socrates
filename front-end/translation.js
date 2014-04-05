@@ -69,10 +69,10 @@ var TRANS = (function(){
 						var index = parseInt(match[1]);
 						field = match[2];
 						if(!working_set.hasOwnProperty("analysis") || !working_set["analysis"][index]["entry_analysis"].hasOwnProperty(field)){
-							throw "Reference to analysis field " + field + " does not exist";
+							throw "Reference to analysis field '" + field + "' does not exist";
 						}
 						if(getType(working_set['analysis'][index]['entry_meta'][field]) != typ){
-							throw "Reference to analysis field " + field + " is not of type " + typ;
+							throw "Reference to analysis field '" + field + "' is not of type " + typ;
 						}
 						//clone the entry analysis array over to the param
 						value = working_set['analysis'][index]['entry_analysis'][field].slice(0);
@@ -82,11 +82,11 @@ var TRANS = (function(){
 						console.log("In field reference");
 						if(working_set["data"].length > 0){
 							if(!working_set["data"][0].hasOwnProperty(field)){	
-								throw "Reference to analysis field " + field + " does not exist";
+								throw "Reference to data field '" + field + "' does not exist";
 							}
 							if(getType(working_set["meta"][field]) != typ){
 								//we cannot reference a field of this type
-								throw "Reference to data field " + field + " is not of type " + typ;
+								throw "Reference to data field '" + field + "' is not of type " + typ;
 							}
 							for(var i = 0; i < working_set["data"].length; i++){
 								value.push(working_set["data"][i][field]);

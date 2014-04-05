@@ -283,7 +283,7 @@ form .row .comment .optional{
 }
 
 #last-modified{
-	position: absolute;
+	position: fixed;
 	left: 10px;
 	bottom: 5px;
 	color: #FFF;
@@ -297,6 +297,29 @@ form .row .comment .optional{
 	padding: 2px;
 	border-radius: 4px;
 	cursor: pointer;
+}
+
+#feedback{
+	font-size: 18px;
+	padding: 5px 10px;
+	margin-bottom: 5px;
+	background: #999999;
+	display: none;
+}
+#feedback.err{
+	background: #ED5151
+}
+#feedback.suc{
+	background: #4FB52A;
+}
+.screen.settings{
+	display: none;
+}
+.screen.default{
+	display: block;
+}
+#download-json{
+	display: none;
 }
 /*
 screws up visualization for some reason

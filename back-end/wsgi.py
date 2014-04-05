@@ -18,6 +18,14 @@ app = Flask(__name__)
 def getSpecs():
 	return json.dumps(SO.getSpecs())
 
+@app.route("/fetch/<refID>", methods=['GET', 'POST'])
+@crossdomain(origin='*')
+def fetchData(refID):
+	working_set = db.collectionData.find_one({"_id" : ObjectId(refID)})
+	del working_set['_id']
+	working_set['reference_id'] = str(refID)
+	return json.dumps(working_set) + "\n"
+
 @app.route("/download", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def getData():

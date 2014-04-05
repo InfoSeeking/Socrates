@@ -23,7 +23,7 @@ var VIS = (function(){
 				callback.call();
 			}
 			catch(e){
-				console.log("Exception: " + e);
+				showError("Error: " + e);
 			}
 		});
 	};
@@ -68,6 +68,9 @@ var VIS = (function(){
 		var values = param['field'];
 		console.log(values);
 		var num_splits = parseInt(param['num_splits'], 10);
+		if(num_splits <= 0){
+			throw "num_splits must be positive";
+		}
 		var max = values[0];
 		var min = values[0];
 		var w = 500, h = 200;

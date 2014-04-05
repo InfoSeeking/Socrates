@@ -76,60 +76,67 @@
     <aside id="sidebar">
       <h1>Socrates</h1>
       <div class="inner">
+        <div id="feedback" class="err">Hello there</div>
         <div id="ref">Reference ID: <b></b></div>
         <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
         <div class="ruler"></div>
-        <div id="topbar">
-          <div class="active item c">
-            <div class="circle"></div>
-            <span>Collection</span>
-          </div>
-          <div class="item a">
-            <div class="circle"></div>
-            <span>Analysis</span>
-          </div>
-          <div class="item v">
-            <div class="circle"></div>
-            <span>Exploration</span>
-          </div>
+        <div class="screen settings">
+          <h2>Download</h2>
+          <a id="download-json" href="#" target="_blank" class="button">Download Working Set (JSON)</a>
         </div>
-        <div id="next-buttons">
-          <p>Continue to work on</p>
-          <a href="#" class="button" data-type="a">Analysis</a> or <a href="#" class="button" data-type="v">Exploration</a>
-        </div>
-        <div class="type-instructions visualization">
-          <h2>Exploration</h2>
-            <div data-type="visualization" class="sub mod">
-              Choose a module <span class="chosen"></span>
-              <div class="sub fn">
-                Choose a function <span class="chosen"></span>
-              </div>
+        <div class="screen default">
+          <div id="topbar">
+            <div class="active item c">
+              <div class="circle"></div>
+              <span>Collection</span>
             </div>
-            <div class="modules"></div><div class="functions"></div>
-        </div>
-        <div class="type-instructions analysis">
-          <h2>Analysis</h2>
-            <div data-type="analysis" class="sub mod">
-              Choose a module <span class="chosen"></span>
-              <div class="sub fn">
-                Choose a function <span class="chosen"></span>
-              </div>
+            <div class="item a">
+              <div class="circle"></div>
+              <span>Analysis</span>
             </div>
-            <div class="modules"></div><div class="functions"></div>
-        </div>
-        <div class="type-instructions collection">
-          <h2>Collection</h2>
-            <div data-type="collection" class="sub mod">
-              Choose a module <span class="chosen"></span>
-              <div class="sub fn">
-                Choose a function <span class="chosen"></span>
-              </div>
+            <div class="item v">
+              <div class="circle"></div>
+              <span>Exploration</span>
             </div>
-            <div class="modules"></div><div class="functions"></div>
-        </div>
-        <div class="ruler"></div>
-
-        <div id="forms">
+          </div>
+          <div id="next-buttons">
+            <p>Continue to work on</p>
+            <a href="#" class="button" data-type="a">Analysis</a> or <a href="#" class="button" data-type="v">Exploration</a>
+          </div>
+          <div class="type-instructions visualization">
+            <h2>Exploration</h2>
+              <div data-type="visualization" class="sub mod">
+                Choose a module <span class="chosen"></span>
+                <div class="sub fn">
+                  Choose a function <span class="chosen"></span>
+                </div>
+              </div>
+              <div class="modules"></div><div class="functions"></div>
+          </div>
+          <div class="type-instructions analysis">
+            <h2>Analysis</h2>
+              <div data-type="analysis" class="sub mod">
+                Choose a module <span class="chosen"></span>
+                <div class="sub fn">
+                  Choose a function <span class="chosen"></span>
+                </div>
+              </div>
+              <div class="modules"></div><div class="functions"></div>
+          </div>
+          <div class="type-instructions collection">
+            <h2>Collection</h2>
+              <div data-type="collection" class="sub mod">
+                Choose a module <span class="chosen"></span>
+                <div class="sub fn">
+                  Choose a function <span class="chosen"></span>
+                </div>
+              </div>
+              <div class="modules"></div><div class="functions"></div>
+          </div>
+          <div class="ruler"></div>
+          
+          <div id="forms">
+          </div>
         </div>
         
       </div><!--/.inner -->
