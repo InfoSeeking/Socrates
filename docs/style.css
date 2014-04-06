@@ -1,0 +1,27 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+#container{
+	width: 800px;
+	margin: 10px auto;
+}
+ul{
+	padding-left: 1.5em;
+	margin: 1em 0;
+}
+h2{
+	margin-top: 20px;
+}
+h1,h2,h3,h4,h5,h6,ul{
+	font-family: "Alegreya Sans";
+}
+h2{
+	background: #00aeef;
+	color: #FFF;
+	padding: 10px;
+	
+}
+p{
+	margin: 1em 0;
+}
