@@ -20,6 +20,7 @@
 - polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
 - add API limits to meta of module specifications, this should facilitate campaign creation later
 - Add mod_wsgi and integrate flask with apache
+- Add median to stats
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
@@ -33,6 +34,7 @@
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
 - When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw_search)
 - Total for word count is undefined [3/5/2014 fixed]
+
 
 #Packages Installed
 - rauth (https://github.com/reddit/reddit/wiki/OAuth2-Python-Example)

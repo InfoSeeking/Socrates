@@ -1,6 +1,18 @@
 var curRefId = null;
 var curChooser = null;//current field chooser
+var sidebar = "default";
 
+/*
+show overlay with html and center
+*/
+function overlay(html, classname, title){
+  $("#overlay span").html(title).removeClass().addClass(classname);
+  $("#overlay .content").empty().html(html);
+  $("#overlay").fadeIn();
+}
+/*
+toggle loader
+*/
 function tLoad(val){
   if(val){
     $("#loader").show();
@@ -12,9 +24,10 @@ function tLoad(val){
 
 $("#overlay .close").on("click", function(){
   $("#overlay").hide();
-})
+});
 
 /*
+Shows the overlay with a table of your data. (can be collection only, collection + single analysis, or collection + every analysis)
 index only necessary if it is an analysis type
 */
 function showAllData(working_set, typ, index){
@@ -72,8 +85,8 @@ function showAllData(working_set, typ, index){
   }
 
   //now add rows
-  $("#overlay table").empty().append(thead).append(tbody);
-  $("#overlay").fadeIn();
+  var html = $("<table></table>").empty().append(thead).append(tbody);
+  overlay(html, "data", "Your Data");
 }
 
 function handleDataButton(e){
@@ -95,8 +108,6 @@ function handleDataButton(e){
 function showAllDataBtn(){
   return $("<a href='#' class='button'>Show All of this Data</a>").on("click", handleDataButton);
 }
-
-$("#showAllData").on("click", handleDataButton);
 
 function showType(type){
   $(".type-instructions").hide();
@@ -186,10 +197,12 @@ function createBox(type, index){
   return $("<div class='results " + type + "'><div class='bar'><h2></h2></div></div>");
 }
 
-var first = true;
-function showResults(data, type){
-  if(first){
-    first = false;
+/*
+  Given the working_set, it will create a new box for the most recently created data.
+*/
+function showResults(working_set, type){
+  if(showResults.first){
+    showResults.first = false;
     $("#workspace #intro").detach();
     $("#workspace").isotope({
       itemSelector: '.results', 
@@ -198,77 +211,117 @@ function showResults(data, type){
   }
   //if type is collection, add collection data
   //if type is analysis, add most recent analysis
-  console.log("Showing results");
-  $("#ref b").html(data.reference_id);
   var box = createBox(type);
   var h2 = box.find("h2");
   if(type == "collection"){
-    curRefId = data["reference_id"];
+    curRefId = working_set["reference_id"];
     $("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
     h2.html("Collection Data");
-    box.append(createTable(type, data));
+    box.append(createTable(type, working_set));
     box.append(showAllDataBtn().attr("data-type", "collection"));
   }
   else if(type == "analysis"){
     h2.html("Analysis Data");
-    box.append(createTable(type, data));
-    var curIndex = data["analysis"].length - 1;
-    if(data["analysis"][curIndex].hasOwnProperty("entry_meta")){
+    box.append(createTable(type, working_set));
+    var curIndex = working_set["analysis"].length - 1;
+    if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
       //show all data button
       box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
     }
   }
   $("#workspace").isotope('insert' , box);
 }
+showResults.first = true;
 
 /*
 data should be an object containing fields
 fields can either be strings or objects
+ordering is an array of the field names (optional)
 */
-function genForm(data, type){
+function genForm(data, type, ordering){
   var form = $("<form></form>");
   if(type == "analysis" || type == "visualization"){
     //add reference to database
     //form.append("<div class='row'><label>Reference ID</label><input type='text' class='toSend' name='reference_id'/></div>");
   }
-  for(var p in data){
+  if(!ordering){
+    //get the keys from data
+    ordering = [];
+    for(var p in data){
+      if(data.hasOwnProperty(p)){
+        ordering.push(p);
+      }
+    }
+  }
+  console.log(ordering);
+  for(var n = 0; n < ordering.length; n++){
+    var p = ordering[n];
     if(!data.hasOwnProperty(p)){continue;}
-    //For now, just make them all text fields. This will obviously be changed later.
+    if(type=="collection")
+      console.log(p);
+    var row = $("<div class='row'></div>");
+    var input = null;
     var inputType = "text";
     var fieldType = "";
     var extra = "";
     if(typeof(data[p]) == "string"){
       fieldType = data[p];
-      if(data[p] == "numeric"){
-        inputType = "number";
-      }
     }
     else if(typeof(data[p] == "object")){
       fieldType = data[p].type;
-      if(data[p].type == "numeric"){
-        inputType = "number";
-      }
-      var optional = "";
-      if(data[p].hasOwnProperty("optional") && data[p]["optional"]){
-        optional = "<span class='optional'>(optional) </span>";
-      }
-      if(data[p].hasOwnProperty("comment")){
-        extra += "<p class='comment'>" + optional + data[p]['comment'] + "</p>"
-      }
-      else{
-        extra += "<p class='comment'>" + optional + "</p>";
-      }
     }
-    var input = "";
+    switch(fieldType){
+      case "numeric":
+      input = $("<input type='number' />");
+      break;
+      case "boolean":
+      input = $("<select><option value='true'>True</option><option value='false'>False</option></select>");
+      break;
+      default:
+      input = $("<input type='text' />");
+      break;
+    }
     var fr = /^field_reference\s+(\w+)$/i;
     var match = fr.exec(fieldType);
     if(match){
-      input = "<input type='hidden' class='toSend' name='" + p + "'/><span class='fieldChooser' data-fieldtype='" + match[1] + "'>Choose a Field</span>";
+      input = $("<input type='hidden'/><span class='fieldChooser' data-fieldtype='" + match[1] + "'>Choose a Field</span>");
     }
-    else{
-      input = "<input class='toSend' type='" + inputType + "' step='any' name='" + p + "'/>";
+
+    if(typeof(data[p] == "object")){
+      //check other options
+      var hasComment = false;
+      var comment = $("<p class='comment'></p>");
+      var optional = "";
+      if(data[p].hasOwnProperty("optional") && data[p]["optional"]){
+        hasComment = true;
+        comment.append("<span class='optional'>(optional) </span>");
+      }
+      if(data[p].hasOwnProperty("comment")){
+        hasComment = true;
+        comment.append(data[p]["comment"]);
+      }
+      if(hasComment){
+        row.append(comment);
+      }
+      if(data[p].hasOwnProperty("constraints")){
+        if(data[p].constraints.hasOwnProperty("choices")){
+          var choices = data[p].constraints.choices;
+          //create select field
+          input = $("<select></select>");
+          for(var i = 0; i < choices.length; i++){
+            input.append("<option value='" + choices[i] + "'>" + choices[i] + "</option>");
+          }
+        }
+      }
+      if(data[p].hasOwnProperty("default")){
+          //only works for text/numeric fields right now, create a new method to set value
+          input.val(data[p]["default"]);
+      }
     }
-    form.append("<div class='row'><label>" + p + "</label>" + input + extra + "</div>");
+
+    input.addClass("toSend").attr("name", p);
+    row.prepend(input).prepend("<label>" + p + "</label>");//use prepend in case comments were added
+    form.append(row);
   }
   form.append("<input type='submit' class='button' />");
   return form;
@@ -282,219 +335,257 @@ function showFields(type){
   }
 }
 
-$.ajax({
-  url: CFG.host + "/specs",
-  dataType: "json",
-  type: "POST",
-  success : function(data, stat, jqXHR){
-    console.log(data);
-    //Add Visualization specs
-    data.visualization = VIS.specs;
-    /*
-    - generate the forms
-    - attach event listeners
-    */
-
-    //generate all forms
-    var types = ["analysis", "collection", "visualization"];
-    for(var i = 0; i < types.length; i++){
-      var type = types[i];
-      for(var mod in data[type]){
-        if(!data[type].hasOwnProperty(mod)){
-          continue;
-        }
-        //make top level button for module
-        $(".type-instructions." + type + " .modules").append("<button class='button' href='#' data-type='" + type + "' data-mod='" + mod + "'>" + mod + "</button>")
-        var fns = data[type][mod].functions;
-        for(var fn in fns){
-          if(!fns.hasOwnProperty(fn)){
+/*
+Get all specs, build forms, set up event listeners
+*/
+function init(){
+  tLoad(true);
+  $.ajax({
+    url: CFG.host + "/specs",
+    dataType: "json",
+    type: "POST",
+    success : function(data, stat, jqXHR){
+      tLoad(false);
+      console.log(data);
+      //Add Visualization specs
+      data.visualization = VIS.specs;
+      /*
+      - generate the forms
+      - attach event listeners
+      */
+      //generate all forms
+      var types = ["analysis", "collection", "visualization"];
+      for(var i = 0; i < types.length; i++){
+        var type = types[i];
+        for(var mod in data[type]){
+          if(!data[type].hasOwnProperty(mod)){
             continue;
           }
-          var dom_form = $("<div class='function' data-type='" + type + "' data-fn='" + fn + "' data-mod='" + mod + "'></div>");
-          dom_form.append("<h4>" + fn + "</h4>");
-          dom_form.append(genForm(fns[fn].param, type));
-          //make sub level button for functio
-          $(".type-instructions." + type + " .functions").append("<button class='button' href='#' data-type='" + type + "' data-fn='" + fn + "' data-mod='" + mod + "'>" + fn + "</button>")
-          $("#forms").append(dom_form);
+          //make top level button for module
+          $(".type-instructions." + type + " .modules").append("<button class='button' href='#' data-type='" + type + "' data-mod='" + mod + "'>" + mod + "</button>");
+          var fns = data[type][mod].functions;
+          for(var fn in fns){
+            if(!fns.hasOwnProperty(fn)){
+              continue;
+            }
+            var dom_form = $("<div class='function' data-type='" + type + "' data-fn='" + fn + "' data-mod='" + mod + "'></div>");
+            dom_form.append("<h4>" + fn + "</h4>");
+            dom_form.append(genForm(fns[fn].param, type, fns[fn].param_order));
+            //make sub level button for functio
+            $(".type-instructions." + type + " .functions").append("<button class='button' href='#' data-type='" + type + "' data-fn='" + fn + "' data-mod='" + mod + "'>" + fn + "</button>")
+            $("#forms").append(dom_form);
+          }
         }
       }
+
+      //add listeners on submission
+      $(".function form").on("submit", function(e){0
+        e.preventDefault();
+        var form = $(this),
+            div = form.parent(),
+            inputs = form.find("input.toSend"),
+            selects = form.find("select.toSend"),
+            type = div.attr("data-type"),
+            mod = div.attr("data-mod"),
+            fn = div.attr("data-fn"),
+            params = {};
+        $(this).parent().hide();
+        $(".type-instructions").hide();
+        $(".topbar .item").removeClass("active");
+        //show next steps
+        $("#next-buttons").fadeIn()
+        //show analysis/visualization buttons
+        
+
+
+        params['returnAllData'] = $("#allData").prop("checked") ? "true" : "false";
+        if((type == "analysis" || type == "visualization") && curRefId != null){
+          //add current reference id
+          params["reference_id"] = curRefId;
+        }
+        for(var i = 0; i < inputs.size(); i++){
+          var inp = $(inputs.get(i));
+          params[inp.attr("name")] = inp.val();
+        }
+        for(var i = 0; i < selects.size(); i++){
+          var sel = $(selects.get(i));
+          params[sel.attr("name")] = sel.val();
+        }
+        console.log("Sending with params: ");
+        console.log(params);
+        //ajax call
+        if(type == "visualization"){
+          var b = createBox('visualization');
+          b.find("h2").html("Exploration Results");
+          VIS.callFunction(b[0], mod, fn, params,
+            function(){
+              $("#workspace").isotope("insert", b);
+                //Code "borrowed" from http://stackoverflow.com/questions/8973711/export-an-svg-from-dom-to-file
+                // Add some critical information
+                var svg = b.find("svg");
+                svg.attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+                var svg = '<svg>' + svg.html() + '</svg>';
+                var b64 = btoa(svg); // or use btoa if supported
+                // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
+                b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>"));
+            });
+        }
+        else{
+          tLoad(true);
+          //clear cache
+          working_set_cache = null;
+           $.ajax({
+              url: CFG.host + "/op/" + type + "/" + mod + "/" + fn,
+              dataType: "json",
+              type: "POST",
+              data: params,
+              success : function(data, stat, jqXHR){
+                console.log("Operator output:");
+                console.log(data);
+                if(data.hasOwnProperty("error")){
+                  showError(data.message);
+                  return;
+                }
+                showResults(data, type);
+                if(params['showAllData']){
+                  //then this can be put in cache
+                  working_set_cache = data;
+                }
+                //if this was a collection type, show output meta and move onto analysis stage
+                //if this was an analysis type, show output and additional analysis options
+              },
+              complete: function(jqXHR, stat){
+                console.log("Complete: " + stat);
+                tLoad(false);
+              }
+            });
+        }
+       
+      });
+      //add listeners for buttons (selects #collection a, #analysis a, etc.)
+      $(".type-instructions .modules .button").on("click", function(e){
+        e.preventDefault();
+        //hide all sub menus and forms
+        var a = $(this),
+            type = a.attr("data-type"),
+            mod = a.attr("data-mod");
+        var typ = $(".type-instructions." + type);
+        typ.find(".mod > .chosen").html(mod);
+        typ.find(".fn").fadeIn();
+        $(".type-instructions .button, #forms .function").hide();
+        typ.find(".functions .button[data-type=" + type + "][data-mod=" + mod + "]").fadeIn();
+      });
+      $(".type-instructions .functions .button, .type-instructions .sub.fn").on("click", function(e){
+        e.preventDefault();
+        var a = $(this),
+            type = a.attr("data-type"),
+            mod = a.attr("data-mod"),
+            fn = a.attr("data-fn");
+        $(".type-instructions." + type + " .fn > .chosen").html(fn);
+        //hide sub menu and forms
+        $(".type-instructions .functions .button, #forms .function").hide();
+        $("#forms .function[data-type=" + type + "][data-mod=" + mod + "][data-fn=" + fn + "]").fadeIn();
+      });
+
+      $(".fieldChooser").click(function(){
+        var fType = $(this).attr("data-fieldtype");
+        curChooser = $(this);
+        showFields(fType);
+      });
+
+      $("#workspace").delegate(".field.option", "click" ,function(){
+        if(curChooser != null){
+          //set input
+          var type = $(this).attr('data-type');
+          var finalStr = $(this).html();
+          curChooser.html(finalStr);
+          if(type == "analysis"){
+            finalStr = "analysis[" + $(this).attr("data-index") + "]." + finalStr; 
+          }
+          curChooser.siblings("input").val(finalStr);
+          showFields(null);
+        }
+      })
+      showType("collection"); //initially show collection
+
+      //test();
+
     }
+  });
 
-    //add listeners on submission
-    $(".function form").on("submit", function(e){0
-      e.preventDefault();
-      var form = $(this),
-          div = form.parent(),
-          inputs = form.find("input.toSend"),
-          type = div.attr("data-type"),
-          mod = div.attr("data-mod"),
-          fn = div.attr("data-fn"),
-          params = {};
-      $(this).parent().hide();
-      $(".type-instructions").hide();
-      $(".topbar .item").removeClass("active");
-      //show next steps
-      $("#next-buttons").fadeIn()
-      //show analysis/visualization buttons
-      
-
-
-      params['returnAllData'] = $("#allData").prop("checked") ? "true" : "false";
-      if((type == "analysis" || type == "visualization") && curRefId != null){
-        //add current reference id
-        params["reference_id"] = curRefId;
-      }
-      for(var i = 0; i < inputs.size(); i++){
-        var inp = $(inputs.get(i));
-        params[inp.attr("name")] = inp.val();
-      }
-      console.log(params);
-      //ajax call
-      if(type == "visualization"){
-        $("#vis").empty();
-        var b = createBox('visualization');
-        b.find("h2").html("Exploration Results");
-
-        VIS.callFunction(b[0], mod, fn, params,
-          function(){
-            $("#workspace").isotope("insert", b);
-          });
-      }
-      else{
-        //clear cache
-        working_set_cache = null;
-         $.ajax({
-            url: CFG.host + "/op/" + type + "/" + mod + "/" + fn,
+  $("#download").click(function(e){
+    e.preventDefault();
+    $("#view textarea, #view #close").fadeIn();
+    $.ajax({
+            url: CFG.host + "/download",
             dataType: "json",
             type: "POST",
-            data: params,
+            data: {'reference_id': $("#view #refID").val(), 'returnAllData': "true"},
             success : function(data, stat, jqXHR){
-              console.log("Operator output:");
               console.log(data);
-              if(data.hasOwnProperty("error")){
-                showError(data.message);
-                return;
-              }
-              showResults(data, type);
-              if(params['showAllData']){
-                //then this can be put in cache
-                working_set_cache = data;
-              }
-              //if this was a collection type, show output meta and move onto analysis stage
-              //if this was an analysis type, show output and additional analysis options
+              working_set_cache = data;
+              $("#view textarea").html(JSON.stringify(data));
             },
-            complete: function(jqXHR, stat){
-              console.log("Complete: " + stat);
-            }
-          });
-      }
-     
-    });
-    //add listeners for buttons (selects #collection a, #analysis a, etc.)
-    $(".type-instructions .modules .button").on("click", function(e){
-      e.preventDefault();
-      //hide all sub menus and forms
-      var a = $(this),
-          type = a.attr("data-type"),
-          mod = a.attr("data-mod");
-      var typ = $(".type-instructions." + type);
-      typ.find(".mod > .chosen").html(mod);
-      typ.find(".fn").fadeIn();
-      $(".type-instructions .button, #forms .function").hide();
-      typ.find(".functions .button[data-type=" + type + "][data-mod=" + mod + "]").fadeIn();
-    });
-    $(".type-instructions .functions .button, .type-instructions .sub.fn").on("click", function(e){
-      e.preventDefault();
-      var a = $(this),
-          type = a.attr("data-type"),
-          mod = a.attr("data-mod"),
-          fn = a.attr("data-fn");
-      $(".type-instructions." + type + " .fn > .chosen").html(fn);
-      //hide sub menu and forms
-      $(".type-instructions .functions .button, #forms .function").hide();
-      $("#forms .function[data-type=" + type + "][data-mod=" + mod + "][data-fn=" + fn + "]").fadeIn();
-    });
+        });
+  });
+  $("#close").click(function(e){
+    e.preventDefault();
+    $(this).fadeOut();
+    $("#view textarea").fadeOut();
+  })
 
-    $(".fieldChooser").click(function(){
-      var fType = $(this).attr("data-fieldtype");
-      curChooser = $(this);
-      showFields(fType);
-    });
-
-    $("#workspace").delegate(".field.option", "click" ,function(){
-      console.log("HERE");
-      if(curChooser != null){
-        //set input
-        var type = $(this).attr('data-type');
-        var finalStr = $(this).html();
-        curChooser.html(finalStr);
-        if(type == "analysis"){
-          finalStr = "analysis[" + $(this).attr("data-index") + "]." + finalStr; 
-        }
-        curChooser.siblings("input").val(finalStr);
-        showFields(null);
-      }
-    })
-    showType("collection"); //initially show collection
-
-    //test();
-
-  }
-});
-
-$("#download").click(function(e){
-  e.preventDefault();
-  $("#view textarea, #view #close").fadeIn();
-  $.ajax({
-          url: CFG.host + "/download",
-          dataType: "json",
-          type: "POST",
-          data: {'reference_id': $("#view #refID").val(), 'returnAllData': "true"},
-          success : function(data, stat, jqXHR){
-            console.log(data);
-            working_set_cache = data;
-            $("#view textarea").html(JSON.stringify(data));
-          },
-      });
-});
-$("#close").click(function(e){
-  e.preventDefault();
-  $(this).fadeOut();
-  $("#view textarea").fadeOut();
-})
-
-$("#topbar .c").click(function(){
-  showType("collection");
-  $("#topbar .item").removeClass("active");
-  $(this).addClass("active");
-});
-$("#topbar .a").click(function(){
-  showType("analysis");
-  $("#topbar .item").removeClass("active");
-  $(this).addClass("active");
-});
-$("#topbar .v").click(function(){
-  showType("visualization");
-  $("#topbar .item").removeClass("active");
-  $(this).addClass("active");
-})
+  $("#topbar .c").click(function(){
+    showType("collection");
+    $("#topbar .item").removeClass("active");
+    $(this).addClass("active");
+  });
+  $("#topbar .a").click(function(){
+    showType("analysis");
+    $("#topbar .item").removeClass("active");
+    $(this).addClass("active");
+  });
+  $("#topbar .v").click(function(){
+    showType("visualization");
+    $("#topbar .item").removeClass("active");
+    $(this).addClass("active");
+  })
 
 
-$(".sub.mod, .sub.fn").on("click", function(){
-  $(this).find(".chosen").html("");
-  showType($(this).attr("data-type"));
-  $("#topbar .item").removeClass("active");
-  $("#topbar .item.c").addClass("active");
-});
+  $(".sub.mod, .sub.fn").on("click", function(){
+    $(this).find(".chosen").html("");
+    showType($(this).attr("data-type"));
+    $("#topbar .item").removeClass("active");
+    $("#topbar .item.c").addClass("active");
+  });
 
-$("#next-buttons .button").on("click", function(){
-  if($(this).attr("data-type") == "a"){
-    showType('analysis');
-  }
-  else{
-    showType('visualization');
-  }
-});
+  $("#next-buttons .button").on("click", function(){
+    if($(this).attr("data-type") == "a"){
+      showType('analysis');
+    }
+    else{
+      showType('visualization');
+    }
+  });
+
+  $("#last-modified").html("Page last updated on " + document.lastModified);
+
+  $("#settings-btn").click(function(){
+    if(sidebar == "settings"){
+      sidebar = "default";
+      //go back
+      $(this).html("Settings");
+      $(".screen").hide();
+      $(".screen.default").show();
+    }
+    else{
+      $(this).html("Back");
+      sidebar = "settings";
+      $(".screen").hide();
+      $(".screen.settings").show();
+    }
+  });
+  $("#showAllData").on("click", handleDataButton);
+}
 
 
 function test(){
@@ -505,24 +596,4 @@ function test(){
   f.find("form").submit()
 }
 
-
-$("#last-modified").html("Page last updated on " + document.lastModified);
-
-
-var page = "default";
-$("#settings-btn").click(function(){
-  if(page == "settings"){
-    page = "default";
-    //go back
-    $(this).html("Settings");
-    $(".screen").hide();
-    $(".screen.default").show();
-  }
-  else{
-    $(this).html("Back");
-    page = "settings";
-    $(".screen").hide();
-    $(".screen.settings").show();
-  }
-});
-
+$(document).ready(init);

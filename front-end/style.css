@@ -248,6 +248,8 @@ form .row .comment .optional{
 }
 
 #overlay{
+	min-width: 100%;
+	min-height: 100%;
 	position: absolute;
 	z-index: 10;
 	top: 0px;
@@ -255,12 +257,16 @@ form .row .comment .optional{
 	display: none;
 	background: rgba(0,0,0,.9);
 }
+#overlay h2{
+	position: relative;
+	left: 10px;
+}
 #overlay table{
 	margin-top: 10px;
 }
 #overlay .close{
 	position: absolute;
-	right: 10px;
+	right: 20px;
 	color: #0195cc;
 }
 

@@ -6,6 +6,7 @@ var CFG = {
 };
 var fbTimer = null;
 var working_set_cache = null;
+
 //useful functions
 function getWorkingSet(refID, callback){
 	//check if cached
@@ -26,11 +27,6 @@ function getWorkingSet(refID, callback){
 			},
 		});
 	}
-}
-
-//index is optional offset if the field is a per-entry field
-function getFieldFromData(field, working_set, index){
-
 }
 
 function showError(message){

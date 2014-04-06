@@ -9,9 +9,12 @@ import os
 #import simplejson
 #import MySQLdb
 
+
 SPECS = {
     'functions': {
             'tw_search' : {
+                #as a workaround for Python's reordering of dictionary keys (instead of making things even more verbose) I think the best option is to specify ordering
+                'param_order': ['query', 'count', 'lang', 'latitude', 'longitude', 'radius'],
                 'param' : {
                     'query': {
                         'type': 'text',
@@ -20,7 +23,7 @@ SPECS = {
                     'count': {
                         'type': 'numeric',
                         'comment': 'Number of results',
-                        'default': 5
+                        'default': 10
                     },
                     'lang': {
                         'type': 'text',
