@@ -1,3 +1,7 @@
+#SOCRATES
+This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
+
+#Quick Notes
 - Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
 - Fields defined in the specs for parameters and return values can be either strings or objects
 
