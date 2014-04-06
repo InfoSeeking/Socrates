@@ -1,21 +1,9 @@
 #Next steps for Front-End
-- Clean up ui_merged.js
-- [done? may still be unchecked errors] Check for errors in forms/back-end and output accordingly
-- Add better inputs:
-	[done] + field selection...
-	+ constraints for choices should be dropdown menus
-- [done] Add intro text
-- [done] Add buttons for going to vis/analysis after, disallow multiple collections for a single working set, allow to go back and forth
 - Add ability to have multiple working sets
 - Add settings menu
-	+ download working set
 	+ show all of working set (except visualization)
 - Add ability to manage multiple working sets/have users
-- [done] Add pagination on collection/analysis sample data (or show overlay of table of data)
-- [done] Change visualization to exploration
-- Save visualization data
+- Save visualization data to working set
 - Add info on entry vs aggregate data
-- Auto fill default
-- [done] Add negative range to scatter plot
-- [done] Add last modified date
 - Add options to name your analyses, visualizations, and working_set
+- Add top bar to workspace when allowing multiple working_sets

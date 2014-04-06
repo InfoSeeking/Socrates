@@ -19,10 +19,24 @@ import urllib
 SPECS = {
     "functions": {
         "search" : {
+            "param_order" : ["query", "time", "orderby"],
             "param" : {
                 "query" : {
                     "type" : "text",
                     "comment" : "The query for the YouTube search"
+                },
+                "time" : {
+                    "type" : "text",
+                    "comment" : "Time video was published",
+                    "constraints":{
+                        "choices" : ["all_time", "this_month", "this_week", "today"]
+                    }
+                },
+                "orderby" :{
+                    "type" : "text",
+                    "constraints":{
+                        "choices" : ["relevance", "published", "viewCount", "rating"]
+                    }
                 }
             },
             "returns" : {
@@ -123,7 +137,7 @@ def ysearch(**kwargs):
 
 def search(param):
     query = param['query']
-    objs = ysearch(q=query, orderby="published", alt="json", v=2, time="today")
+    objs = ysearch(q=query, orderby=param["orderby"], alt="json", v=2, time=param['time'])
     #make objects a little nicer and flatter
     result = []
     for o in objs:

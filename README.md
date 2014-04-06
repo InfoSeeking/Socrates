@@ -1,30 +1,14 @@
 #SOCRATES
 This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
 
-#Quick Notes
-- Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
-- Fields defined in the specs for parameters and return values can be either strings or objects
+#Future Goals
+- Multiple working_sets and user based system
+- Integration of Flask into Apache
+- Many more modules
+- More documentation and video tutorials
 
-#Currently Working on
-- figure out how the modules will access and add/modify the working JSON [done]
-- add multiple analysis + aggregate [done]
-- separate translation.py on per module basis [done]
-- implement MongoDB [done]
-- get front-end working
-	+ Add validation of data
-	+ Add option to NOT download entire data set (not necessarily front-end problem) [done]
-- add ability to analyze on analysis fields [done]
-- add statistics analysis module [done]
-- migrate the modules from context miner [After looking at the scripts, since they heavily depend on MySQL, and I would have to code the bridge between python and PHP, I think it would be easier to recreate the scripts (Youtube, Flickr, Twitter)
-- add ability to get multiple sources for visualization modules (might be tricky)
-- add documentation
-- add ability to visualize on analysis fields (low priority, pretty much copy of back-end portion in JS)
-- make sure that errors are handled well in back-end, add logging
-- add ability to have objects and nested structures in data (objects within objects, arrays within objects, etc.)
-- polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
-- add API limits to meta of module specifications, this should facilitate campaign creation later
-- Add mod_wsgi and integrate flask with apache
-- Add median to stats
+#Example Use Cases:
+- Seeing sentiment vs. number of followers of tweets
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
@@ -34,6 +18,10 @@ This document primarily consists of development ideas. To get more information o
 	- Initial call, it should have a function run(param, working_set) which gets the data
 - Cache the working_set to reduce redundant downloading [done]
 
+#Quick Notes
+- Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
+- Fields defined in the specs for parameters and return values can be either strings or objects
+
 #Issues
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
 - When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw_search)
@@ -41,7 +29,6 @@ This document primarily consists of development ideas. To get more information o
 
 
 #Packages Installed
-- rauth (https://github.com/reddit/reddit/wiki/OAuth2-Python-Example)
 - PRAW (https://praw.readthedocs.org/en/latest/)
 - TextBlob http://textblob.readthedocs.org/en/latest/install.html
 - pymongo
@@ -50,14 +37,12 @@ This document primarily consists of development ideas. To get more information o
 #Data types for fields
 - numeric
 - text
-- date
+- date YYYY-MM-DD hh:mm:ss
 - array <data type (not array)>
 - boolean
 - geo (longitude,latitude)
 - field_reference <data type> (this is from an analysis module which requires a reference to a field)
 
-Each field can be appended with a comment starting with // for extra clarification of what it is.
-Possibly allow additional fields such as multidimensional arrays (if they will be useful, I'm not sure yet)
 
 
 #Analysis
