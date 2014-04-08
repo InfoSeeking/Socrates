@@ -45,7 +45,9 @@ SPECS = {
                 "url" : "text",
                 "date_uploaded" : "text",
                 "duration" : "numeric",
-                "views" : "numeric"
+                "views" : "numeric",
+                "num_likes" : "numeric",
+                "num_dislikes" : "numeric"
             }
         }
     }
@@ -156,7 +158,9 @@ def search(param):
             "url" : o["media$group"]["media$player"]["url"],
             "date_uploaded" : o["media$group"]["yt$uploaded"]["$t"],
             "duration" : float(o["media$group"]["yt$duration"]["seconds"]),
-            "views" : int(views)
+            "views" : int(views),
+            "num_likes" : int(o["yt$rating"]["numLikes"]),
+            "num_dislikes" : int(o["yt$rating"]["numDislikes"])
         }
         result.append(r)
     return result

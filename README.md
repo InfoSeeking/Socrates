@@ -9,6 +9,7 @@ This document primarily consists of development ideas. To get more information o
 
 #Example Use Cases:
 - Seeing sentiment vs. number of followers of tweets
+- Seeing the sentiment vs. word_count of the comments in Reddit (there actually is probably somewhat of a correlation)
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.

@@ -272,7 +272,7 @@ function genForm(data, type, ordering){
     }
     switch(fieldType){
       case "numeric":
-      input = $("<input type='number' />");
+      input = $("<input type='number' step='any'/>");
       break;
       case "boolean":
       input = $("<select><option value='true'>True</option><option value='false'>False</option></select>");

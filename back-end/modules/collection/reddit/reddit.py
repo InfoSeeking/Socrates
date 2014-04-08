@@ -1,6 +1,7 @@
 import json
 import praw
 import config
+import re
 from pprint import pprint
 
 SPECS = {
@@ -35,7 +36,13 @@ SPECS = {
 			'param': {
 				"submission_id" : {
 					"type" : "text",
-					"comment" : "ID of post"
+					"comment" : "ID of post (alternately use URL)",
+					"optional" : True
+				},
+				"submission_url" : {
+					"type" : "text",
+					"comment" : "URL of post (alternately use ID)",
+					"optional" : True
 				},
 				"onlyTop" : {
 					"type" : "boolean",
@@ -62,7 +69,16 @@ def _getPraw():
 def fetchComments(param):
 	r = _getPraw()
 	onlyTop = param['onlyTop']
-	submission_id = param['submission_id']
+	submission_id = param['submission_id'].strip()
+	submission_url = param['submission_url'].strip()
+	if(submission_id == ""):
+		if(submission_url == ""):
+			#TODO error handling in modules
+			return None
+		else:
+			match = re.match("http.*?//.*?/.*?/.*?/.*?/(.*?)/.*$", submission_url)
+			submission_id = match.group(1)
+			print ("Submission id: " + submission_id)
 	if type(onlyTop) is str:
 		if onlyTop == "true" or onlyTop == "True":
 			onlyTop = True

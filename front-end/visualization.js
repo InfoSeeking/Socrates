@@ -84,7 +84,7 @@ var VIS = (function(){
 		}
 		// A formatter for counts.
 		var formatCount = d3.format(",.0f");
-
+		var barwidth = w/num_splits;//x(data[0].dx);
 		var margin = {top: 10, right: 30, bottom: 30, left: 30};
 
 		var x = d3.scale.linear()

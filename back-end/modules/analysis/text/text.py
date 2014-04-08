@@ -91,3 +91,20 @@ def sentiment(working_set, param):
 			'subjectivity': subjectivities
 		}
 	}
+
+'''
+def spelling_confidence(working_set, param):
+	fieldVals = param['field']
+	ratio_misspelled = []
+	num_misspelled = []
+	for r in fieldVals:
+		post = TextBlob(r)
+		words = post.spellCheck()
+		n = 0
+		r = 0
+		for w in words:
+			if w[1] > .5:
+				n += 1
+
+
+'''
