@@ -37,7 +37,20 @@ SPECS = {
 				'polarity' : 'numeric',
 				'subjectivity': 'numeric'
 			}
-		}
+		},
+		# 'num_misspelled' : {
+		# 	'description' : 'Returns number of misspellings in text, WARNING: this takes a long time on a large dataset',
+		# 	'param' : {
+		# 		'field': {
+		# 			'type' : 'field_reference text',
+		# 			'comment': 'The text to check',
+		# 		}
+		# 	},
+		# 	'entry_result' : {
+		# 		'num_misspelled' : 'numeric',
+		# 		'ratio_misspelled': 'numeric'
+		# 	}
+		# }
 	}
 }
 
@@ -92,19 +105,29 @@ def sentiment(working_set, param):
 		}
 	}
 
-'''
-def spelling_confidence(working_set, param):
+
+def num_misspelled(working_set, param):
 	fieldVals = param['field']
 	ratio_misspelled = []
 	num_misspelled = []
 	for r in fieldVals:
 		post = TextBlob(r)
-		words = post.spellCheck()
+		words = post.words
 		n = 0
 		r = 0
 		for w in words:
-			if w[1] > .5:
+			suggestions = w.spellcheck()
+			#if first suggestion is off, assume incorrect words
+			if suggestions[0][0] != w:
 				n += 1
+		if(len(words) > 0	):
+			r = n / float(len(words))
+		ratio_misspelled.append(r)
+		num_misspelled.append(n)
 
-
-'''
+	return {
+		'entry_analysis' : {
+			'num_misspelled' : num_misspelled,
+			'ratio_misspelled' : ratio_misspelled
+		}
+	}

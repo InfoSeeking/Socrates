@@ -508,7 +508,7 @@ function init(){
       })
       showType("collection"); //initially show collection
 
-      //test();
+     // test();
 
     }
   });

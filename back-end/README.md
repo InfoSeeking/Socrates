@@ -6,7 +6,6 @@
 - add API limits to meta of module specifications, this should facilitate campaign creation later
 - Add mod_wsgi and integrate flask with apache
 - Add median to stats
-- Add operation module (sums, multiplication, etc.)
 - Allow any number of a certain parameter to be specified (will be represented as an array in Python)
-- Improved Youtube module to choose from specific time interval
 - Update Youtube with new v3 API (v2 is deprecated)
+- Num_misspellings takes a LONG time

@@ -150,8 +150,13 @@ def search(param):
                     cat = c["label"]
                     break
         views = 0
+        likes = 0
+        dislikes = 0
         if "yt$statistics" in o:
             views = o["yt$statistics"]["viewCount"]
+        if "yt$rating" in o:
+            likes = int(o["yt$rating"]["numLikes"])
+            dislikes = int(o["yt$rating"]["numDislikes"])
         r = {
             "title" : o["title"]["$t"],
             "category" : cat,
@@ -159,8 +164,8 @@ def search(param):
             "date_uploaded" : o["media$group"]["yt$uploaded"]["$t"],
             "duration" : float(o["media$group"]["yt$duration"]["seconds"]),
             "views" : int(views),
-            "num_likes" : int(o["yt$rating"]["numLikes"]),
-            "num_dislikes" : int(o["yt$rating"]["numDislikes"])
+            "num_likes" : likes,
+            "num_dislikes" : dislikes
         }
         result.append(r)
     return result

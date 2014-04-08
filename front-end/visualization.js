@@ -57,6 +57,14 @@ var VIS = (function(){
 						"comment" : "Field to plot along y-axis"
 					}
 				}
+			},
+			"piechart" : {
+				"param" : {
+					"field" : {
+						"type" : "field_reference text",
+						"comment" : "This should be a discrete valued text field (e.g. categories)"
+					}
+				}
 			}
 		}
 	};
@@ -136,7 +144,6 @@ var VIS = (function(){
 
 
 	var fn = function(display, working_set, param){
-		console.log("HERE");
 		var x = param["x-field"]; //arrays of equal length corresponding to (x,y) points
 		var y = param["y-field"];
 		console.log(x);
@@ -209,4 +216,66 @@ var VIS = (function(){
 	}
 	VIS.addFunction("graph", "scatterplot", fn);
 
+
+	var fn = function(display, working_set, param){
+		var data = [];
+		var map = {};//map from label to count
+		var fieldData = param['field'];
+		for(var i = 0; i < fieldData.length; i++){
+			var v = fieldData[i];
+			if(!map.hasOwnProperty(v)){
+				map[v] = 1;
+			}
+			else{
+				map[v]++;
+			}
+		}
+		for(var p in map){
+			if(map.hasOwnProperty(p)){
+				data.push({
+					"label" : p + "(" + map[p] + ")",
+					"number" : map[p]
+				})
+			}
+		}
+
+		var width = 400,
+		    height = 400,
+		    radius = Math.min(width, height) / 2;
+
+		var color = d3.scale.ordinal()
+		    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+		var arc = d3.svg.arc()
+		    .outerRadius(radius - 10)
+		    .innerRadius(0);
+
+		var pie = d3.layout.pie()
+		    .sort(null)
+		    .value(function(d) { return d.number; });
+
+		var svg = d3.select(display).append("svg")
+		    .attr("width", width)
+		    .attr("height", height)
+		  .append("g")
+		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+		 
+
+		  var g = svg.selectAll(".arc")
+		      .data(pie(data))
+		    .enter().append("g")
+		      .attr("class", "arc");
+
+		  g.append("path")
+		      .attr("d", arc)
+		      .style("fill", function(d) { return color(d.data.number); });
+
+		  g.append("text")
+		      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+		      .attr("dy", ".35em")
+		      .style("text-anchor", "middle")
+		      .text(function(d) { console.log(d); return d.data.label; });
+	};
+	VIS.addFunction("graph", "piechart", fn);
 }())
