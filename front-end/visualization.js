@@ -96,7 +96,7 @@ var VIS = (function(){
 		var margin = {top: 10, right: 30, bottom: 30, left: 30};
 
 		var x = d3.scale.linear()
-		    .domain([0, max+1])
+		    .domain([min, max+1])
 		    .range([0, w]);
 
 		// Generate a histogram using twenty uniformly-spaced bins.
@@ -124,13 +124,13 @@ var VIS = (function(){
 
 		bar.append("rect")
 		    .attr("x", 1)
-		    .attr("width", x(data[0].dx) - 1)
+		    .attr("width", x(data[0].dx) - x(0) - 1)
 		    .attr("height", function(d) { return h - y(d.y); });
 
 		bar.append("text")
 		    .attr("dy", ".75em")
 		    .attr("y", 6)
-		    .attr("x", x(data[0].dx) / 2)
+		    .attr("x", (x(data[0].dx) - x(0)) / 2)//idk why - x(0) works, it just does
 		    .attr("text-anchor", "middle")
 		    .text(function(d) { return formatCount(d.y); });
 
@@ -221,6 +221,7 @@ var VIS = (function(){
 		var data = [];
 		var map = {};//map from label to count
 		var fieldData = param['field'];
+		var total = fieldData.length;
 		for(var i = 0; i < fieldData.length; i++){
 			var v = fieldData[i];
 			if(!map.hasOwnProperty(v)){
@@ -230,10 +231,11 @@ var VIS = (function(){
 				map[v]++;
 			}
 		}
+
 		for(var p in map){
 			if(map.hasOwnProperty(p)){
 				data.push({
-					"label" : p + "(" + map[p] + ")",
+					"label" : p + "(" + map[p] + ", " + Math.round(map[p]/total) + "%)",
 					"number" : map[p]
 				})
 			}
