@@ -1,5 +1,6 @@
 #SOCRATES
 [Live demo of SOCRATES](http://peopleanalytics.org/socrates/front-end/)
+
 This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
 
 #Future Goals
