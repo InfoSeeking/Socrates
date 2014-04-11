@@ -235,7 +235,7 @@ var VIS = (function(){
 		for(var p in map){
 			if(map.hasOwnProperty(p)){
 				data.push({
-					"label" : p + "(" + map[p] + ", " + Math.round(map[p]/total) + "%)",
+					"label" : p + "(" + map[p] + ", " + Math.round(map[p]/total * 100) + "%)",
 					"number" : map[p]
 				})
 			}

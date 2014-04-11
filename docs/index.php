@@ -23,4 +23,5 @@ include("inc/top_2.php");
       </ul>
   		<h2>Tutorial</h2>
   		<p>To get a glimpse into what SOCRATES is capable of, let's go through a scenario and see how we can use SOCRATES.</p>
+      <iframe width="640" height="360" src="//www.youtube.com/embed/fEfL34QtJ54?rel=0" frameborder="0" allowfullscreen></iframe>
 <?php include("inc/bottom.php"); ?>
