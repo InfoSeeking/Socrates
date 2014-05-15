@@ -4,10 +4,12 @@
 This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
 
 #Future Goals
-- Multiple working_sets and user based system
-- Integration of Flask into Apache
-- Many more modules
-- More documentation and video tutorials
+- Integration of Flask into Apache OR use PHP for API calls
+- Uploading of custom data
+- User system for storing/sharing working_sets
+- Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization
+- Long-term data collection to get around API limits
+- More documentation on creating analysis and visualization modules
 
 #Example Use Cases:
 - Seeing sentiment vs. number of followers of tweets
