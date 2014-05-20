@@ -124,12 +124,26 @@ def binary_operation(working_set, param=False):
 		}
 	}
 	
-#This is the function you are implementing
-def correlation(working_set, param):
-	#working_set is a reference to our current working data. It does not need to be used in this function.
-	
-	#param is a dictionary with the keys set to our parameters (see the SPECS variables) and the values set to
-	#our requested data. For example, param['field_1'] references our field_1 parameter. Notice (from the comments
-	#above, this is an array.
-	
-	pass
+#Here is the code for the correlation function.  I am not too sure if I used the param argument correctly, however I looked to your other functions as examples to follow.  
+def correlation(working_set, param=False):
+	field1Vals = param['field_1']
+	field2Vals = param['field_2']
+	sumX = 0
+	sumY = 0
+	sumX2 = 0
+	sumY2 = 0
+	sumXY = 0
+	for i in range(len(field1Vals)):
+		sumX += field1Vals[i]
+		sumY += field2Vals[i]
+		sumX2 += field1Vals[i]**2
+		sumY2 += field2Vals[i]**2
+		sumXY += field1Vals[i] * field2Vals[i]
+
+	result = (len(field1Vals)*sumXY - sumX*sumY) / ((len(field1Vals)*sumX2 - sumX**2)**(0.5) * (len(field1Vals)*sumY2 - sumY**2)**(0.5))
+	#this is the formula that I used for correlation, slightly different than the link you sent me, but the outcome is the same so I hope this is not an issue
+	return {
+		'entry_result' : {
+			'correlation': result
+		}
+	} #I followed your structure for the other functions on the structure of the return value
