@@ -40,16 +40,10 @@ SPECS = {
 			'entry_result': {
 				'result' : 'numeric'
 			}
-		}
-		#These are the specifications for the function you are creating.
+		},
 		"correlation" : {
-			#It expects two parameters, fields, which reference numeric "database columns".
-			#Remember, these specifications serve as a way to build our front-end (the part you see)
-			#dynamically. But I also included it here to give you a reference of what to build.
 			'param': {
 				'field_1': {
-					#This numeric field_reference type requests we get a numerical column from the database
-					#Hence we get an entire array of numbers returned (one per row)
 					'type' : 'field_reference numeric',
 					'comment': 'First field',
 				},
@@ -58,8 +52,7 @@ SPECS = {
 					'comment': 'Second field'
 				}
 			},
-			#This entry_result says it expects to return a JSON object containing a numeric value named "correlation"
-			'entry_result': {
+			'aggregate_result': {
 				'correlation' : 'numeric'
 			}
 		}
@@ -141,9 +134,9 @@ def correlation(working_set, param=False):
 		sumXY += field1Vals[i] * field2Vals[i]
 
 	result = (len(field1Vals)*sumXY - sumX*sumY) / ((len(field1Vals)*sumX2 - sumX**2)**(0.5) * (len(field1Vals)*sumY2 - sumY**2)**(0.5))
-	#this is the formula that I used for correlation, slightly different than the link you sent me, but the outcome is the same so I hope this is not an issue
+
 	return {
-		'entry_result' : {
+		'aggregate_analysis' : {
 			'correlation': result
 		}
-	} #I followed your structure for the other functions on the structure of the return value
+	}
