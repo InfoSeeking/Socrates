@@ -16,6 +16,10 @@ SPECS = {
 				'count': {
 					'type' : 'numeric',
 					'comment' : "Number of posts"
+				},
+				'min_upvotes': {
+					'type' : 'numeric',
+					'comment' : "Minimum number of upvotes"
 				}
 			}, 
 			'returns': {
