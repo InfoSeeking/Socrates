@@ -55,6 +55,23 @@ SPECS = {
 			'aggregate_result': {
 				'correlation' : 'numeric'
 			}
+		},
+		"regression": {
+			'param': {
+				'field_1': {
+					'type': 'field_reference numeric',
+					'comment': 'First field (X-axis)'
+				},
+				'field_2': {
+					'type': 'field_reference numeric',
+					'comment': 'Second field (Y-axis)'
+				}
+			},
+			'aggregate_result': {
+				'a_value': 'numeric',
+				'b_value': 'numeric',
+				'equation': 'text'
+			}
 		}
 	}
 }
@@ -117,7 +134,6 @@ def binary_operation(working_set, param=False):
 		}
 	}
 	
-#Here is the code for the correlation function.  I am not too sure if I used the param argument correctly, however I looked to your other functions as examples to follow.  
 def correlation(working_set, param=False):
 	field1Vals = param['field_1']
 	field2Vals = param['field_2']
@@ -138,5 +154,31 @@ def correlation(working_set, param=False):
 	return {
 		'aggregate_analysis' : {
 			'correlation': result
+		}
+	}
+	
+def regression(working_set, param=False):
+	field1Vals = param['field_1']
+	field2Vals = param['field_2']
+	sumX = 0
+	sumY = 0
+	sumX2 = 0
+	sumY2 = 0
+	sumXY = 0
+	for i in range(len(field1Vals)):
+		sumX += field1Vals[i]
+		sumY += field2Vals[i]
+		sumX2 += field1Vals[i]**2
+		sumY2 += field2Vals[i]**2
+		sumXY += field1Vals[i] * field2Vals[i]
+
+	a_value = (1.0*sumY*sumX2 - sumX*sumXY)/(len(field1Vals)*sumX2 - sumX**2)
+	b_value = (1.0*len(field1Vals)*sumXY - sumX*sumY)/(len(field1Vals)*sumX2 - sumX**2)
+
+	return {
+		'aggregate_analysis' : {
+			'a_value': a_value,
+			'b_value': b_value,
+			'equation': "y = " + str(a_value) + " + " + str(b_value) + "x"
 		}
 	}
