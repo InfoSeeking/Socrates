@@ -2,4 +2,6 @@
 import twitter.twitter
 import reddit.reddit
 import youtube.youtube
-__all__ = ['twitter', 'reddit', 'youtube']
+import nytimes
+
+__all__ = ['twitter', 'reddit', 'youtube', 'nytimes']
