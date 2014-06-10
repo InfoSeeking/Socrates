@@ -65,6 +65,18 @@ var VIS = (function(){
 						"comment" : "This should be a discrete valued text field (e.g. categories)"
 					}
 				}
+			},
+			"regression" : {
+				"param" : {
+					"x-field" : {
+						"type" : "field_reference numeric",
+						"comment" : "Field to plot along x-axis"
+					},
+					"y-field" : {
+						"type" : "field_reference numeric",
+						"comment" : "Field to plot along y-axis"
+					}
+				}
 			}
 		}
 	};
@@ -280,4 +292,116 @@ var VIS = (function(){
 		      .text(function(d) { console.log(d); return d.data.label; });
 	};
 	VIS.addFunction("graph", "piechart", fn);
+
+	//Regression line on top of scatterplot
+	var fn = function(display, working_set, param){
+		var x = param["x-field"]; //arrays of equal length corresponding to (x,y) points
+		var y = param["y-field"];
+		//regression values
+		var sumX = 0
+		var sumY = 0
+		var sumX2 = 0
+		var sumY2 = 0
+		var sumXY = 0
+		for (var i = 0; i < x.length; i++){
+			sumX += x[i];
+			sumY += y[i];
+			sumX2 += x[i] * x[i];
+			sumY2 += y[i] * y[i];
+			sumXY += x[i] * y[i];
+		}
+		var a_value = (1.0*sumY*sumX2 - sumX*sumXY)/(x.length*sumX2 - sumX*sumX);
+		var b_value = (1.0*x.length*sumXY - sumX*sumY)/(x.length*sumX2 - sumX*sumX);
+		//end regression values
+		
+		//two set of points for plotting line
+		var min = Math.min.apply(null, x);
+		var	max = Math.max.apply(null, x);
+		var	min_output = a_value + min*b_value;
+		var max_output = a_value + max*b_value;
+		var y_data = [min_output, max_output]; 
+		var lineData = 	[{"x": min, "y": min_output}, {"x": max, "y": max_output}];
+
+			
+		//Width and height
+			var w = 500;
+			var h = 200;
+			var padding = 30;
+
+			//Create scale functions
+			var xScale = d3.scale.linear()
+								 .domain([d3.min(x), d3.max(x)])
+								 .range([padding, w - padding * 2]);
+
+			var yScale = d3.scale.linear()
+								 .domain([d3.min(y), d3.max(y)])
+								 .range([h - padding, padding]);
+
+			var rScale = d3.scale.linear()
+								 .domain([0, d3.max(y)])
+								 .range([2, 5]);
+
+			var formatAsPercentage = d3.format(".1");
+
+			//Define X axis
+			var xAxis = d3.svg.axis()
+							  .scale(xScale)
+							  .orient("bottom")
+							  .ticks(5)
+							  .tickFormat(formatAsPercentage);
+
+			//Define Y axis
+			var yAxis = d3.svg.axis()
+							  .scale(yScale)
+							  .orient("left")
+							  .ticks(5)
+							  .tickFormat(formatAsPercentage);
+							  
+			var line = d3.svg.line()
+				.x(function(d) { return xScale(d.x); })
+				.y(function(d) { return yScale(d.y); })
+				.interpolate("linear");
+
+			//Create SVG element
+			var svg = d3.select(display)
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+				
+			//create path
+			var lineGraph = svg.append("path")
+				.attr("d", line(lineData))
+				.attr("stroke", "red")
+				.attr("stroke-width", 2)
+				.attr("fill", "none");
+
+			//Create circles
+			svg.selectAll("circle")
+			   .data(x)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(xV) {
+			   		return xScale(xV);
+			   })
+			   .attr("cy", function(xV, i) {
+			   		return yScale(y[i]);
+			   })
+			   .attr("r", function(xV, i) {
+			   		return rScale(y[i]);
+			   });
+			//Create X axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis);
+			
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
+
+	}
+	VIS.addFunction("graph", "regression", fn);
 }())
