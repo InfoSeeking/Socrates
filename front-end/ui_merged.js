@@ -197,6 +197,97 @@ function createBox(type, index){
   return $("<div class='results " + type + "'><div class='bar'><h2></h2></div></div>");
 }
 
+
+function onDownloadButtonClicked(){
+	var btn = $(this);
+	tLoad(true);
+	getWorkingSet(curRefId, function(ws){
+		var typ = btn.attr("data-type");
+		var index = btn.attr("data-index");
+		if(index){
+			index = parseInt(index);
+		}
+		downloadBox(ws, typ, index);
+
+		tLoad(false);
+	});
+}
+
+function getDownloadButton(){
+	return $("<a class='button'>Download</a>").click(onDownloadButtonClicked);
+}
+
+function csvesc(txt){
+	return ("" + txt).replace(/,|\n/g, "");
+}
+function downloadBox(working_set, typ, index){
+  var aData = null;
+  var ws = working_set;//easier
+  var csv = "";
+  if(typ == "analysis"){
+    //show the entry data alongside collection data 
+    if(index !== null){
+      //show only one
+      aData = new Array(ws["analysis"][index]);
+    }
+    else{
+      aData = ws["analysis"];
+    }
+  }
+
+  var cData = ws["data"];
+  //build the top row
+  var thead = $("<tr><th>Index</th></tr>");
+  var first = true;
+  for(var f in ws["meta"]){
+    if(ws["meta"].hasOwnProperty(f)){
+	    if(first){
+		    first = false;
+	    }
+	    else{
+		    csv += ",";
+	    }
+	    csv += csvesc(f);
+    }
+  }
+  //add heading for every analysis
+  if(aData){
+    for(var i = 0; i < aData.length; i++){
+      for(var f in aData[i]["entry_meta"]){
+        if(aData[i]["entry_meta"].hasOwnProperty(f)){
+		csv += "," + csvesc(f);
+        }
+      }
+    }
+  }
+  csv += "\n";
+  first = true;
+  for(var i = 0; i < cData.length; i++){
+    var row = $("<tr><td> " + i + "</td></tr>");
+    for(var f in ws["meta"]){
+      if(ws["meta"].hasOwnProperty(f)){
+	      if(first){
+		      first = false;
+	      }
+	      else{
+		      csv += ",";
+	      }
+	      csv += csvesc(cData[i][f]);
+      }
+    }
+    if(aData){
+      for(var j = 0; j < aData.length; j++){
+        for(var f in aData[j]["entry_meta"]){
+          if(aData[j]["entry_meta"].hasOwnProperty(f)){
+            csv += "," + csvesc(aData[j]["entry_analysis"][f][i]);
+          }
+        }
+      }
+    }
+    csv += "\n";
+  }
+  var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(csv), "_blank");
+}
 /*
   Given the working_set, it will create a new box for the most recently created data.
 */
@@ -217,8 +308,10 @@ function showResults(working_set, type){
     curRefId = working_set["reference_id"];
     $("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
     h2.html("Collection Data");
-    box.append(createTable(type, working_set));
+    var table = createTable(type, working_set);//this is the HTML created table
+    box.append(table);
     box.append(showAllDataBtn().attr("data-type", "collection"));
+    box.append(getDownloadButton().attr("data-type", "collection"));
   }
   else if(type == "analysis"){
     h2.html("Analysis Data");
@@ -227,6 +320,7 @@ function showResults(working_set, type){
     if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
       //show all data button
       box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
+      box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
     }
   }
   $("#workspace").isotope('insert' , box);
