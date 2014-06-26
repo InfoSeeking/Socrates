@@ -114,5 +114,5 @@ def getAllSpecs():
 
 MODULE_LIST = {
 	'analysis' : ['text', 'stats'],#name of imported module
-	'collection': ['reddit', 'twitter', 'youtube']
+	'collection': ['reddit', 'twitter', 'youtube', 'nytimes']
 }
