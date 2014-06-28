@@ -3,17 +3,20 @@
 
 This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
 
-#Future Goals
-- Integration of Flask into Apache OR use PHP for API calls
-- Uploading of custom data
-- User system for storing/sharing working_sets
+##Future Goals
+###Big Goals
+- User system for storing/sharing working\_sets
+- Long-term data collection campaigns to get around API limits
 - Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization
-- Long-term data collection to get around API limits
-- More documentation on creating analysis and visualization modules
+- Extensive documentation, auto-generated from comments and tutorials on creating collection, analysis, and visualization modules
 
-#Example Use Cases:
-- Seeing sentiment vs. number of followers of tweets
-- Seeing the sentiment vs. word_count of the comments in Reddit (there actually is probably somewhat of a correlation)
+###Small Goals
+- Using PHP for API calls
+- Better error management and error logging
+- Detecting when online on front-end
+- Better data downloading
+- Uploading custom data
+- Code cleaning
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.
@@ -21,7 +24,7 @@ This document primarily consists of development ideas. To get more information o
 	- Specification of whether it is a collection or analysis module and a description
 	- Specification of parameters and return values
 	- Initial call, it should have a function run(param, working_set) which gets the data
-- Cache the working_set to reduce redundant downloading [done]
+- Cache the working\_set to reduce redundant downloading [done]
 
 #Quick Notes
 - Primitive parameters are converted to their actual values, fields are converted to arrays of the entry data they refer to
@@ -29,7 +32,7 @@ This document primarily consists of development ideas. To get more information o
 
 #Issues
 - On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
-- When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw_search)
+- When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw\_search)
 - Total for word count is undefined [3/5/2014 fixed]
 
 
@@ -46,7 +49,7 @@ This document primarily consists of development ideas. To get more information o
 - array <data type (not array)>
 - boolean
 - geo (longitude,latitude)
-- field_reference <data type> (this is from an analysis module which requires a reference to a field)
+- field\_reference <data type> (this is from an analysis module which requires a reference to a field)
 
 
 
@@ -72,7 +75,7 @@ Snapshot of JSON after collection and analysis:
 
 #Useful commands:
 Fetch twitter posts:
-curl http://localhost:5000/op/collection/twitter/tw_search -d "lang=en&count=1&query=derp"
+```curl http://localhost:5000/op/collection/twitter/tw_search -d "lang=en&count=1&query=derp"```
 
 Sentiment Analysis:
-curl http://localhost:5000/op/analysis/text/sentiment -d "field=content&reference_id=<ref id>"
+```curl http://localhost:5000/op/analysis/text/sentiment -d "field=content&reference_id=<ref id>"```
