@@ -126,7 +126,7 @@ elif args.specs:
 	print json.dumps(getAllSpecs())
 
 elif args.fetch:
-	working_set = db.collectionData.find_one({"_id" : ObjectId()})
+	working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 	del working_set['_id']
-	working_set['reference_id'] = str(refID)
+	working_set['reference_id'] = str(working_set_id)
 	print json.dumps(working_set)

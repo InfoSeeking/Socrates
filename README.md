@@ -9,6 +9,7 @@ This document primarily consists of development ideas. To get more information o
 - Long-term data collection campaigns to get around API limits
 - Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization
 - Extensive documentation, auto-generated from comments and tutorials on creating collection, analysis, and visualization modules
+- Set up a virtual\_env for all package installations, maybe make a shell script setup for this
 
 ###Small Goals
 - Using PHP for API calls
