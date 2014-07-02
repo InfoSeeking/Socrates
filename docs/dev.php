@@ -18,6 +18,7 @@ include("inc/top_2.php");
   			<li>TextBlob <a href="http://textblob.readthedocs.org/en/latest/install.html" target="_blank">http://textblob.readthedocs.org/en/latest/install.html</a></li>
   			<li>pymongo <a href="http://api.mongodb.org/python/current/installation.html" target="_blank">http://api.mongodb.org/python/current/installation.html</a></li>
   			<li>Flask <a href="http://flask.pocoo.org/docs/installation/" target="_blank">http://flask.pocoo.org/docs/installation/</a></li>
+  			<li>Tweepy<a href="https://github.com/tweepy/tweepy" target="_blank">https://github.com/tweepy/tweepy</a></li>
   		</ul>
   		<p>Afterwards, download the source from GitHub at <a href="https://github.com/kevinAlbs/Socrates" target="_blank">https://github.com/kevinAlbs/Socrates</a></p>
   		<p>The directories containing the code are front-end and back-end. Put the directory named front-end somewhere in your web root (i.e. htdocs or public_html). For example, my web root is located in my home directory in public_html in /home/kevin/public_html. So I created a subdirectory named socrates and moved the front-end directory there. The back-end directory can remain elsewhere.</p>
