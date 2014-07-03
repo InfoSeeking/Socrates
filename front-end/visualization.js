@@ -14,7 +14,7 @@ var VIS = (function(){
 	};
 	that.callFunction = function(display, mod, fnName, param, callback){
 		//get working_set
-		getWorkingSet(param['reference_id'], function(ws){
+		getWorkingSet(param['working_set_id'], function(ws){
 			try{
 				//set data-vis class to <mod>-<fn>
 				d3.select(display).attr("data-vis", mod + "-" +fnName);

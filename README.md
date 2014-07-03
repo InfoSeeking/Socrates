@@ -12,7 +12,7 @@ This document primarily consists of development ideas. To get more information o
 - Set up a virtual\_env for all package installations, maybe make a shell script setup for this
 
 ###Small Goals
-- Using PHP for API calls
+- Using PHP for API calls (buffer stdout and redirect to a log, redirect stderr to an error log, check if shell gives valid JSON, if not throw error to user.)
 - Better error management and error logging
 - Detecting when online on front-end
 - Better data downloading

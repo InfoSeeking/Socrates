@@ -68,17 +68,18 @@ def run(typ, mod, fn, param, working_set=None):
 client = MongoClient()
 db = client.socrates
 parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
-parser.add_argument("--working_set_id", help="ID referencing database working set. Required for analysis")
+parser.add_argument("--working_set_id", help="ID referencing database working set. Required for analysis", default=False)
 parser.add_argument("--return_all_data", help="If present, returns all of working set. Otherwise returns only first 'row'", action='store_true')
 parser.add_argument("--input", help="Any input required for the module")
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--run', help='Run the main program, type=collection|analysis',nargs=3, metavar=("type", "module", "function"))
 group.add_argument("--specs", help='Retrieve JSON specs for all modules and functions', action='store_true')
-group.add_argument("--fetch", help='Retrieve working set from specified id', metavar='working_set_id')
+group.add_argument("--fetch", help='Retrieve working set from specified id', action='store_true')
 args = parser.parse_args()
 
 working_set = None
 working_set_id = -1
+
 if args.working_set_id:
 	working_set_id = args.working_set_id
 	working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
@@ -95,7 +96,7 @@ if args.run:
 	if typ == "analysis" and working_set is None:
 		err("Working set id not included")
 
-	working_set = SO.run(typ, mod, fn, param)
+	working_set = SO.run(typ, mod, fn, param, working_set)
 
 	if 'error' in working_set and working_set['error']:
 		err("Error: " + working_set['message'])
@@ -104,22 +105,22 @@ if args.run:
 	if typ == "collection":
 		insert_id = db.collectionData.insert(working_set)
 		del working_set["_id"] #for some reason ObjectID is not JSON serializable
-		working_set['reference_id'] = str(insert_id)
+		working_set['working_set_id'] = str(insert_id)
 	elif typ == "analysis":
 		working_set["_id"] = ObjectId(working_set_id)
 		db.collectionData.save(working_set) #overwrite in database
 		del working_set['_id']
-		working_set['reference_id'] = str(working_set_id)
+		working_set['working_set_id'] = str(working_set_id)
 
-		if not return_all_data:
-			#remove all data except first entry
-			working_set["data"] = working_set["data"][0:1]
-			if "analysis" in working_set:
-				for i in range(len(working_set["analysis"])):
-					a = working_set["analysis"][i]
-					if "entry_analysis" in a:
-						for p in a['entry_analysis']:
-							a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
+	if not return_all_data:
+		#remove all data except first entry
+		working_set["data"] = working_set["data"][0:1]
+		if "analysis" in working_set:
+			for i in range(len(working_set["analysis"])):
+				a = working_set["analysis"][i]
+				if "entry_analysis" in a:
+					for p in a['entry_analysis']:
+						a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
 	print json.dumps(working_set)
 
 elif args.specs:
@@ -128,5 +129,5 @@ elif args.specs:
 elif args.fetch:
 	working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 	del working_set['_id']
-	working_set['reference_id'] = str(working_set_id)
+	working_set['working_set_id'] = str(working_set_id)
 	print json.dumps(working_set)

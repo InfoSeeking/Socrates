@@ -37,10 +37,10 @@ function enforceMatch($val, $regex, $argname=""){
 }
 
 class RunHandler {
-	public function get($type, $module, $fn){
-        $working_set_id = getParam("working_set_id", $_GET);
-        $return_all_data = getParam("return_all_data", $_GET) ? "return_all_data" : "";
-        $input = getParam("input", $_GET, false, "{}");
+	public function post($type, $module, $fn){
+        $working_set_id = getParam("working_set_id", $_POST, false, null);
+        $return_all_data = getParam("return_all_data", $_POST) ? "--return_all_data" : "";
+        $input = getParam("input", $_POST, false, "{}");
 
         //validate all inputs
         enforceMatch("/^[_a-zA-Z0-9]+$/", $type, "type name");
@@ -48,13 +48,15 @@ class RunHandler {
         enforceMatch("/^[_a-zA-Z0-9]+$/", $fn, "function name");
         enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
         
-        $json = json_decode($input);
-        if(!$json){
-            throw new InvalidArgumentException(sprintf("Invalid input JSON %s", $input));
+        if (is_array($input)) {
+            $input = json_encode($input);
         }
         $input = escapeshellarg($input);
-        
-        $cmd = sprintf("python socrates_cli.py %s --input %s --run %s %s %s", $return_all_data, $input, $type, $module, $fn);
+
+        if ($working_set_id) {
+            $working_set_str = "--working_set_id " . $working_set_id;
+        }
+        $cmd = sprintf("python socrates_cli.py %s %s --input %s --run %s %s %s 2>&1", $working_set_str, $return_all_data, $input, $type, $module, $fn);
         //TODO: should I log the command here?
 		echo shell_exec($cmd);
 	}
@@ -70,10 +72,10 @@ class SpecHandler {
 
 class FetchHandler {
     public function get(){
-        $working_set_id = getParam("working_set_id", $_GET);
+        $working_set_id = getParam("working_set_id", $_GET, true);
         enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
-        $cmd = sprintf("python socrates_cli.py --fetch %s", $working_set_id);
-        echo $cmd;
+        $cmd = sprintf("python socrates_cli.py --fetch --working_set_id %s 2>&1", $working_set_id);
+        //echo $cmd;
         echo shell_exec($cmd);
     }
 }

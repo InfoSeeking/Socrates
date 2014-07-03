@@ -1,7 +1,8 @@
 //config
 var CFG = {
-	host : "http://127.0.0.1:5000",
+	//host : "http://127.0.0.1:5000",
 	//host: "http://128.6.194.150:5000"
+	api_endpoint: "http://localhost/socrates/back-end/listener.php/",
 	debug : true
 };
 var fbTimer = null;
@@ -17,10 +18,10 @@ function getWorkingSet(refID, callback){
 		console.log("Fetching working set for " + refID);
 		//download fresh data
 		$.ajax({
-			url: CFG.host + "/download",
+			url: CFG.api_endpoint + "fetch",
 			dataType: "json",
-			type: "POST",
-			data: {'reference_id': refID, 'returnAllData': "true"},
+			type: "get",
+			data: {'returnAllData': true, 'working_set_id': refID},
 			success : function(data, stat, jqXHR){
 				working_set_cache = data;
 				callback.call(window, data);
