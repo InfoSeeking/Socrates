@@ -15,6 +15,13 @@ from bson import objectid
 from bson.objectid import ObjectId
 import socrates as SO
 
+origStdout = sys.stdout
+def redirectStdout():
+	sys.stdout = open("logs/python.log", "a")
+
+def restoreStdout():
+	sys.stdout = origStdout
+
 def err(msg, fatal=True):
 	print json.dumps({
 	'error' : 'true',
@@ -65,6 +72,8 @@ def run(typ, mod, fn, param, working_set=None):
 			#Store this data
 			return working_set
 
+
+redirectStdout()
 client = MongoClient()
 db = client.socrates
 parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
@@ -121,13 +130,17 @@ if args.run:
 				if "entry_analysis" in a:
 					for p in a['entry_analysis']:
 						a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
+
+	restoreStdout()
 	print json.dumps(working_set)
 
 elif args.specs:
+	restoreStdout()
 	print json.dumps(getAllSpecs())
 
 elif args.fetch:
 	working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 	del working_set['_id']
 	working_set['working_set_id'] = str(working_set_id)
+	restoreStdout()
 	print json.dumps(working_set)
