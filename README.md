@@ -10,6 +10,7 @@ This document primarily consists of development ideas. To get more information o
 - Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization
 - Extensive documentation, auto-generated from comments and tutorials on creating collection, analysis, and visualization modules
 - Set up a virtual\_env for all package installations, maybe make a shell script setup for this
+- Make a web interface for accessing logs
 
 ###Small Goals
 - Using PHP for API calls (buffer stdout and redirect to a log, redirect stderr to an error log, check if shell gives valid JSON, if not throw error to user.)
@@ -18,6 +19,7 @@ This document primarily consists of development ideas. To get more information o
 - Better data downloading
 - Uploading custom data
 - Code cleaning
+- Create a cron job to compress logs monthly/yearly
 
 #Ideas
 - Have the back-end store data in MongoDB to avoid messaging large datasets back and forth. When a user calls the API for fetching data, it will return the id of the record as well as the data-types and a SINGLE post to see what the data looks like. Then the user can choose which fields to analyze etc.

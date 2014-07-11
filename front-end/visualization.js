@@ -18,8 +18,8 @@ var VIS = (function(){
 			try{
 				//set data-vis class to <mod>-<fn>
 				d3.select(display).attr("data-vis", mod + "-" +fnName);
-				TRANS.parseParams(param, that.specs[mod]["functions"][fnName]["param"], ws);
-				VIS.functionReferences[mod][fnName].call(window, display, ws, param);
+				TRANS.parseParams(param.input, that.specs[mod]["functions"][fnName]["param"], ws);
+				VIS.functionReferences[mod][fnName].call(window, display, ws, param.input);
 				callback.call();
 			}
 			catch(e){

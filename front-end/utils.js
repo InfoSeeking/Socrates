@@ -32,6 +32,6 @@ function getWorkingSet(refID, callback){
 
 function showError(message){
 	window.clearTimeout(fbTimer);
-	fbTimer = window.setTimeout(function(){$("#feedback").fadeOut()}, 6000);
+	fbTimer = window.setTimeout(function(){$("#feedback").fadeOut()}, 10000);
 	$("#feedback").fadeIn().html(message).removeClass("suc").addClass("err");
 }

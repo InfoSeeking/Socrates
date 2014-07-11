@@ -659,8 +659,15 @@ function init(){
     }
   });
 
-  $("#last-modified").html("Page last updated on " + document.lastModified);
-
+  $.ajax({
+    url : "https://api.github.com/repos/kevinAlbs/Socrates",
+    dataType: "json",
+    success : function(json){
+      console.log(json);
+      var dateStr = json.updated_at + "";
+      $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
+    }
+  })
   $("#settings-btn").click(function(){
     if(sidebar == "settings"){
       sidebar = "default";

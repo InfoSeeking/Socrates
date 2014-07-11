@@ -48,6 +48,7 @@ var TRANS = (function(){
 		}
 	}
 	that.parseParams = function(param, paramSpecs, working_set){
+		console.log(param);
 		for(var key in param){
 			if(param[key] == "" && isOptional(paramSpecs[key])){
 				continue;
