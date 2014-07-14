@@ -166,6 +166,20 @@ form .row .comment .optional{
 #settings-btn:hover{
 	background-color: #5ecff9;
 }
+
+#refresh-btn{
+	display: inline-block;
+	width: 60px;
+	height: 22px;
+	font-size: 14px;
+	padding-top: 8px;
+	padding-right: 5px;
+	padding-left: 20px;
+	float: right;
+}
+#refresh-btn:hover{
+	background-color: #5ecff9;
+}
 #workspace{
 	margin-left: 400px;
 }
