@@ -678,6 +678,11 @@ function init(){
       $(".screen.settings").show();
     }
   });
+
+  $("#refresh-btn").click(function(){
+  location.reload(true);
+  });
+  
   $("#showAllData").on("click", handleDataButton);
 }
 
