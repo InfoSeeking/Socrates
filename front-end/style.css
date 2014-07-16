@@ -169,13 +169,14 @@ form .row .comment .optional{
 
 #refresh-btn{
 	display: inline-block;
-	width: 60px;
 	height: 22px;
 	font-size: 14px;
 	padding-top: 8px;
 	padding-right: 5px;
-	padding-left: 20px;
+	padding-left: 30px;
+	background: url("img/refresh.png") no-repeat 5px center #0195cc;
 	float: right;
+
 }
 #refresh-btn:hover{
 	background-color: #5ecff9;
