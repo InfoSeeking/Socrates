@@ -14,9 +14,9 @@ This document primarily consists of development ideas. To get more information o
 
 ###Small Goals
 - Using PHP for API calls (buffer stdout and redirect to a log, redirect stderr to an error log, check if shell gives valid JSON, if not throw error to user.)
-- Better error management and error logging
-- Detecting when online on front-end
-- Better data downloading
+- Better error management and error logging for front-end
+- Detecting when online in front-end
+- Better data and SVG downloading
 - Uploading custom data
 - Code cleaning
 - Create a cron job to compress logs monthly/yearly

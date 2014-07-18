@@ -668,6 +668,7 @@ function init(){
       $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
     }
   })
+
   $("#settings-btn").click(function(){
     if(sidebar == "settings"){
       sidebar = "default";
@@ -683,6 +684,11 @@ function init(){
       $(".screen.settings").show();
     }
   });
+
+  $("#refresh-btn").click(function(){
+      location.reload(true);
+  });
+
   $("#showAllData").on("click", handleDataButton);
 }
 
