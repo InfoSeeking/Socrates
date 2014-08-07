@@ -787,7 +787,19 @@ function init(){
     }
   });
 
+<<<<<<< HEAD
   $("#last-modified").html("Page last updated on " + document.lastModified);
+=======
+  $.ajax({
+    url : "https://api.github.com/repos/kevinAlbs/Socrates",
+    dataType: "json",
+    success : function(json){
+      console.log(json);
+      var dateStr = json.updated_at + "";
+      $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
+    }
+  })
+>>>>>>> upstream/master
 
   $("#settings-btn").click(function(){
     if(sidebar == "settings"){
@@ -806,6 +818,7 @@ function init(){
     }
   });
 
+<<<<<<< HEAD
   $("#import-btn").click(function(){
     if(sidebar == "import"){
       sidebar = "default";
@@ -831,6 +844,12 @@ $("#fileupload-btn").click(function(){
   location.reload(true);
   });
   
+=======
+  $("#refresh-btn").click(function(){
+      location.reload(true);
+  });
+
+>>>>>>> upstream/master
   $("#showAllData").on("click", handleDataButton);
 }
 
