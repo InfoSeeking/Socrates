@@ -1,0 +1,1 @@
+from flickr import *

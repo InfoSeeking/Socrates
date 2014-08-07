@@ -162,7 +162,9 @@ form .row .comment .optional{
 	padding-top: 8px;
 	padding-right: 5px;
 	background: url("img/settings.png") no-repeat 5px center #0195cc;
+	float: right;
 }
+
 #settings-btn:hover{
 	background-color: #5ecff9;
 }
@@ -176,11 +178,27 @@ form .row .comment .optional{
 	padding-left: 30px;
 	background: url("img/refresh.png") no-repeat 5px center #0195cc;
 	float: right;
-
+	margin-left: 7px;
 }
+
 #refresh-btn:hover{
 	background-color: #5ecff9;
 }
+
+#import-btn{
+	display: inline-block;
+	height: 22px;
+	font-size: 14px;
+	padding-top: 8px;
+	padding-right: 5px;
+	padding-left: 30px;
+	background: url("img/importarrow.png") no-repeat 5px center #0195cc;
+}
+
+#import-btn:hover{
+	background-color: #5ecff9;
+}
+
 #workspace{
 	margin-left: 400px;
 }
@@ -336,12 +354,33 @@ form .row .comment .optional{
 .screen.settings{
 	display: none;
 }
+
+.screen.import{
+	display: none;
+}
 .screen.default{
 	display: block;
 }
 #download-json{
 	display: none;
 }
+
+#download-csv{
+	display: none;
+}
+
+#download-tsv{
+	display: none;
+}
+
+#fileupload{
+    display: block;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+
 /*
 screws up visualization for some reason
 

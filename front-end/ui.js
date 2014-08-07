@@ -197,7 +197,6 @@ function createBox(type, index){
   return $("<div class='results " + type + "'><div class='bar'><h2></h2></div></div>");
 }
 
-
 function onDownloadButtonClicked(){
 	var btn = $(this);
 	tLoad(true);
@@ -207,20 +206,143 @@ function onDownloadButtonClicked(){
 		if(index){
 			index = parseInt(index);
 		}
-		downloadBox(ws, typ, index);
 
+    if(document.getElementById('dJSON').checked){
+      console.log("downloading in json");
+      downloadBoxjson(ws);
+    }
+    else if (document.getElementById('dCSV').checked){
+      console.log("downloading in csv");
+      downloadBoxcsv(ws, typ, index);
+    } 
+    else if (document.getElementById('dXML').checked){
+      console.log("downloading in xml");
+      downloadBoxXML(ws, typ, index);
+    }
+    else{
+      console.log("downloading in tsv");
+      downloadBoxtsv(ws, typ, index);
+    }
+	
 		tLoad(false);
 	});
 }
 
+function svgDownload(){
+  console.log('svgdownload clicked');
+  var b = $(this);
+  console.log("The id of b is " + b.id);
+  var svg = b[0].find("svg");
+  svg.attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+  var svg = '<svg>' + svg.html() + '</svg>';
+  var b64 = btoa(svg); // or use btoa if supported
+  var win = window.open("data:image/svg+xml;base64,\n"+b64+"_blank");
+}
+
+//b.append($("<id='svgDownload' a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>").click(svgDownload))
+/*
+Download SVG
+function downloadBoxSVG(){
+  // the canvg call that takes the svg xml and converts it to a canvas
+  canvg('canvas', $("svg").html());
+
+  // the canvas calls to output a png
+  var canvas = document.getElementById("canvas");
+  var img = canvas.toDataURL("image/png");
+};
+*/
+  
 function getDownloadButton(){
-	return $("<a class='button'>Download</a>").click(onDownloadButtonClicked);
+	return $("<a id='downloadButton' class='button' title='download'>Download</a>").click(onDownloadButtonClicked);
 }
 
 function csvesc(txt){
 	return ("" + txt).replace(/,|\n/g, "");
 }
-function downloadBox(working_set, typ, index){
+
+function downloadBoxXML(working_set){
+  var xml = "<XML>";  
+  xml += json2xml(working_set);
+  xml += "</XML>"
+  
+  var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(xml), "_blank");
+}
+
+function downloadBoxjson(working_set){
+  var json = JSON.stringify(working_set);
+  
+  var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
+}
+function downloadBoxtsv(working_set, typ, index){
+  var aData = null;
+  var ws = working_set;//easier
+  var tsv = "";
+  if(typ == "analysis"){
+    //show the entry data alongside collection data 
+    if(index !== null){
+      //show only one
+      aData = new Array(ws["analysis"][index]);
+    }
+    else{
+      aData = ws["analysis"];
+    }
+  }
+
+  var cData = ws["data"];
+  //build the top row
+  var thead = $("<tr><th>Index</th></tr>");
+  var first = true;
+  for(var f in ws["meta"]){
+    if(ws["meta"].hasOwnProperty(f)){
+      if(first){
+        first = false;
+      }
+      else{
+        tsv += "\t";
+      }
+      tsv += csvesc(f);
+    }
+  }
+  //add heading for every analysis
+  if(aData){
+    for(var i = 0; i < aData.length; i++){
+      for(var f in aData[i]["entry_meta"]){
+        if(aData[i]["entry_meta"].hasOwnProperty(f)){
+    tsv += "\t" + csvesc(f);
+        }
+      }
+    }
+  }
+  tsv += "\n";
+  for(var i = 0; i < cData.length; i++){
+    var row = $("<tr><td> " + i + "</td></tr>");
+    first = true;
+    for(var f in ws["meta"]){
+      if(ws["meta"].hasOwnProperty(f)){
+        if(first){
+          first = false;
+        }
+        else{
+          tsv += "\t";
+        }
+        tsv += csvesc(cData[i][f]);
+      }
+    }
+    if(aData){
+      for(var j = 0; j < aData.length; j++){
+        for(var f in aData[j]["entry_meta"]){
+          if(aData[j]["entry_meta"].hasOwnProperty(f)){
+            tsv += "\t" + csvesc(aData[j]["entry_analysis"][f][i]);
+          }
+        }
+      }
+    }
+    tsv += "\n";
+  }
+  var win = window.open("data:application/tsv;charset=utf8," + encodeURIComponent(tsv), "_blank");
+}
+
+function downloadBoxcsv(working_set, typ, index){
   var aData = null;
   var ws = working_set;//easier
   var csv = "";
@@ -261,9 +383,9 @@ function downloadBox(working_set, typ, index){
     }
   }
   csv += "\n";
-  first = true;
   for(var i = 0; i < cData.length; i++){
     var row = $("<tr><td> " + i + "</td></tr>");
+    first = true;
     for(var f in ws["meta"]){
       if(ws["meta"].hasOwnProperty(f)){
 	      if(first){
@@ -305,7 +427,7 @@ function showResults(working_set, type){
   var box = createBox(type);
   var h2 = box.find("h2");
   if(type == "collection"){
-    curRefId = working_set["working_set_id"];
+    curRefId = working_set["reference_id"];
     $("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
     h2.html("Collection Data");
     var table = createTable(type, working_set);//this is the HTML created table
@@ -435,9 +557,9 @@ Get all specs, build forms, set up event listeners
 function init(){
   tLoad(true);
   $.ajax({
-    url: CFG.api_endpoint + "specs",
+    url: CFG.host + "/specs",
     dataType: "json",
-    type: "GET",
+    type: "POST",
     success : function(data, stat, jqXHR){
       tLoad(false);
       console.log(data);
@@ -489,25 +611,29 @@ function init(){
         //show next steps
         $("#next-buttons").fadeIn()
         //show analysis/visualization buttons
-        params["input"] = {};
-        params['returnAllData'] = $("#allData").prop("checked") ? true : false;
+        
+
+
+        params['returnAllData'] = $("#allData").prop("checked") ? "true" : "false";
         if((type == "analysis" || type == "visualization") && curRefId != null){
           //add current reference id
-          params["working_set_id"] = curRefId;
+          params["reference_id"] = curRefId;
         }
         for(var i = 0; i < inputs.size(); i++){
           var inp = $(inputs.get(i));
-          params["input"][inp.attr("name")] = inp.val();
+          params[inp.attr("name")] = inp.val();
         }
         for(var i = 0; i < selects.size(); i++){
           var sel = $(selects.get(i));
-          params["input"][sel.attr("name")] = sel.val();
+          params[sel.attr("name")] = sel.val();
         }
         console.log("Sending with params: ");
         console.log(params);
         //ajax call
         if(type == "visualization"){
           var b = createBox('visualization');
+          b.id = "visualzation";
+          console.log("The id of b is " + b.id);
           b.find("h2").html("Exploration Results");
           VIS.callFunction(b[0], mod, fn, params,
             function(){
@@ -519,7 +645,9 @@ function init(){
                 var svg = '<svg>' + svg.html() + '</svg>';
                 var b64 = btoa(svg); // or use btoa if supported
                 // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
-                b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>"));
+                b.append($("<a id='svgDownload' target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>").click(svgDownload));
+                //b.append($("<id='svgDownload' a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>").click(svgDownload));
+                //var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(xml), "_blank");
             });
         }
         else{
@@ -527,7 +655,7 @@ function init(){
           //clear cache
           working_set_cache = null;
            $.ajax({
-              url: CFG.api_endpoint + "run/" + type + "/" + mod + "/" + fn,
+              url: CFG.host + "/op/" + type + "/" + mod + "/" + fn,
               dataType: "json",
               type: "POST",
               data: params,
@@ -609,10 +737,10 @@ function init(){
     e.preventDefault();
     $("#view textarea, #view #close").fadeIn();
     $.ajax({
-            url: CFG.host + "fetch",
+            url: CFG.host + "/download",
             dataType: "json",
-            type: "GET",
-            data: {'working_set_id': $("#view #refID").val(), 'returnAllData': "true"},
+            type: "POST",
+            data: {'reference_id': $("#view #refID").val(), 'returnAllData': "true"},
             success : function(data, stat, jqXHR){
               console.log(data);
               working_set_cache = data;
@@ -659,6 +787,9 @@ function init(){
     }
   });
 
+<<<<<<< HEAD
+  $("#last-modified").html("Page last updated on " + document.lastModified);
+=======
   $.ajax({
     url : "https://api.github.com/repos/kevinAlbs/Socrates",
     dataType: "json",
@@ -668,6 +799,7 @@ function init(){
       $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
     }
   })
+>>>>>>> upstream/master
 
   $("#settings-btn").click(function(){
     if(sidebar == "settings"){
@@ -678,6 +810,7 @@ function init(){
       $(".screen.default").show();
     }
     else{
+      $("#import-btn").html("Import Data");
       $(this).html("Back");
       sidebar = "settings";
       $(".screen").hide();
@@ -685,10 +818,38 @@ function init(){
     }
   });
 
+<<<<<<< HEAD
+  $("#import-btn").click(function(){
+    if(sidebar == "import"){
+      sidebar = "default";
+      //go back
+      $(this).html("Import Data");
+      $(".screen").hide();
+      $(".screen.default").show();
+    }
+    else{
+      $("#settings-btn").html("Settings");
+      $(this).html("Back");
+      sidebar = "import";
+      $(".screen").hide();
+      $(".screen.import").show();
+    }
+  });
+
+$("#fileupload-btn").click(function(){
+    $("#fileupload").click();
+});
+
+  $("#refresh-btn").click(function(){
+  location.reload(true);
+  });
+  
+=======
   $("#refresh-btn").click(function(){
       location.reload(true);
   });
 
+>>>>>>> upstream/master
   $("#showAllData").on("click", handleDataButton);
 }
 
@@ -699,6 +860,52 @@ function test(){
   f.find("input[name=query]").val("test");
   f.find("input[name=lang]").val("en");
   f.find("form").submit()
+}
+
+function json2xml(o, tab) {
+  /*  This work is licensed under Creative Commons GNU LGPL License.
+
+  License: http://creativecommons.org/licenses/LGPL/2.1/
+   Version: 0.9
+  Author:  Stefan Goessner/2006
+  Web:     http://goessner.net/ 
+*/
+   var toXml = function(v, name, ind) {
+      var xml = "";
+      if (v instanceof Array) {
+         for (var i=0, n=v.length; i<n; i++)
+            xml += ind + toXml(v[i], name, ind+"\t") + "\n";
+      }
+      else if (typeof(v) == "object") {
+         var hasChild = false;
+         xml += ind + "<" + name;
+         for (var m in v) {
+            if (m.charAt(0) == "@")
+               xml += " " + m.substr(1) + "=\"" + v[m].toString() + "\"";
+            else
+               hasChild = true;
+         }
+         xml += hasChild ? ">" : "/>";
+         if (hasChild) {
+            for (var m in v) {
+               if (m == "#text")
+                  xml += v[m];
+               else if (m == "#cdata")
+                  xml += "<![CDATA[" + v[m] + "]]>";
+               else if (m.charAt(0) != "@")
+                  xml += toXml(v[m], m, ind+"\t");
+            }
+            xml += (xml.charAt(xml.length-1)=="\n"?ind:"") + "</" + name + ">";
+         }
+      }
+      else {
+         xml += ind + "<" + name + ">" + v.toString() +  "</" + name + ">";
+      }
+      return xml;
+   }, xml="";
+   for (var m in o)
+      xml += toXml(o[m], m, "");
+   return tab ? xml.replace(/\t/g, tab) : xml.replace(/\t|\n/g, "");
 }
 
 $(document).ready(init);
