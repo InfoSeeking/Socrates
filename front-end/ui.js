@@ -760,7 +760,7 @@ function init(){
   });
 
   $.ajax({
-    url : "https://api.github.com/repos/infoseeking/SOCRATES",
+    url : "https://api.github.com/repos/InfoSeeking/Socrates",
     dataType: "json",
     success : function(json){
       console.log(json);

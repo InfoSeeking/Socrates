@@ -47,11 +47,17 @@ class RunHandler {
         enforceMatch("/^[_a-zA-Z0-9]+$/", $module, "module name");
         enforceMatch("/^[_a-zA-Z0-9]+$/", $fn, "function name");
         enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
-        
+
+        $working_set_str = "";
         if (is_array($input)) {
-            $input = json_encode($input);
+            $input =json_encode($input);
+            //TODO: resolve this in a better way
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {//IS WINDOWS
+                $input =  addcslashes($input, '"\\/');
+            } else {
+                $input = escapeshellarg($input);
+            }
         }
-        $input = escapeshellarg($input);
 
         if ($working_set_id) {
             $working_set_str = "--working_set_id " . $working_set_id;

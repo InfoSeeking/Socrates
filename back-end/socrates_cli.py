@@ -2,6 +2,8 @@
 '''
 Example run:
 python socrates_cli.py --input '{"query": "world cup", "count" : 10, "lang" : "en"}' --run collection twitter tw_search 
+python socrates_cli.py --log --input ^"{"query":"world cup","count":"10","latitude":"","longitude":"","radius":"","lang":"en"}^" --run collection twitter tw_search
+python argtest.py '{\"query\":\"world cup\",\"count\":\"10\",\"latitude\":\"\",\"longitude\":\"\",\"radius\":\"\",\"lang\":\"en\"}'
 '''
 import traceback
 from datetime import datetime
@@ -139,6 +141,7 @@ def init():
             print "Running %s, %s, %s\n" % (typ, mod, fn)
             param = {}
             if args.input:
+                print args.input
                 param = json.loads(args.input)
             return_all_data = args.return_all_data
 
