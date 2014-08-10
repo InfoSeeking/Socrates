@@ -79,6 +79,7 @@
           <p>If this is your first time using SOCRATES explore the features by first collecting data.</p>
           <p>To learn more visit the <a href="http://peopleanalytics.org/socrates/" title="SOCRATES" target="_blank">SOCRATES website</a>.</p>
           <p>If you are interested in modifying SOCRATES for your own purposes, <a href="https://github.com/kevinAlbs/Socrates" target="_blank" title="View on GitHub">download it on GitHub</a> and see our <a href="http://peopleanalytics.org/socrates/docs/" target="_blank" title="View documentation">documentation</a>.</p>
+          <p><b>Note:</b> If you would like to download your data from SOCRATES, you need to have pop-ups enabled</p>
         </div>
       </div>
     </div><!--/#wrapper -->
@@ -86,12 +87,26 @@
       <h1>Socrates</h1>
       <div class="inner">
         <div id="feedback" class="err"></div>
+        <a href="#" title="Settings" id="import-btn" class="button">Import Data</a>
+        <a href="#" title="Refresh" id="refresh-btn" class="button">Refresh</a>       
         <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
-		<a href="#" title="Refresh" id="refresh-btn" class="button">Refresh</a>
         <div class="ruler"></div>
         <div class="screen settings">
-          <h2>Download</h2>
-          <a id="download-json" href="#" target="_blank" class="button">Download Working Set (JSON)</a>
+          <h2>Download Format</h2>
+          <!--<a id="download-json" href="#" target="_blank" class="button">Download Working Set (JSON)</a>-->
+          <input id="dJSON"type="radio" name="dformat" value="JSON" checked="checked"> JSON <br>
+          <input id="dXML" type="radio" name="dformat" value="XML"> XML <br>
+          <input id="dCSV" type="radio" name="dformat" value="CSV"> CSV <br>
+          <input id="dTSV" type="radio" name="dformat" value="TSV"> TSV
+        </div>
+        <div class="screen import">
+          <h2>Upload Format</h2>
+          <input id="uJSON"type="radio" name="uformat" value="JSON" checked="checked"> JSON <br>
+          <input id="uXML" type="radio" name="uformat" value="XML"> XML <br>
+          <input id="uCSV" type="radio" name="uformat" value="CSV"> CSV <br>
+          <input id="uTSV" type="radio" name="uformat" value="TSV"> TSV <br>
+          <input id="fileupload" type="file" name="upfile" size="chars">
+          <button id="fileupload-btn">Choose File</button>
         </div>
         <div class="screen default">
           <div id="topbar">
@@ -161,6 +176,9 @@
   <script src="translation.js"></script>
   <script src="visualization.js"></script>
   <script src="ui.js"></script>
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
