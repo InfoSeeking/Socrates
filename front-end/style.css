@@ -185,7 +185,7 @@ form .row .comment .optional{
 	background-color: #5ecff9;
 }
 
-#import-btn{
+#account-btn{
 	display: inline-block;
 	height: 22px;
 	font-size: 14px;
@@ -195,8 +195,20 @@ form .row .comment .optional{
 	background: url("img/importarrow.png") no-repeat 5px center #0195cc;
 }
 
-#import-btn:hover{
+#account-btn:hover{
 	background-color: #5ecff9;
+}
+
+.formatSelect {
+	list-style-type: none;
+}
+
+.formatSelect li {
+	margin: 2.5px;
+}
+
+.formatSelect label:hover, .formatSelect input:hover {
+	cursor: pointer;
 }
 
 #workspace{
@@ -339,31 +351,93 @@ form .row .comment .optional{
 }
 
 #feedback{
+	border-radius: 4px;
 	font-size: 18px;
 	padding: 5px 10px;
 	margin-bottom: 5px;
 	background: #999999;
 	display: none;
 }
+
+.group::before, .group::after {
+	content: "";
+	display: table;
+}
+.group::after {
+	clear:both;
+}
+
 #feedback.err{
 	background: #ED5151
 }
 #feedback.suc{
 	background: #4FB52A;
 }
-.screen.settings{
+
+#feedback-text{
+	float: left;
+}
+#confirm-btn{
+	text-align: center;
+	width: 40px;
+	float: right;
+}
+.screen.settings, .screen.import, .screen.login, .screen.user {
 	display: none;
 }
 
-.screen.import{
-	display: none;
-}
 .screen.default{
 	display: block;
+}
+#data-list {
+	list-style: none;
+}
+
+#data-list li {
+	margin: 5px 5px 5px 0;
+	display: inline-block;
+	padding-right: 0px;
+}
+#data-list li > .button {
+	width: 50px;
+}
+
+#add-data{
+	padding: 5px 12px;
+}
+#log-out {
+	float: right;
+}
+#login-btn {
+	border: 0;
+	margin-top: 5px;
+	background: #0195cc;
+	border-radius: 4px;
+	color: #FFF;
+	cursor: pointer;
+	width: 60px;
+	font-size: 15px;
+	padding: 4px 8px;
+}
+
+#login-:hover, #add-data:hover{
+	background-color: #5ecff9;	
+}
+
+#username, #password {
+	border-radius: 4px;
+	height: 20px;
+	margin: 0 5px;
+	color: #000;
+}
+
+#password {
+	margin-left: 7px;
 }
 
 #fileupload-btn{
 	border: 0;
+	margin-top: 5px;
 	background: #0195cc;
 	border-radius: 4px;
 	color: #FFF;

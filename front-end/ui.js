@@ -1,7 +1,7 @@
 var curRefId = null;
 var curChooser = null;//current field chooser
 var sidebar = "default";
-
+var loggedIn = false;
 /*
 show overlay with html and center
 */
@@ -208,15 +208,15 @@ function onDownloadButtonClicked(){
       index = parseInt(index);
     }
 
-    if(document.getElementById('dJSON').checked){
+    if(document.getElementById('JSON').checked){
       console.log("downloading in json");
       downloadBoxjson(ws);
     }
-    else if (document.getElementById('dCSV').checked){
+    else if (document.getElementById('CSV').checked){
       console.log("downloading in csv");
       downloadBoxcsv(ws, typ, index);
     } 
-    else if (document.getElementById('dXML').checked){
+    else if (document.getElementById('XML').checked){
       console.log("downloading in xml");
       downloadBoxXML(ws, typ, index);
     }
@@ -227,6 +227,38 @@ function onDownloadButtonClicked(){
   
     tLoad(false);
   });
+}
+
+function addData(){
+  $('#data-list').append("<li><button class='button'>Data</button></li>");
+  console.log("Data Added");
+}
+
+function logOut(){
+  console.log("User logged out");
+  loggedIn = false;
+  $(".screen").hide();
+  $(".screen.login").show();
+  $("#username").val("");
+  $("#password").val("");
+}
+
+function logIn(){
+  var username = document.getElementById('username').value;
+  if (username){
+    console.log("User logged in as: " + username);
+    loggedIn = true;
+    $(".screen").hide();
+    $(".screen.user").show();
+  }else{
+    console.log("No username")
+    $("#feedback-text").html("<p>Please enter a username.</p>");
+    $("#feedback").show();
+  }
+}
+
+function confirm(){
+  $("#feedback").hide();
 }
 
 function getDownloadButton(){
@@ -768,6 +800,7 @@ function init(){
       $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
     }
   })
+
   $("#settings-btn").click(function(){
     if(sidebar == "settings"){
       sidebar = "default";
@@ -777,7 +810,7 @@ function init(){
       $(".screen.default").show();
     }
     else{
-      $("#import-btn").html("Import Data");
+      $("#account-btn").html("My Account");
       $(this).html("Back");
       sidebar = "settings";
       $(".screen").hide();
@@ -785,20 +818,24 @@ function init(){
     }
   });
 
-  $("#import-btn").click(function(){
-    if(sidebar == "import"){
+  $("#account-btn").click(function(){
+    if(sidebar == "account"){
       sidebar = "default";
       //go back
-      $(this).html("Import Data");
+      $(this).html("My Account");
       $(".screen").hide();
       $(".screen.default").show();
     }
     else{
       $("#settings-btn").html("Settings");
       $(this).html("Back");
-      sidebar = "import";
+      sidebar = "account";
       $(".screen").hide();
-      $(".screen.import").show();
+      if (loggedIn){
+        $(".screen.user").show();
+      }else{
+        $(".screen.login").show();
+      }
     }
   });
 
@@ -806,6 +843,7 @@ function init(){
     $("#fileupload").click();
   });
  
+
   $("#showAllData").on("click", handleDataButton);
 }
 
@@ -821,6 +859,20 @@ function test(){
   f.find("input[name=lang]").val("en");
   f.find("form").submit()
 }
+
+//File selection
+function handleFileSelect(evt) {
+  var file = evt.target.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+      var results = e.target.result;
+      console.log(results);
+      //document.getElementById('list').innerHTML = "<br>" + csvJSON(results);
+  }
+  reader.readAsText(file);
+}
+
+document.getElementById('fileupload').addEventListener('change', handleFileSelect, false);
 
 function json2xml(o, tab) {
   /*  This work is licensed under Creative Commons GNU LGPL License.

@@ -86,27 +86,40 @@
     <aside id="sidebar">
       <h1>Socrates</h1>
       <div class="inner">
-        <div id="feedback" class="err"></div>
-        <a href="#" title="Settings" id="import-btn" class="button">Import Data</a>
+        <div id="feedback" class="group err">
+          <div id="feedback-text"></div>
+          <button id="confirm-btn" class="button" onclick="confirm()">Ok</button>
+        </div>
+        <a href="#" title="Account" id="account-btn" class="button">My Account</a>
         <a href="#" title="Refresh" id="refresh-btn" class="button">Refresh</a>       
         <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
         <div class="ruler"></div>
         <div class="screen settings">
-          <h2>Download Format</h2>
-          <!--<a id="download-json" href="#" target="_blank" class="button">Download Working Set (JSON)</a>-->
-          <input id="dJSON"type="radio" name="dformat" value="JSON" checked="checked"> JSON <br>
-          <input id="dXML" type="radio" name="dformat" value="XML"> XML <br>
-          <input id="dCSV" type="radio" name="dformat" value="CSV"> CSV <br>
-          <input id="dTSV" type="radio" name="dformat" value="TSV"> TSV
+          <div>
+            <h2>Export/Import Format</h2>
+            <!--<a id="download-json" href="#" target="_blank" class="button">Download Working Set (JSON)</a>-->
+            <ul class="formatSelect">
+              <li><input id="JSON"type="radio" name="format" value="JSON" checked="checked"> <label for="JSON">JSON</label></li>
+              <li><input id="XML" type="radio" name="format" value="XML"> <label for="XML">XML</label></li>
+              <li><input id="CSV" type="radio" name="format" value="CSV"> <label for="CSV">CSV</label></li>
+              <li><input id="TSV" type="radio" name="format" value="TSV"> <label for="TSV">TSV</label></li>
+            </ul>
+          </div>
+          <div>
+            <input id="fileupload" type="file" name="upfile">
+            <button id="fileupload-btn">Import data</button>
+          </div>
         </div>
-        <div class="screen import">
-          <h2>Upload Format</h2>
-          <input id="uJSON"type="radio" name="uformat" value="JSON" checked="checked"> JSON <br>
-          <input id="uXML" type="radio" name="uformat" value="XML"> XML <br>
-          <input id="uCSV" type="radio" name="uformat" value="CSV"> CSV <br>
-          <input id="uTSV" type="radio" name="uformat" value="TSV"> TSV <br>
-          <input id="fileupload" type="file" name="upfile" size="chars">
-          <button id="fileupload-btn">Choose File</button>
+        <div class="screen login">
+          <label for="username">Username: </label><input type="text" id="username"> <br>
+          <label for="password">Password: </label><input type="password" id="password">
+          <button id="login-btn" onclick="logIn()">Log In</button>
+        </div>
+        <div class="screen user">
+          <h2>Your saved data</h2>
+          <button id="add-data" class="button" onclick="addData()">Add Data</button>
+          <button id="log-out" class="button" onclick="logOut()">Log Out</button>
+          <ul id="data-list"></ul>
         </div>
         <div class="screen default">
           <div id="topbar">
