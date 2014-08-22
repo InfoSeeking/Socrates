@@ -194,7 +194,7 @@ function createTable(type, set){
 }
 function createBox(type, index){
   //create a new empty box
-  return $("<div class='results " + type + "'><div class='bar'><h2></h2></div></div>");
+  return $("<div class='results " + type + "'><div class='bar group'><h2></h2></div></div>");
 }
 
 
@@ -229,12 +229,34 @@ function onDownloadButtonClicked(){
   });
 }
 
-function addData(){
-  $('#data-list').append("<li><button class='button'>Data</button></li>");
-  console.log("Data Added");
+function addData(mod, id, type){
+  if (type == "collection"){ // only add data if it is collection
+    if (mod && id){
+      $('#data-list').append("<li><a id='" + id + "' class='button' onclick='fetchPrevious(\"" + id + "\", \"" + mod + "\")'>" + mod + "</a></li>");
+      //$("#"+id).attr("href", CFG.api_endpoint + "fetch/" + id);
+    }
+    else{
+      $('#data-list').append("<li><button class='button'>User</button></li>");
+    }
+    console.log("Data Added");
+  }
 }
 
-function logOut(){
+function fetchPrevious(id, setName){
+  console.log(id);
+  $("#workspace").isotope("remove", $("#workspace").children().children());
+  $.ajax({
+    url : CFG.api_endpoint + "fetch/" + id,
+    dataType: "json",
+    success : function(json){
+      console.log(json);
+      showResults(json, "collection", setName);
+    }
+  })
+  $("#workspace").isotope();
+}
+
+function logScreen(){
   console.log("User logged out");
   loggedIn = false;
   $(".screen").hide();
@@ -258,7 +280,19 @@ function logIn(){
 }
 
 function confirm(){
+  $("#feedback-text").html("");
   $("#feedback").hide();
+}
+
+function closeBoxButton(){
+  return $("<a class='button close'>X</a>").click(closeBox);
+}
+
+function closeBox(){
+  $(this).parent().parent().detach();
+  if ($("#workspace").children().length > 0){
+    $("#workspace").isotope();
+  }
 }
 
 function getDownloadButton(){
@@ -423,7 +457,7 @@ function downloadBoxcsv(working_set, typ, index){
 /*
   Given the working_set, it will create a new box for the most recently created data.
 */
-function showResults(working_set, type){
+function showResults(working_set, type, setName){
   if(showResults.first){
     showResults.first = false;
     $("#workspace #intro").detach();
@@ -438,8 +472,10 @@ function showResults(working_set, type){
   var h2 = box.find("h2");
   if(type == "collection"){
     curRefId = working_set["working_set_id"];
-    $("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
+    //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
     h2.html("Collection Data");
+    h2.append(" (" + setName + ")");
+    h2.parent().append(closeBoxButton());
     var table = createTable(type, working_set);//this is the HTML created table
     box.append(table);
     box.append(showAllDataBtn().attr("data-type", "collection"));
@@ -447,6 +483,7 @@ function showResults(working_set, type){
   }
   else if(type == "analysis"){
     h2.html("Analysis Data");
+    h2.parent().append(closeBoxButton());
     box.append(createTable(type, working_set));
     var curIndex = working_set["analysis"].length - 1;
     if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
@@ -550,6 +587,9 @@ function genForm(data, type, ordering){
     form.append(row);
   }
   form.append("<input type='submit' class='button' />");
+  if (type == "collection"){
+    form.prepend("Name your set: <input type='text' id='setName'>")
+  }
   return form;
 }
 
@@ -614,10 +654,20 @@ function init(){
             type = div.attr("data-type"),
             mod = div.attr("data-mod"),
             fn = div.attr("data-fn"),
+            setName = div.attr("data-fn"),
             params = {};
+        if (type == "collection"){
+          if (form.find("#setName").val()){
+            setName = form.find("#setName").val();
+          }else{
+            $("#feedback-text").html("<p>Don't forget to name your set!</p>");
+            $("#feedback").show();
+          }
+        }
+        console.log(setName)
         $(this).parent().hide();
         $(".type-instructions").hide();
-        $(".topbar .item").removeClass("active");
+        $("#topbar .item").removeClass("active");
         //show next steps
         $("#next-buttons").fadeIn()
         //show analysis/visualization buttons
@@ -641,6 +691,7 @@ function init(){
         if(type == "visualization"){
           var b = createBox('visualization');
           b.find("h2").html("Exploration Results");
+          b.find("h2").parent().append(closeBoxButton());
           VIS.callFunction(b[0], mod, fn, params,
             function(){
               $("#workspace").isotope("insert", b);
@@ -670,7 +721,7 @@ function init(){
                   showError(data.message);
                   return;
                 }
-                showResults(data, type);
+                showResults(data, type, setName);
                 if(params['showAllData']){
                   //then this can be put in cache
                   working_set_cache = data;
@@ -680,6 +731,7 @@ function init(){
               },
               complete: function(jqXHR, stat){
                 console.log("Complete: " + stat);
+                addData(setName, curRefId, type);
                 tLoad(false);
               }
             });
@@ -810,7 +862,7 @@ function init(){
       $(".screen.default").show();
     }
     else{
-      $("#account-btn").html("My Account");
+      $("#data-btn").html("Saved Data");
       $(this).html("Back");
       sidebar = "settings";
       $(".screen").hide();
@@ -818,11 +870,11 @@ function init(){
     }
   });
 
-  $("#account-btn").click(function(){
+  $("#data-btn").click(function(){
     if(sidebar == "account"){
       sidebar = "default";
       //go back
-      $(this).html("My Account");
+      $(this).html("Saved Data");
       $(".screen").hide();
       $(".screen.default").show();
     }
@@ -834,12 +886,12 @@ function init(){
       if (loggedIn){
         $(".screen.user").show();
       }else{
-        $(".screen.login").show();
+        $(".screen.user").show();
       }
     }
   });
 
-  $("#fileupload-btn").click(function(){
+  $("#import-btn").click(function(){
     $("#fileupload").click();
   });
  
@@ -848,7 +900,20 @@ function init(){
 }
 
 $("#refresh-btn").click(function(){
-  location.reload(true);
+  $("#workspace").children().children().detach();
+  $("#settings-btn").html("Settings");
+  $("#data-btn").html("Saved Data");
+  $(".screen").hide();
+  $("#next-buttons").hide();
+  $("#topbar .item .c").addClass("active");
+  $(".function").hide();
+  $(".functions .button").hide();
+  $(".collection .sub.fn").hide();
+  $(".sub.mod").find(".chosen").html("");
+  $(".type-instructions").hide();
+  $(".type-instructions.collection").show();
+  $(".collection .modules .button").show();
+  $(".screen.default").show();
 });
 
 

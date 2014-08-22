@@ -77,8 +77,13 @@ class SpecHandler {
 }
 
 class FetchHandler {
-    public function get(){
-        $working_set_id = getParam("working_set_id", $_GET, true);
+    public function get($id){
+        if ($id) {
+            $working_set_id = $id;
+        }
+        else{
+            $working_set_id = getParam("working_set_id", $_GET, true);
+        }
         enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
         $cmd = sprintf("python socrates_cli.py --log --fetch --working_set_id %s 2>&1", $working_set_id);
         //echo $cmd;
@@ -93,7 +98,7 @@ ToroHook::add("404",  function() {
 Toro::serve(array(
 	"/run/:alpha/:alpha/:alpha" => "RunHandler",
 	"/specs" => "SpecHandler",
-    "/fetch" => "FetchHandler"
+    "/fetch/:alpha" => "FetchHandler"
 ));
 
 ?>

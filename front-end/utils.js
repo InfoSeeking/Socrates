@@ -18,7 +18,7 @@ function getWorkingSet(refID, callback){
 		console.log("Fetching working set for " + refID);
 		//download fresh data
 		$.ajax({
-			url: CFG.api_endpoint + "fetch",
+			url: CFG.api_endpoint + "fetch/" + refID,
 			dataType: "json",
 			type: "get",
 			data: {'returnAllData': true, 'working_set_id': refID},

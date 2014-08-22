@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -90,8 +90,8 @@
           <div id="feedback-text"></div>
           <button id="confirm-btn" class="button" onclick="confirm()">Ok</button>
         </div>
-        <a href="#" title="Account" id="account-btn" class="button">My Account</a>
-        <a href="#" title="Refresh" id="refresh-btn" class="button">Refresh</a>       
+        <a href="#" title="Data" id="data-btn" class="button">Saved Data</a>
+        <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>       
         <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
         <div class="ruler"></div>
         <div class="screen settings">
@@ -105,10 +105,6 @@
               <li><input id="TSV" type="radio" name="format" value="TSV"> <label for="TSV">TSV</label></li>
             </ul>
           </div>
-          <div>
-            <input id="fileupload" type="file" name="upfile">
-            <button id="fileupload-btn">Import data</button>
-          </div>
         </div>
         <div class="screen login">
           <label for="username">Username: </label><input type="text" id="username"> <br>
@@ -117,8 +113,10 @@
         </div>
         <div class="screen user">
           <h2>Your saved data</h2>
-          <button id="add-data" class="button" onclick="addData()">Add Data</button>
-          <button id="log-out" class="button" onclick="logOut()">Log Out</button>
+          <input id="fileupload" type="file" name="upfile">
+          <button id="import-btn" class="button">Import Data</button>
+          <!--//Taking out accounts for now, focusing on multiple data sets in one continuous session
+          <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
           <ul id="data-list"></ul>
         </div>
         <div class="screen default">
