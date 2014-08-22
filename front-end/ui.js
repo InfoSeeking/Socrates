@@ -906,6 +906,7 @@ $("#refresh-btn").click(function(){
   $(".screen").hide();
   $("#next-buttons").hide();
   $("#topbar .item .c").addClass("active");
+  $(".function").hide();
   $(".functions .button").hide();
   $(".collection .sub.fn").hide();
   $(".sub.mod").find(".chosen").html("");
