@@ -41,6 +41,8 @@ class RunHandler {
         $working_set_id = getParam("working_set_id", $_POST, false, null);
         $return_all_data = getParam("return_all_data", $_POST) ? "--return_all_data" : "";
         $input = getParam("input", $_POST, false, "{}");
+        $username = getParam("username", $_POST, true, null);
+        $setname = getParam("setname", $_POST, true, null);
 
         //validate all inputs
         enforceMatch("/^[_a-zA-Z0-9]+$/", $type, "type name");
@@ -62,7 +64,7 @@ class RunHandler {
         if ($working_set_id) {
             $working_set_str = "--working_set_id " . $working_set_id;
         }
-        $cmd = sprintf("python socrates_cli.py --log %s %s --input %s --run %s %s %s 2>&1", $working_set_str, $return_all_data, $input, $type, $module, $fn);
+        $cmd = sprintf("python socrates_cli.py --log %s %s --input %s --run %s %s %s %s %s 2>&1", $working_set_str, $return_all_data, $input, $type, $module, $fn, $username, $setname);
         //TODO: should I log the command here?
 		echo shell_exec($cmd);
 	}
@@ -91,6 +93,25 @@ class FetchHandler {
     }
 }
 
+class ResumeHandler {
+    public function get($name){
+        $working_set_name = $name;
+        $cmd = sprintf("python socrates_cli.py --log --resume --working_set_name %s 2>&1", $working_set_name);
+        //echo $cmd;
+        echo shell_exec($cmd);
+    }
+}
+
+class UploadHandler{
+    public function get($file){
+        $data = $file;
+        #enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
+        $cmd = sprintf("python socrates_cli.py --log --upload %s 2>&1", $file);
+        //echo $cmd;
+        echo shell_exec($cmd);
+    }
+}
+
 ToroHook::add("404",  function() {
     echo "Route not found. Check logs/ for python output/errors."; //TODO: add documentation
 });
@@ -98,7 +119,9 @@ ToroHook::add("404",  function() {
 Toro::serve(array(
 	"/run/:alpha/:alpha/:alpha" => "RunHandler",
 	"/specs" => "SpecHandler",
-    "/fetch/:alpha" => "FetchHandler"
+    "/fetch/:alpha" => "FetchHandler",
+    "/upload/:alpha" => "UploadHandler",
+    "/resume/:alpha" => "ResumeHandler"
 ));
 
 ?>

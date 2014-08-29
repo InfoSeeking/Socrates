@@ -2,6 +2,7 @@ var curRefId = null;
 var curChooser = null;//current field chooser
 var sidebar = "default";
 var loggedIn = false;
+var username = "";
 /*
 show overlay with html and center
 */
@@ -229,31 +230,40 @@ function onDownloadButtonClicked(){
   });
 }
 
-function addData(mod, id, type){
+function removeData(){
+  $("#data-list").toggleClass("remove");
+}
+
+function addData(name, id, type){
   if (type == "collection"){ // only add data if it is collection
-    if (mod && id){
-      $('#data-list').append("<li><a id='" + id + "' class='button' onclick='fetchPrevious(\"" + id + "\", \"" + mod + "\")'>" + mod + "</a></li>");
+    if (name && id){
+      $('#data-list').append("<li><button id='" + id + "' class='button' onclick='fetchPrevious(\"" + id + "\", \"" + name + "\")'>" + name + "</button></li>");
       //$("#"+id).attr("href", CFG.api_endpoint + "fetch/" + id);
     }
     else{
-      $('#data-list').append("<li><button class='button'>User</button></li>");
+      $('#data-list').append("<li><button id='User' class='button' onclick='fetchPrevious(\"User\")'>User</button></li>");
     }
     console.log("Data Added");
   }
 }
 
 function fetchPrevious(id, setName){
-  console.log(id);
-  $("#workspace").isotope("remove", $("#workspace").children().children());
-  $.ajax({
-    url : CFG.api_endpoint + "fetch/" + id,
-    dataType: "json",
-    success : function(json){
-      console.log(json);
-      showResults(json, "collection", setName);
-    }
-  })
-  $("#workspace").isotope();
+  if ($("#data-list").hasClass("remove")){
+    console.log("removing");
+    $("#" + id).remove();
+  }else{
+    console.log("Fetching previous data for: " + id);
+    $("#workspace").isotope("remove", $("#workspace").children().children());
+    $.ajax({
+      url : CFG.api_endpoint + "fetch/" + id,
+      dataType: "json",
+      success : function(json){
+        console.log(json);
+        showResults(json, "collection", setName);
+      }
+    });
+    $("#workspace").isotope();
+  }
 }
 
 function logScreen(){
@@ -266,15 +276,33 @@ function logScreen(){
 }
 
 function logIn(){
-  var username = document.getElementById('username').value;
+  username = $('#username').val();
   if (username){
     console.log("User logged in as: " + username);
     loggedIn = true;
+    //add stuff here so that when user logs in, his data will be retrieved from mongodb and appended to #data-list
+    $.ajax({
+      url : CFG.api_endpoint + "resume/" + username,
+      dataType: "json",
+      success : function(data, status){
+        //DATA IS AN ARRAY OF SETS THAT THE USER HAS ATTACHED TO HIS NAME, iterate through each set and addData to each of them.
+        //add setname to the dataset.
+        
+        for (var i = 0; i < data.length; i++) {
+          //need to add setname to dataset before this can work
+          addData(data[i]['setname'], data[i]['working_set_id'],"collection");
+        }
+        
+        console.log(data);
+        console.log(status);
+        // showResults(json, "collection", setName);
+      }
+    });
     $(".screen").hide();
-    $(".screen.user").show();
+    $(".screen.default").show();
   }else{
     console.log("No username")
-    $("#feedback-text").html("<p>Please enter a username.</p>");
+    $("#feedback-text").html("<p>Please enter a name.</p>");
     $("#feedback").show();
   }
 }
@@ -492,6 +520,15 @@ function showResults(working_set, type, setName){
       box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
     }
   }
+  else if(type == "upload"){
+    h2.html("Imported Data");
+    h2.append(" (" + setName + ")");
+    h2.parent().append(closeBoxButton());
+    var table = createTable(type, working_set);//this is the HTML created table
+    box.append(table);
+    box.append(showAllDataBtn().attr("data-type", "collection"));
+    box.append(getDownloadButton().attr("data-type", "collection"));
+  }
   $("#workspace").isotope('insert' , box);
 }
 showResults.first = true;
@@ -588,7 +625,7 @@ function genForm(data, type, ordering){
   }
   form.append("<input type='submit' class='button' />");
   if (type == "collection"){
-    form.prepend("Name your set: <input type='text' id='setName'>")
+    form.prepend("<label for='setName'>Name your set: </label><input type='text' id='setName'>")
   }
   return form;
 }
@@ -685,6 +722,8 @@ function init(){
           var sel = $(selects.get(i));
           params["input"][sel.attr("name")] = sel.val();
         }
+        params["username"] = username;
+        params["setname"] = setName;
         console.log("Sending with params: ");
         console.log(params);
         //ajax call
@@ -854,39 +893,40 @@ function init(){
   })
 
   $("#settings-btn").click(function(){
-    if(sidebar == "settings"){
-      sidebar = "default";
-      //go back
-      $(this).html("Settings");
-      $(".screen").hide();
-      $(".screen.default").show();
-    }
-    else{
-      $("#data-btn").html("Saved Data");
-      $(this).html("Back");
-      sidebar = "settings";
-      $(".screen").hide();
-      $(".screen.settings").show();
+    if (loggedIn){
+      if(sidebar == "settings"){
+        sidebar = "default";
+        //go back
+        $(this).html("Settings");
+        $(".screen").hide();
+        $(".screen.default").show();
+      }
+      else{
+        $("#data-btn").html("Saved Data");
+        $(this).html("Back");
+        sidebar = "settings";
+        $(".screen").hide();
+        $(".screen.settings").show();
+      }
     }
   });
 
   $("#data-btn").click(function(){
-    if(sidebar == "account"){
-      sidebar = "default";
-      //go back
-      $(this).html("Saved Data");
-      $(".screen").hide();
-      $(".screen.default").show();
-    }
-    else{
-      $("#settings-btn").html("Settings");
-      $(this).html("Back");
-      sidebar = "account";
-      $(".screen").hide();
-      if (loggedIn){
-        $(".screen.user").show();
-      }else{
-        $(".screen.user").show();
+    if (loggedIn){
+      if(sidebar == "account"){
+        sidebar = "default";
+        //go back
+        $(this).html("Saved Data");
+        $(".screen").hide();
+        $(".screen.default").show();
+      }
+      else{
+        $("#settings-btn").html("Settings");
+        $(this).html("Back");
+        sidebar = "account";
+        $(".screen").hide();
+        $(".screen.data").show();
+        
       }
     }
   });
@@ -900,20 +940,22 @@ function init(){
 }
 
 $("#refresh-btn").click(function(){
-  $("#workspace").children().children().detach();
-  $("#settings-btn").html("Settings");
-  $("#data-btn").html("Saved Data");
-  $(".screen").hide();
-  $("#next-buttons").hide();
-  $("#topbar .item .c").addClass("active");
-  $(".function").hide();
-  $(".functions .button").hide();
-  $(".collection .sub.fn").hide();
-  $(".sub.mod").find(".chosen").html("");
-  $(".type-instructions").hide();
-  $(".type-instructions.collection").show();
-  $(".collection .modules .button").show();
-  $(".screen.default").show();
+  if (loggedIn){
+    $("#workspace").children().children().detach();
+    $("#settings-btn").html("Settings");
+    $("#data-btn").html("Saved Data");
+    $(".screen").hide();
+    $("#next-buttons").hide();
+    $("#topbar .item .c").addClass("active");
+    $(".function").hide();
+    $(".functions .button").hide();
+    $(".collection .sub.fn").hide();
+    $(".sub.mod").find(".chosen").html("");
+    $(".type-instructions").hide();
+    $(".type-instructions.collection").show();
+    $(".collection .modules .button").show();
+    $(".screen.default").show();
+  }
 });
 
 
@@ -930,11 +972,21 @@ function handleFileSelect(evt) {
   var file = evt.target.files[0];
   var reader = new FileReader();
   reader.onload = function(e) {
-      var results = e.target.result;
-      console.log(results);
+    var results = e.target.result;
+    console.log(results);
+    $.ajax({
+      url : CFG.api_endpoint + "upload/" + results,
+      dataType: "json",
+      success : function(json){
+        console.log("HI THIS WORKED");
+        console.log(json);
+        showResults(json, "collection", "Your Data");
+      }
+    });
       //document.getElementById('list').innerHTML = "<br>" + csvJSON(results);
   }
   reader.readAsText(file);
+
 }
 
 document.getElementById('fileupload').addEventListener('change', handleFileSelect, false);

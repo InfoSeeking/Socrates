@@ -29,8 +29,8 @@ aside#sidebar .inner{
 #next-buttons .button{
 	font-size: 18px;
 	padding: 10px 20px;
-	margin-left: 25px;
-	margin-right: 25px;
+	margin-left: 20px;
+	margin-right: 20px;
 	margin-top: 20px;
 	display: inline-block;
 }
@@ -52,7 +52,7 @@ aside#sidebar .inner{
 	background: #5ecff9;
 }
 #setName{
-	margin: 0 0 25px 23px;
+	margin: 0 0 25px 0;
 }
 form label{
 	width: 120px;
@@ -385,13 +385,14 @@ form .row .comment .optional{
 	width: 40px;
 	float: right;
 }
-.screen.settings, .screen.import, .screen.login, .screen.user {
+.screen.settings, .screen.import, .screen.default, .screen.data {
 	display: none;
 }
 
-.screen.default{
+/*.screen.default{
 	display: block;
-}
+}*/
+
 #data-list {
 	list-style: none;
 }
@@ -438,7 +439,7 @@ form .row .comment .optional{
 #username, #password {
 	border-radius: 4px;
 	height: 20px;
-	margin: 0 5px;
+	margin: 0 5px 0 0;
 	color: #000;
 }
 
@@ -472,6 +473,18 @@ form .row .comment .optional{
 	margin: 0;
 	float: right;
 	display: inline-block;
+}
+
+#remove-btn {
+	float:right;
+}
+
+#data-list.remove > li > button{
+	background-color: #ED5151;
+}
+
+#data-list.remove > li > button:hover{
+	background-color: #FF7373;
 }
 
 /*
