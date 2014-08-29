@@ -108,13 +108,16 @@ def run(typ, mod, fn, param, working_set=None):
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
     parser.add_argument("--working_set_id", help="ID referencing database working set. Required for analysis", default=False)
+    parser.add_argument("--working_set_name", help="Master name that data set belongs to.  Required for account management", default=False)
     parser.add_argument("--return_all_data", help="If present, returns all of working set. Otherwise returns only first 'row'", action='store_true')
     parser.add_argument("--input", help="Any input required for the module")
     parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--run', help='Run the main program, type=collection|analysis',nargs=3, metavar=("type", "module", "function"))
+    group.add_argument('--run', help='Run the main program, type=collection|analysis',nargs=5, metavar=("type", "module", "function", "username", "setname"))
     group.add_argument("--specs", help='Retrieve JSON specs for all modules and functions', action='store_true')
     group.add_argument("--fetch", help='Retrieve working set from specified id', action='store_true')
+    group.add_argument("--resume", help='Retrieve working sets from specified username', action='store_true')
+    group.add_argument("--upload", help='Upload data from file selection', metavar=("data"))
     args = parser.parse_args()
 
     if args.log:
@@ -134,11 +137,18 @@ def init():
             working_set_id = args.working_set_id
             working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 
+        if args.working_set_name:
+            working_set_name = args.working_set_name
+
         if args.run:
             typ = args.run[0]
             mod = args.run[1]
             fn = args.run[2]
-            print "Running %s, %s, %s\n" % (typ, mod, fn)
+            username = args.run[3]
+            setname = args.run[4]
+
+            print "SETNAME:\n %s" % (setname)
+            print "Running %s, %s, %s for %s\n" % (typ, mod, fn, username)
             param = {}
             if args.input:
                 print args.input
@@ -149,6 +159,8 @@ def init():
                 err("Working set id not included")
 
             working_set = SO.run(typ, mod, fn, param, working_set)
+            working_set['mastername'] = username
+            working_set['setname'] = setname
 
             if 'error' in working_set and working_set['error']:
                 err("Error: " + working_set['message'])
@@ -173,7 +185,9 @@ def init():
                         if "entry_analysis" in a:
                             for p in a['entry_analysis']:
                                 a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
+
             result = json.dumps(working_set)
+            print result
 
         elif args.specs:
             print "Fetching specs\n"
@@ -185,6 +199,31 @@ def init():
             del working_set['_id']
             working_set['working_set_id'] = str(working_set_id)
             result = json.dumps(working_set)
+
+        elif args.resume:
+            result = []
+            print "Resuming working sets for %s\n" % working_set_name
+            working_sets = list(db.collectionData.find({"mastername" : working_set_name}))
+            for i in xrange(len(working_sets)):
+                working_set_id = working_sets[i]['_id']
+                del working_sets[i]['_id']
+                working_sets[i]['working_set_id'] = str(working_set_id)
+                result.append(working_sets[i])
+
+            print json.dumps(result)
+            result = json.dumps(result)
+            
+        elif args.upload:
+            data = args.upload
+            print "Upload Data: %s\n" % data
+            working_set = data
+            # insert_id = db.collectionData.insert(working_set)
+            # del working_set["_id"] #for some reason ObjectID is not JSON serializable
+            # working_set['working_set_id'] = str(insert_id)
+            # print working_set['working_set_id']
+
+
+
     except Exception as e:
         sys.stderr.write("Exception caught: %s\n" % e)
         sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
