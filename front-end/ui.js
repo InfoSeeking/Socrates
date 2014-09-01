@@ -268,42 +268,85 @@ function fetchPrevious(id, setName){
 
 function logScreen(){
   console.log("User logged out");
+  username = "";
   loggedIn = false;
   $(".screen").hide();
   $(".screen.login").show();
+  $("#register-name").val("");
   $("#username").val("");
   $("#password").val("");
 }
 
-function logIn(){
-  username = $('#username').val();
+function register(){
+  var uinput = $('#register-name').val();
+  username = uinput.toLowerCase();
   if (username){
-    console.log("User logged in as: " + username);
-    loggedIn = true;
-    //add stuff here so that when user logs in, his data will be retrieved from mongodb and appended to #data-list
+    console.log("Attempting to register as: " + username);
     $.ajax({
       url : CFG.api_endpoint + "resume/" + username,
       dataType: "json",
       success : function(data, status){
-        //DATA IS AN ARRAY OF SETS THAT THE USER HAS ATTACHED TO HIS NAME, iterate through each set and addData to each of them.
-        //add setname to the dataset.
-        
-        for (var i = 0; i < data.length; i++) {
-          //need to add setname to dataset before this can work
-          addData(data[i]['setname'], data[i]['working_set_id'],"collection");
+        if (data.length > 0){
+          console.log(data);
+          feedback("Username is already taken.", true);
+          console.log("Username already taken.");
+        } else {
+          console.log(data);
+          console.log(status);
+          console.log("New user registered as: " + username);
+          loggedIn = true;
+          feedback("Welcome to SOCRATES, " + uinput + ".");
+          $(".screen").hide();
+          $(".screen.default").show();
         }
-        
-        console.log(data);
-        console.log(status);
-        // showResults(json, "collection", setName);
       }
     });
-    $(".screen").hide();
-    $(".screen.default").show();
   }else{
     console.log("No username")
-    $("#feedback-text").html("<p>Please enter a name.</p>");
-    $("#feedback").show();
+    feedback("Please enter a username.", true);
+  }
+}
+
+function logIn(){
+  var uinput = $('#username').val();
+  username = uinput.toLowerCase();
+  if (username){
+    console.log("Attempting to log in as: " + username);
+    $.ajax({
+      url : CFG.api_endpoint + "resume/" + username,
+      dataType: "json",
+      success : function(data, status){
+        if (data.length > 0){
+          for (var i = 0; i < data.length; i++) {
+            addData(data[i]['setname'], data[i]['working_set_id'],"collection");
+          }
+          console.log(data);
+          console.log(status);
+          loggedIn = true;
+          feedback("Welcome back," + uinput + ".");
+          $(".screen").hide();
+          $(".screen.default").show();
+        } else {
+          console.log(data);
+          feedback("Username not found.", true);
+        }
+      }
+    });
+  }else{
+    console.log("No username")
+    feedback("Please enter a username.", true);
+  }
+}
+
+function feedback(msg, err){
+  if (err){
+    $("#feedback-text").html("<p>" + msg + "</p>");
+    $("#feedback").removeClass("suc").addClass("err");
+    $("#feedback").fadeIn(500);
+  } else{
+    $("#feedback-text").html("<p>" + msg + "</p>");
+    $("#feedback").removeClass("err").addClass("suc");
+    $("#feedback").fadeIn(500);
   }
 }
 
@@ -697,8 +740,7 @@ function init(){
           if (form.find("#setName").val()){
             setName = form.find("#setName").val();
           }else{
-            $("#feedback-text").html("<p>Don't forget to name your set!</p>");
-            $("#feedback").show();
+            feedback("Don't forget to name your set!", true);
           }
         }
         console.log(setName)
@@ -937,6 +979,16 @@ function init(){
  
 
   $("#showAllData").on("click", handleDataButton);
+}
+
+function regScreen() {
+  $(".screen").hide();
+  $(".screen.register").show();
+}
+
+function logScreen() {
+  $(".screen").hide();
+  $(".screen.login").show();
 }
 
 $("#refresh-btn").click(function(){

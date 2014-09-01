@@ -107,14 +107,23 @@
           </div>
         </div>
         <div class="screen login">
-          <label for="username">Username: </label><input type="text" id="username"> <br>
-          <label for="password">Password: </label><input type="password" id="password">
-          <button id="login-btn" onclick="logIn()">Log In</button>
+          <h2>Hello, what's your name?</h2>
+          <input type="text" class="login-field" id="username">
+          <!-- <label for="password">Password: </label><input type="password" id="password"> -->
+          <button class="login-btns" onclick="logIn()">Enter</button> <br>
+          <a href="#" class="sub-link" onclick="regScreen()">Register</a>
         </div>
-        <div class="screen user">
+        <div class="screen register">
+          <h2>Please pick a username:</h2>
+          <input type="text" class="login-field" id="register-name">
+          <button class="login-btns" onclick="register()">Sign up</button> <br>
+          <a href="#" class="sub-link" onclick="logScreen()">Back</a>
+        </div>
+        <div class="screen data">
           <h2>Your saved data</h2>
           <input id="fileupload" type="file" name="upfile">
           <button id="import-btn" class="button">Import Data</button>
+          <button id="remove-btn" class="button" onclick="removeData()">Delete</button>
           <!--//Taking out accounts for now, focusing on multiple data sets in one continuous session
           <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
           <ul id="data-list"></ul>
