@@ -373,6 +373,7 @@ form .row .comment .optional{
 #feedback.err{
 	background: #ED5151
 }
+
 #feedback.suc{
 	background: #4FB52A;
 }
@@ -385,7 +386,7 @@ form .row .comment .optional{
 	width: 40px;
 	float: right;
 }
-.screen.settings, .screen.import, .screen.default, .screen.data {
+.screen.settings, .screen.import, .screen.default, .screen.data, .screen.register {
 	display: none;
 }
 
@@ -394,6 +395,7 @@ form .row .comment .optional{
 }*/
 
 #data-list {
+	display: flex;
 	list-style: none;
 }
 
@@ -420,7 +422,7 @@ form .row .comment .optional{
 #log-in {
 	float: right;
 }
-#login-btn {
+.login-btns {
 	border: 0;
 	margin-top: 5px;
 	background: #0195cc;
@@ -432,11 +434,24 @@ form .row .comment .optional{
 	padding: 4px 8px;
 }
 
-#login-btn:hover, #import-data:hover{
+.sub-link {
+	font-size: 0.75em;
+	margin-bottom: -5px;
+}
+
+.sub-link, .sub-link:visited {
+	color: #0195cc;
+}
+
+.sub-link:hover {
+	color: #fff;
+}
+
+.login-btns:hover, #import-data:hover{
 	background-color: #5ecff9;	
 }
 
-#username, #password {
+.login-field {
 	border-radius: 4px;
 	height: 20px;
 	margin: 0 5px 0 0;
