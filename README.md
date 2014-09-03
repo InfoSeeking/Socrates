@@ -83,3 +83,17 @@ Fetch twitter posts:
 
 Sentiment Analysis:
 ```curl http://localhost:5000/op/analysis/text/sentiment -d "field=content&reference_id=<ref id>"```
+
+
+
+### Rethinking Structure
+Architecture Specifications:
+- Easy uploading/downloading of big data
+- Easily extensible (or easy to add new collection/analysis/visualization) modules
+- Preferably everything in one place (visualization is now almost a separate system, tied to the web)
+- Not specific to a web application, since working with large datasets would likely not be feasible to be uploaded
+- Eventual integration with Hadoop
+
+
+Ideas:
+- Provide a library for clients
