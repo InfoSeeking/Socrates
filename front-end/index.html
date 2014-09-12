@@ -88,7 +88,7 @@
       <div class="inner">
         <div id="feedback" class="group err">
           <div id="feedback-text"></div>
-          <button id="confirm-btn" class="button" onclick="confirm()">Ok</button>
+          <button id="confirm-btn" class="button">Ok</button>
         </div>
         <a href="#" title="Data" id="data-btn" class="button">Saved Data</a>
         <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>       
@@ -107,17 +107,17 @@
           </div>
         </div>
         <div class="screen login">
-          <h2>Hello, what's your name?</h2>
+          <h2>Log in</h2>
           <input type="text" class="login-field" id="username">
           <!-- <label for="password">Password: </label><input type="password" id="password"> -->
-          <button class="login-btns" onclick="logIn()">Enter</button> <br>
-          <a href="#" class="sub-link" onclick="regScreen()">Register</a>
+          <button class="login-btns" id="login-submit-btn">Enter</button> <br>
+          <a href="#" class="sub-link" id="login-register-btn">Register</a>
         </div>
         <div class="screen register">
           <h2>Please pick a username:</h2>
           <input type="text" class="login-field" id="register-name">
-          <button class="login-btns" onclick="register()">Sign up</button> <br>
-          <a href="#" class="sub-link" onclick="logScreen()">Back</a>
+          <button class="login-btns" id="register-btn">Sign up</button> <br>
+          <a href="#" class="sub-link" id="register-back-btn">Back</a>
         </div>
         <div class="screen data">
           <h2>Your saved data</h2>
@@ -128,7 +128,7 @@
           <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
           <ul id="data-list"></ul>
         </div>
-        <div class="screen default">
+        <div class="screen main">
           <div id="topbar">
             <div class="active item c">
               <div class="circle"></div>
@@ -189,16 +189,30 @@
     <footer id="footer"></footer>
   </div><!--/#container -->
 
-  <script src="jquery.js"></script>
-  <script src="d3.js"></script>
-  <script src="isotope.js"></script>
-  <script src="utils.js"></script>
-  <script src="translation.js"></script>
-  <script src="visualization.js"></script>
-  <script src="ui.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/isotope.js"></script>
+  <script src="js/translation.js"></script>
+  <script src="js/visualization.js"></script>
+  <script src="js/UI.js"></script>
+  <script src="js/UTIL.js"></script>
+  <script src="js/Screen.js"></script>
+  <script src="js/MainScreen.js"></script>
+  <script src="js/RegisterScreen.js"></script>
+  <script src="js/LoginScreen.js"></script>
+  <script src="js/SettingsScreen.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+  <script>
+    UI.init({
+      "main" : MainScreen,
+      "register" : RegisterScreen,
+      "login" : LoginScreen,
+      "settings" : SettingsScreen
+    });
+    UI.switchScreen("login");
+  </script>
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

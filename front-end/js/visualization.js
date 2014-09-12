@@ -23,7 +23,7 @@ var VIS = (function(){
 				callback.call();
 			}
 			catch(e){
-				showError("Error: " + e);
+				UI.showError("Error: " + e);
 			}
 		});
 	};

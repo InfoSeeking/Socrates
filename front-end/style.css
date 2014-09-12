@@ -386,13 +386,9 @@ form .row .comment .optional{
 	width: 40px;
 	float: right;
 }
-.screen.settings, .screen.import, .screen.default, .screen.data, .screen.register {
+.screen{
 	display: none;
 }
-
-/*.screen.default{
-	display: block;
-}*/
 
 #data-list {
 	display: flex;
