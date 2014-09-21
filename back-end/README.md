@@ -1,11 +1,4 @@
 #Next Steps
-- migrate the modules from context miner [After looking at the scripts, since they heavily depend on MySQL, and I would have to code the bridge between python and PHP, I think it would be easier to recreate the scripts (Youtube, Flickr, Twitter)
-- add error logging
-- add ability to have objects and nested structures in data (objects within objects, arrays within objects, etc.)
-- polish each existing module to include more data/parameters, and the ability to specify the time of the data creation
-- add API limits to meta of module specifications, this should facilitate campaign creation later
-- Add mod_wsgi and integrate flask with apache
-- Add median to stats
-- Allow any number of a certain parameter to be specified (will be represented as an array in Python)
-- Update Youtube with new v3 API (v2 is deprecated)
-- Num_misspellings takes a LONG time
+- change cli to use a config file and make API endpoint as minimal as possible
+- add python file for just managing user data
+- change it so that a person need not log in, and can use the default "test" user

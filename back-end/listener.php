@@ -97,7 +97,6 @@ class ResumeHandler {
     public function get($name){
         $working_set_name = $name;
         $cmd = sprintf("python socrates_cli.py --log --resume --working_set_name %s 2>&1", $working_set_name);
-        //echo $cmd;
         echo shell_exec($cmd);
     }
 }
@@ -107,7 +106,6 @@ class UploadHandler{
         $data = $file;
         #enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
         $cmd = sprintf("python socrates_cli.py --log --upload %s 2>&1", $file);
-        //echo $cmd;
         echo shell_exec($cmd);
     }
 }

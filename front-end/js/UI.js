@@ -101,6 +101,7 @@ var UI = (function(){
         return loggedIn;
     };
 
+
     function confirm(){
         $("#feedback-text").html("");
         $("#feedback").hide();

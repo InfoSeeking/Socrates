@@ -1,9 +1,7 @@
 #!/usr/bin/python
 '''
 Example run:
-python socrates_cli.py --input '{"query": "world cup", "count" : 10, "lang" : "en"}' --run collection twitter tw_search 
-python socrates_cli.py --log --input ^"{"query":"world cup","count":"10","latitude":"","longitude":"","radius":"","lang":"en"}^" --run collection twitter tw_search
-python argtest.py '{\"query\":\"world cup\",\"count\":\"10\",\"latitude\":\"\",\"longitude\":\"\",\"radius\":\"\",\"lang\":\"en\"}'
+python socrates_cli.py --param param.json
 '''
 import traceback
 from datetime import datetime
@@ -17,7 +15,7 @@ from translation import *
 from pymongo import MongoClient
 from bson import objectid
 from bson.objectid import ObjectId
-import socrates as SO
+import user
 
 origStdout = os.dup(1)
 origStderr = os.dup(2)
@@ -107,18 +105,17 @@ def run(typ, mod, fn, param, working_set=None):
 
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
-    parser.add_argument("--working_set_id", help="ID referencing database working set. Required for analysis", default=False)
-    parser.add_argument("--working_set_name", help="Master name that data set belongs to.  Required for account management", default=False)
-    parser.add_argument("--return_all_data", help="If present, returns all of working set. Otherwise returns only first 'row'", action='store_true')
-    parser.add_argument("--input", help="Any input required for the module")
+    parser.add_argument("--param", help="Reference to parameter file", default=False)
     parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--run', help='Run the main program, type=collection|analysis',nargs=5, metavar=("type", "module", "function", "username", "setname"))
-    group.add_argument("--specs", help='Retrieve JSON specs for all modules and functions', action='store_true')
-    group.add_argument("--fetch", help='Retrieve working set from specified id', action='store_true')
-    group.add_argument("--resume", help='Retrieve working sets from specified username', action='store_true')
-    group.add_argument("--upload", help='Upload data from file selection', metavar=("data"))
     args = parser.parse_args()
+
+    parameters = None
+    if args.param:
+        param_file = open(args.param, "r")
+        parameters = json.load(param_file)
+        param_file.close()
+    if not parameters:
+        err("No parameter file passed", True)
 
     if args.log:
         redirectOutput() #if any stdout/stderr from modules occurs, log it (used for API logging)
@@ -133,32 +130,32 @@ def init():
         working_set = None
         working_set_id = -1
 
-        if args.working_set_id:
+        if parameters.username and parameters.password:
+            #authenticate
+            user.authenticate(parameters.username, parameters.password)
+
+        if parameters.working_set_id:
             working_set_id = args.working_set_id
             working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 
-        if args.working_set_name:
+        if parameters.working_set_name:
             working_set_name = args.working_set_name
 
-        if args.run:
-            typ = args.run[0]
-            mod = args.run[1]
-            fn = args.run[2]
-            username = args.run[3]
-            setname = args.run[4]
+        if parameters.module:
+            typ = args.module.type
+            mod = args.module.name
+            fn = args.module.function
 
-            print "SETNAME:\n %s" % (setname)
             print "Running %s, %s, %s for %s\n" % (typ, mod, fn, username)
             param = {}
-            if args.input:
-                print args.input
-                param = json.loads(args.input)
-            return_all_data = args.return_all_data
+            if parameters.input:
+                param = parameters.input
+            return_all_data = parameters.return_all_data
 
             if typ == "analysis" and working_set is None:
                 err("Working set id not included")
 
-            working_set = SO.run(typ, mod, fn, param, working_set)
+            working_set = run(typ, mod, fn, param, working_set)
             working_set['mastername'] = username
             working_set['setname'] = setname
 
@@ -189,18 +186,18 @@ def init():
             result = json.dumps(working_set)
             print result
 
-        elif args.specs:
+        elif parameters.specs:
             print "Fetching specs\n"
             result = json.dumps(getAllSpecs())
 
-        elif args.fetch:
+        elif parameters.fetch:
             print "Fetching working set %s\n" % working_set_id
             working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
             del working_set['_id']
             working_set['working_set_id'] = str(working_set_id)
             result = json.dumps(working_set)
 
-        elif args.resume:
+        elif parameters.resume:
             result = []
             print "Resuming working sets for %s\n" % working_set_name
             working_sets = list(db.collectionData.find({"mastername" : working_set_name}))
@@ -213,14 +210,16 @@ def init():
             print json.dumps(result)
             result = json.dumps(result)
             
-        elif args.upload:
-            data = args.upload
+        elif parameters.upload:
+            data = parameters.upload
             print "Upload Data: %s\n" % data
             working_set = data
             # insert_id = db.collectionData.insert(working_set)
             # del working_set["_id"] #for some reason ObjectID is not JSON serializable
             # working_set['working_set_id'] = str(insert_id)
             # print working_set['working_set_id']
+
+        user.addWorkingSet(working_set)
 
 
 
