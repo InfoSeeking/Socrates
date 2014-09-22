@@ -1,18 +1,6 @@
 <?php
 /*
- * Python should do heavy lifting, this should 
- * be a dead simple API listener.
- *
- * Seperating this also has the added benefit of making it easier to run
- * SOCRATES since it would be no longer bound to the API. It could be
- * run from command line.
- *
- * Test: 
- http://localhost/socrates/back-end/listener.php/run/collection/twitter/tw_search?input={%22query%22:%20%22world%20cup%22,%20%22count%22%20:%2010,%20%22lang%22%20:%20%22en%22}
-
- Before Pushing:
- - install tweepy on server
- - redirect stderr to an error log (may need to play around with permissions for this)
+ * Python should do heavy lifting, this should be a dead simple API listener.
  */
 require_once("phplib/Toro.php");//Routing library
 
@@ -36,90 +24,18 @@ function enforceMatch($val, $regex, $argname=""){
     }
 }
 
-class RunHandler {
-	public function post($type, $module, $fn){
-        $working_set_id = getParam("working_set_id", $_POST, false, null);
-        $return_all_data = getParam("return_all_data", $_POST) ? "--return_all_data" : "";
-        $input = getParam("input", $_POST, false, "{}");
-        $username = getParam("username", $_POST, true, null);
-        $setname = getParam("setname", $_POST, true, null);
-
-        //validate all inputs
-        enforceMatch("/^[_a-zA-Z0-9]+$/", $type, "type name");
-        enforceMatch("/^[_a-zA-Z0-9]+$/", $module, "module name");
-        enforceMatch("/^[_a-zA-Z0-9]+$/", $fn, "function name");
-        enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
-
-        $working_set_str = "";
-        if (is_array($input)) {
-            $input =json_encode($input);
-            //TODO: resolve this in a better way
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {//IS WINDOWS
-                $input =  addcslashes($input, '"\\/');
-            } else {
-                $input = escapeshellarg($input);
-            }
-        }
-
-        if ($working_set_id) {
-            $working_set_str = "--working_set_id " . $working_set_id;
-        }
-        $cmd = sprintf("python socrates_cli.py --log %s %s --input %s --run %s %s %s %s %s 2>&1", $working_set_str, $return_all_data, $input, $type, $module, $fn, $username, $setname);
-        //TODO: should I log the command here?
-		echo shell_exec($cmd);
-	}
-}
-
-class SpecHandler {
-    public function get(){
-        //get from command line tool
-        $cmd = sprintf("python socrates_cli.py --log --specs");
-		echo shell_exec($cmd);
-	}
-}
-
-class FetchHandler {
-    public function get($id){
-        if ($id) {
-            $working_set_id = $id;
-        }
-        else{
-            $working_set_id = getParam("working_set_id", $_GET, true);
-        }
-        enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
-        $cmd = sprintf("python socrates_cli.py --log --fetch --working_set_id %s 2>&1", $working_set_id);
-        //echo $cmd;
-        echo shell_exec($cmd);
+function writeToTemp($name, $contents, $ext="json") {
+    $filename = "parameters/" . $name . microtime() . "." . $ext;
+    if(file_put_contents($filename, $contents) === false) {
+        throw new Exception("Cannot write to parameter file");
     }
+    return $filename;
 }
 
-class ResumeHandler {
-    public function get($name){
-        $working_set_name = $name;
-        $cmd = sprintf("python socrates_cli.py --log --resume --working_set_name %s 2>&1", $working_set_name);
-        echo shell_exec($cmd);
-    }
-}
-
-class UploadHandler{
-    public function get($file){
-        $data = $file;
-        #enforceMatch("/^[_a-zA-Z0-9]*$/", $working_set_id, "working set id");
-        $cmd = sprintf("python socrates_cli.py --log --upload %s 2>&1", $file);
-        echo shell_exec($cmd);
-    }
-}
-
-ToroHook::add("404",  function() {
-    echo "Route not found. Check logs/ for python output/errors."; //TODO: add documentation
-});
-
-Toro::serve(array(
-	"/run/:alpha/:alpha/:alpha" => "RunHandler",
-	"/specs" => "SpecHandler",
-    "/fetch/:alpha" => "FetchHandler",
-    "/upload/:alpha" => "UploadHandler",
-    "/resume/:alpha" => "ResumeHandler"
-));
+$parameters = getParam("parameters", $_POST, true);
+$param_file = writeToTemp("parameters", $parameters, "json");
+$cmd = sprintf("python socrates_cli.py --log --param %s 2>&1", $param_file);
+echo shell_exec($cmd);
+unlink($param_file);
 
 ?>
