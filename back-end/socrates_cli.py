@@ -130,21 +130,21 @@ def init():
         working_set = None
         working_set_id = -1
 
-        if parameters.username and parameters.password:
+        if 'username' in parameters and 'password' in parameters:
             #authenticate
-            user.authenticate(parameters.username, parameters.password)
+            user.authenticate(parameters['username'], parameters['password'])
 
-        if parameters.working_set_id:
-            working_set_id = args.working_set_id
+        if 'working_set_id' in parameters:
+            working_set_id = parameters['working_set_id']
             working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
 
-        if parameters.working_set_name:
-            working_set_name = args.working_set_name
+        if 'working_set_name' in parameters:
+            working_set_name = parameters['working_set_name']
 
-        if parameters.module:
-            typ = args.module.type
-            mod = args.module.name
-            fn = args.module.function
+        if 'module' in parameters:
+            typ = parameters['module']['type']
+            mod = parameters['module']['name']
+            fn = parameters['module']['function']
 
             print "Running %s, %s, %s for %s\n" % (typ, mod, fn, username)
             param = {}
@@ -186,18 +186,18 @@ def init():
             result = json.dumps(working_set)
             print result
 
-        elif parameters.specs:
+        elif 'specs' in parameters:
             print "Fetching specs\n"
             result = json.dumps(getAllSpecs())
 
-        elif parameters.fetch:
+        elif 'fetch' in parameters:
             print "Fetching working set %s\n" % working_set_id
             working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
             del working_set['_id']
             working_set['working_set_id'] = str(working_set_id)
             result = json.dumps(working_set)
 
-        elif parameters.resume:
+        elif 'resume' in parameters:
             result = []
             print "Resuming working sets for %s\n" % working_set_name
             working_sets = list(db.collectionData.find({"mastername" : working_set_name}))
@@ -210,8 +210,8 @@ def init():
             print json.dumps(result)
             result = json.dumps(result)
             
-        elif parameters.upload:
-            data = parameters.upload
+        elif 'upload' in parameters:
+            data = parameters['upload']
             print "Upload Data: %s\n" % data
             working_set = data
             # insert_id = db.collectionData.insert(working_set)

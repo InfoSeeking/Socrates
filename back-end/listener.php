@@ -2,7 +2,6 @@
 /*
  * Python should do heavy lifting, this should be a dead simple API listener.
  */
-require_once("phplib/Toro.php");//Routing library
 
 header("Access-Control-Allow-Origin: *");
 
@@ -33,9 +32,9 @@ function writeToTemp($name, $contents, $ext="json") {
 }
 
 $parameters = getParam("parameters", $_POST, true);
-$param_file = writeToTemp("parameters", $parameters, "json");
+$param_file = writeToTemp("parameters", json_encode($parameters), "json");
 $cmd = sprintf("python socrates_cli.py --log --param %s 2>&1", $param_file);
 echo shell_exec($cmd);
-unlink($param_file);
+//unlink($param_file);
 
 ?>

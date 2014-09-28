@@ -15,5 +15,5 @@ def register():
 def getWorkingSets():
     pass
 
-def addWorkingSet():
+def addWorkingSet(working_set):
     pass

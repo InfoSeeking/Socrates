@@ -15,8 +15,13 @@ var MainScreen = (function(){
     that.init = function(){
       UI.toggleLoader(true);
       $.ajax({
-        url: UTIL.CFG.api_endpoint + "specs",
+        url: UTIL.CFG.api_endpoint,
         dataType: "json",
+        data : {
+            "parameters" : {
+                "socrates_function" : "specs"
+            }
+        },
         type: "GET",
         success : function(data, stat, jqXHR){
           UI.toggleLoader(false);
