@@ -18,11 +18,9 @@ var MainScreen = (function(){
         url: UTIL.CFG.api_endpoint,
         dataType: "json",
         data : {
-            "parameters" : {
-                "socrates_function" : "specs"
-            }
+            "specs" : true
         },
-        type: "GET",
+        type: "POST",
         success : function(data, stat, jqXHR){
           UI.toggleLoader(false);
           console.log(data);
@@ -68,12 +66,16 @@ var MainScreen = (function(){
                 mod = div.attr("data-mod"),
                 fn = div.attr("data-fn"),
                 setName = div.attr("data-fn"),
-                params = {};
+                params = {
+                  "type": type,
+                  "module" : mod,
+                  "function" : fn
+                };
             if (type == "collection"){
               if (form.find("#setName").val()){
                 setName = form.find("#setName").val();
               }else{
-                UI.feedback("Don't forget to name your set!", true);
+                UI.feedback("Name your dataset", true);
               }
             }
             $(this).parent().hide();
@@ -83,7 +85,7 @@ var MainScreen = (function(){
             $("#next-buttons").fadeIn()
             //show analysis/visualization buttons
             params["input"] = {};
-            params['returnAllData'] = $("#allData").prop("checked") ? true : false;
+            params['return_all_data'] = $("#allData").prop("checked") ? true : false;
             if((type == "analysis" || type == "visualization") && curRefId != null){
               //add current reference id
               params["working_set_id"] = curRefId;
@@ -96,7 +98,7 @@ var MainScreen = (function(){
               var sel = $(selects.get(i));
               params["input"][sel.attr("name")] = sel.val();
             }
-            params["username"] = username;
+            //params["username"] = username;
             params["setname"] = setName;
             //ajax call
             if(type == "visualization"){
@@ -120,8 +122,9 @@ var MainScreen = (function(){
               UI.toggleLoader(true);
               //clear cache
               working_set_cache = null;
+              console.log(params)
                $.ajax({
-                  url: UTIL.CFG.api_endpoint + "run/" + type + "/" + mod + "/" + fn,
+                  url: UTIL.CFG.api_endpoint,
                   dataType: "json",
                   type: "POST",
                   data: params,
@@ -133,7 +136,7 @@ var MainScreen = (function(){
                       return;
                     }
                     showResults(data, type, setName);
-                    if(params['showAllData']){
+                    if(params['return_all_data']){
                       //then this can be put in cache
                       working_set_cache = data;
                     }
@@ -267,22 +270,6 @@ var MainScreen = (function(){
         }
       });
 
-      $("#data-btn").click(function(){
-        if (UI.isLoggedIn()){
-          if(sidebar == "account"){
-            sidebar = "default";
-            //go back
-            $(this).html("Saved Data");
-            UI.switchScreen("main");
-          }
-          else{
-            $("#settings-btn").html("Settings");
-            $(this).html("Back");
-            sidebar = "account";
-            UI.switchScreen("main");
-          }
-        }
-      });
 
       $("#import-btn").click(function(){
         $("#fileupload").click();

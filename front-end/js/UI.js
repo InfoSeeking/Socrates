@@ -40,15 +40,47 @@ var UI = (function(){
           }
         });
 
+        $("#login-btn").click(function(){
+            UI.switchScreen("login");
+        });
+
+        $("#settings-btn").click(function(){
+            UI.switchScreen("settings");
+        });
+
+        $("#home-btn").click(function(){
+            UI.switchScreen("main");
+        })
+
+        $("#data-btn").click(function(){
+            if (UI.isLoggedIn()){
+              if(sidebar == "account"){
+                sidebar = "default";
+                //go back
+                $(this).html("Saved Data");
+                UI.switchScreen("main");
+              }
+              else{
+                $("#settings-btn").html("Settings");
+                $(this).html("Back");
+                sidebar = "account";
+                UI.switchScreen("main");
+              }
+            }
+          });
+
         $("#confirm-btn").click(confirm);
+    };
+
+    function updateNav(){
+
     };
 
     that.switchScreen = function(val){
         if(screens.hasOwnProperty(val)){
-            console.log("showing screen " + val);
             var new_screen = screens[val];
             new_screen.show();
-            if(current_screen){
+            if(current_screen && current_screen != new_screen){
                 current_screen.hide();
             }
             current_screen = new_screen;

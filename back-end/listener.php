@@ -24,17 +24,16 @@ function enforceMatch($val, $regex, $argname=""){
 }
 
 function writeToTemp($name, $contents, $ext="json") {
-    $filename = "parameters/" . $name . microtime() . "." . $ext;
+    $filename = "parameters/" . $name . date("h_m_s") . "." . $ext;
     if(file_put_contents($filename, $contents) === false) {
         throw new Exception("Cannot write to parameter file");
     }
     return $filename;
 }
 
-$parameters = getParam("parameters", $_POST, true);
-$param_file = writeToTemp("parameters", json_encode($parameters), "json");
+$param_file = writeToTemp("p_", json_encode($_POST), "json");
 $cmd = sprintf("python socrates_cli.py --log --param %s 2>&1", $param_file);
 echo shell_exec($cmd);
-//unlink($param_file);
+unlink($param_file);
 
 ?>

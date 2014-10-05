@@ -133,6 +133,9 @@ def init():
         if 'username' in parameters and 'password' in parameters:
             #authenticate
             user.authenticate(parameters['username'], parameters['password'])
+        else:
+            #use default user
+            user.setDefault()
 
         if 'working_set_id' in parameters:
             working_set_id = parameters['working_set_id']
@@ -142,22 +145,24 @@ def init():
             working_set_name = parameters['working_set_name']
 
         if 'module' in parameters:
-            typ = parameters['module']['type']
-            mod = parameters['module']['name']
-            fn = parameters['module']['function']
+            typ = parameters['type']
+            mod = parameters['module']
+            fn = parameters['function']
 
-            print "Running %s, %s, %s for %s\n" % (typ, mod, fn, username)
+            print "Running %s, %s, %s\n" % (typ, mod, fn)
             param = {}
-            if parameters.input:
-                param = parameters.input
-            return_all_data = parameters.return_all_data
+            if "input" in parameters:
+                param = parameters["input"]
+            return_all_data = False
+            if "return_all_data" in parameters:
+                return_all_data = parameters["return_all_data"]
 
             if typ == "analysis" and working_set is None:
                 err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
-            working_set['mastername'] = username
-            working_set['setname'] = setname
+            #working_set['mastername'] = username
+            #working_set['setname'] = setname
 
             if 'error' in working_set and working_set['error']:
                 err("Error: " + working_set['message'])

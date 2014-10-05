@@ -157,13 +157,22 @@ form .row .comment .optional{
 	border-radius: 6px;
 	background: #4c4c4c;
 }
-#settings-btn{
+
+#sidebar nav a{
 	display: inline-block;
 	height: 22px;
-	padding-left: 30px;
+	padding-left: 5px;
 	font-size: 14px;
 	padding-top: 8px;
 	padding-right: 5px;
+}
+
+#settings nav a:hover{
+	background-color: #5ecff9;
+}
+
+#sidebar #settings-btn{
+	padding-left: 30px;
 	background: url("img/settings.png") no-repeat 5px center #0195cc;
 	float: right;
 }
@@ -172,7 +181,7 @@ form .row .comment .optional{
 	background-color: #5ecff9;
 }
 
-#refresh-btn{
+#sidebar #refresh-btn{
 	display: inline-block;
 	height: 22px;
 	font-size: 14px;
@@ -188,19 +197,6 @@ form .row .comment .optional{
 	background-color: #5ecff9;
 }
 
-#data-btn{
-	display: inline-block;
-	height: 22px;
-	font-size: 14px;
-	padding-top: 8px;
-	padding-right: 5px;
-	padding-left: 30px;
-	background: url("img/importarrow.png") no-repeat 5px center #0195cc;
-}
-
-#data-btn:hover{
-	background-color: #5ecff9;
-}
 
 .formatSelect {
 	list-style-type: none;
