@@ -16,24 +16,26 @@ var RegisterScreen = (function(){
     
     function register(){
       var uinput = $('#register-name').val();
-      username = uinput.toLowerCase();
+      var pinput = $('#register-password').val();
       if (username){
-        console.log("Attempting to register as: " + username);
         $.ajax({
-          url : UTIL.CFG.api_endpoint + "resume/" + username,
+          url : UTIL.CFG.api_endpoint,
+          type: "POST",
+          data : {
+            "register" : true,
+            "username" : uinput,
+            "password" : pinput
+          },
           dataType: "json",
           success : function(data, status){
-            if (data.length > 0){
-              console.log(data);
-              UI.feedback("Username is already taken.", true);
-              console.log("Username already taken.");
-            } else {
-              console.log(data);
-              console.log(status);
-              console.log("New user registered as: " + username);
-              loggedIn = true;
-              UI.feedback("Welcome to SOCRATES, " + uinput + ".");
-              UI.switchScreen("main");
+            if (data.attempted) {
+              if (data.taken){
+                UI.feedback("Username is already taken.", true);
+              } else {
+                loggedIn = true;
+                UI.feedback("Welcome to SOCRATES, " + uinput + ".");
+                UI.switchScreen("main");
+              }
             }
           }
         });

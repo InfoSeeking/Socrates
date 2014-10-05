@@ -10,5 +10,11 @@ CREDS = {
 		"secret": "",
 		"uname": "",
 		"pass": ""
-	}
+	},
+    "mysql" : {
+        "host" : "",
+        "user" : "",
+        "password" : "",
+        "database" : ""
+    }
 }

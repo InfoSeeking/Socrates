@@ -130,9 +130,15 @@ def init():
         working_set = None
         working_set_id = -1
 
+
         if 'username' in parameters and 'password' in parameters:
-            #authenticate
-            user.authenticate(parameters['username'], parameters['password'])
+            if 'register' in parameters:
+                #register new user
+                taken = not user.register(parameters['username'], parameters['password'])
+                result = json.dumps({"attempted": True, "taken" : taken})
+            else:
+                #authenticate
+                user.authenticate(parameters['username'], parameters['password'])
         else:
             #use default user
             user.setDefault()

@@ -270,7 +270,6 @@ var MainScreen = (function(){
         }
       });
 
-
       $("#import-btn").click(function(){
         $("#fileupload").click();
       });
