@@ -1,1 +1,15 @@
-{"type":"collection","module":"twitter","function":"tw_search","input":{"query":"test","count":"10","latitude":"","longitude":"","radius":"","lang":"en"},"return_all_data":"false","setname":"test"}
+{
+    "function": "tw_search",
+    "input": {
+        "count": "10",
+        "lang": "en",
+        "latitude": "",
+        "longitude": "",
+        "query": "test",
+        "radius": ""
+    },
+    "module": "twitter",
+    "return_all_data": "false",
+    "setname": "test",
+    "type": "collection"
+}

@@ -52,13 +52,11 @@ def restoreOutput():
     os.dup(origStderr)
     os.close(origStderr)
 
-def err(msg, fatal=True):
-    print json.dumps({
-    'error' : 'true',
+def err(msg):
+    return json.dumps({
+    'error' : True,
     'message': msg
     })
-    if fatal:
-        sys.exit(1)
 
 '''
 The run method ties together the running of operators.
@@ -102,29 +100,10 @@ def run(typ, mod, fn, param, working_set=None):
             #Store this data
             return working_set
 
-
-def init():
-    parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
-    parser.add_argument("--param", help="Reference to parameter file", default=False)
-    parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
-    args = parser.parse_args()
-
-    parameters = None
-    if args.param:
-        param_file = open(args.param, "r")
-        parameters = json.load(param_file)
-        param_file.close()
-    if not parameters:
-        err("No parameter file passed", True)
-
-    if args.log:
-        redirectOutput() #if any stdout/stderr from modules occurs, log it (used for API logging)
-        dateStr = "--start-%s--\n" % datetime.now()
-        sys.stderr.write(dateStr)
-        sys.stdout.write(dateStr)
+def parse_params(parameters):
     try:
         client = MongoClient()
-        db = client.socrates
+        mongodb = client.socrates
 
         result = "" #string result from each run-type to print at the end
         working_set = None
@@ -138,18 +117,20 @@ def init():
                 result = json.dumps({"attempted": True, "taken" : taken})
             else:
                 #authenticate
-                user.authenticate(parameters['username'], parameters['password'])
+                if not user.authenticate(parameters['username'], parameters['password']):
+                    return err("Invalid username and password", True)
         else:
             #use default user
             user.setDefault()
 
         if 'working_set_id' in parameters:
             working_set_id = parameters['working_set_id']
-            working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
+            working_set = mongodb.working_sets.find_one({"_id" : ObjectId(working_set_id)})
 
         if 'working_set_name' in parameters:
             working_set_name = parameters['working_set_name']
 
+        #mutually exclusive if-elif
         if 'module' in parameters:
             typ = parameters['type']
             mod = parameters['module']
@@ -167,21 +148,16 @@ def init():
                 err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
-            #working_set['mastername'] = username
-            #working_set['setname'] = setname
 
             if 'error' in working_set and working_set['error']:
                 err("Error: " + working_set['message'])
 
             #store new/modified working set
             if typ == "collection":
-                insert_id = db.collectionData.insert(working_set)
-                del working_set["_id"] #for some reason ObjectID is not JSON serializable
+                insert_id = user.addWorkingSet(working_set)
                 working_set['working_set_id'] = str(insert_id)
             elif typ == "analysis":
-                working_set["_id"] = ObjectId(working_set_id)
-                db.collectionData.save(working_set) #overwrite in database
-                del working_set['_id']
+                user.updateWorkingSet(working_set_id, working_set) #overwrite in database
                 working_set['working_set_id'] = str(working_set_id)
 
             if not return_all_data:
@@ -194,56 +170,68 @@ def init():
                             for p in a['entry_analysis']:
                                 a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
 
-            result = json.dumps(working_set)
-            print result
+            return json.dumps(working_set)
 
         elif 'specs' in parameters:
             print "Fetching specs\n"
-            result = json.dumps(getAllSpecs())
+            return json.dumps(getAllSpecs())
 
         elif 'fetch' in parameters:
             print "Fetching working set %s\n" % working_set_id
-            working_set = db.collectionData.find_one({"_id" : ObjectId(working_set_id)})
-            del working_set['_id']
+            working_set = user.getWorkingSet(working_set_id)
             working_set['working_set_id'] = str(working_set_id)
-            result = json.dumps(working_set)
+            return json.dumps(working_set)
 
-        elif 'resume' in parameters:
-            result = []
-            print "Resuming working sets for %s\n" % working_set_name
-            working_sets = list(db.collectionData.find({"mastername" : working_set_name}))
-            for i in xrange(len(working_sets)):
-                working_set_id = working_sets[i]['_id']
-                del working_sets[i]['_id']
-                working_sets[i]['working_set_id'] = str(working_set_id)
-                result.append(working_sets[i])
+        elif 'fetch_all_ids' in parameters:
+            print "Fetching all working sets for %s\n" % working_set_name
+            working_sets = user.getWorkingSets()
+            working_set_ids = []
+            for w in working_sets:
+                working_set_ids.append(w["working_set_id"])
 
-            print json.dumps(result)
-            result = json.dumps(result)
+            return json.dumps(working_set_ids)
             
         elif 'upload' in parameters:
             data = parameters['upload']
             print "Upload Data: %s\n" % data
             working_set = data
-            # insert_id = db.collectionData.insert(working_set)
+            # insert_id = mongodb.collectionData.insert(working_set)
             # del working_set["_id"] #for some reason ObjectID is not JSON serializable
             # working_set['working_set_id'] = str(insert_id)
             # print working_set['working_set_id']
-
-        user.addWorkingSet(working_set)
-
-
 
     except Exception as e:
         sys.stderr.write("Exception caught: %s\n" % e)
         sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
 
+def init():
+    parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
+    parser.add_argument("--param", help="Reference to parameter file", default=False)
+    parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
+    args = parser.parse_args()
+
+    parameters = None
+    if args.param:
+        param_file = open(args.param, "r")
+        parameters = json.load(param_file)
+        param_file.close()
+    if not parameters:
+        return err("No parameter file passed")
+
+    if args.log:
+        redirectOutput() #if any stdout/stderr from modules occurs, log it (used for API logging)
+        dateStr = "--start-%s--\n" % datetime.now()
+        sys.stderr.write(dateStr)
+        sys.stdout.write(dateStr)
+    
+    result = parse_params(parameters)
 
     if args.log:
         sys.stdout.write("--end--\n")
         sys.stderr.write("--end--\n")
         restoreOutput()
+    return result
 
-    print result
-
-init()
+    
+str_result = init()
+print str_result
