@@ -374,13 +374,11 @@ form .row .comment .optional{
 }
 
 #data-list {
-	display: flex;
 	list-style: none;
 }
 
 #data-list li {
 	margin: 5px 5px 5px 0;
-	display: inline-block;
 	padding-right: 0px;
 }
 #data-list li > .button {

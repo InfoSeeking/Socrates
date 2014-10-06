@@ -7,6 +7,7 @@ var UI = (function(){
     var curRefId = null;
     var loggedIn = false;
     var username = "";
+    var password = "";
 
 
     that.init = function(screen_map){
@@ -58,18 +59,7 @@ var UI = (function(){
 
         $("#data-btn").click(function(){
             if (UI.isLoggedIn()){
-              if(sidebar == "account"){
-                sidebar = "default";
-                //go back
-                $(this).html("Saved Data");
-                UI.switchScreen("main");
-              }
-              else{
-                $("#settings-btn").html("Settings");
-                $(this).html("Back");
-                sidebar = "account";
-                UI.switchScreen("main");
-              }
+                UI.switchScreen("data");
             }
           });
 
@@ -129,15 +119,16 @@ var UI = (function(){
       }
     }
 
-    that.setLoggedIn = function(val, u){
+    that.setLoggedIn = function(val, u, p){
         loggedIn = val;
         if (val) {
             $("#data-btn").removeClass("inactive");
         } else {
-            $("#data-btn").removeClass("active");
+            $("#data-btn").addClass("inactive");
         }
-        if (u) {
+        if (u && p) {
             username = u;
+            password = p;
         }
     };
 
@@ -148,6 +139,9 @@ var UI = (function(){
     that.getUsername = function() {
         return username;
     };
+    that.getPassword = function() {
+        return password;
+    }
 
 
     function confirm(){

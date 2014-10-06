@@ -186,13 +186,21 @@ def parse_params(parameters):
             return json.dumps(working_set)
 
         elif 'fetch_all_ids' in parameters:
-            print "Fetching all working sets for %s\n" % working_set_name
             working_sets = user.getWorkingSets()
-            working_set_ids = []
+            working_set_identifiers = []
             for w in working_sets:
-                working_set_ids.append(w["working_set_id"])
+                wid = {
+                    "id" : w["working_set_id"],
+                    "name" : "Untitled Working Set"
+                }
+                if "working_set_name" in w:
+                    wid["name"] = w["working_set_name"]
 
-            return json.dumps(working_set_ids)
+                working_set_identifiers.append(wid)
+
+            return json.dumps({
+                "ids" : working_set_identifiers
+                })
             
         elif 'upload' in parameters:
             data = parameters['upload']

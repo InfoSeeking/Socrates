@@ -37,7 +37,7 @@ var LoginScreen = (function(){
               UI.feedback(data.message, true);
             }
             else {
-              UI.setLoggedIn(true, uinput);
+              UI.setLoggedIn(true, uinput, pinput);
               UI.feedback("Welcome back," + uinput + ".");
               UI.switchScreen("main");
             }

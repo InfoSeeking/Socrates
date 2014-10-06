@@ -135,12 +135,14 @@
         </div>
         <div class="screen data">
           <h2>Your saved data</h2>
-          <input id="fileupload" type="file" name="upfile">
-          <button id="import-btn" class="button">Import Data</button>
-          <button id="remove-btn" class="button" onclick="removeData()">Delete</button>
+          <!-- <button id="remove-btn" class="button" onclick="removeData()">Delete</button> -->
           <!--//Taking out accounts for now, focusing on multiple data sets in one continuous session
           <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
           <ul id="data-list"></ul>
+
+          <input id="fileupload" type="file" name="upfile">
+          <button id="import-btn" class="button">Import Data</button>
+
         </div>
         <div class="screen main">
           <div id="topbar">
@@ -216,6 +218,7 @@
   <script src="js/LoginScreen.js"></script>
   <script src="js/LogoutScreen.js"></script>
   <script src="js/SettingsScreen.js"></script>
+  <script src="js/DataScreen.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
@@ -225,7 +228,8 @@
       "register" : RegisterScreen,
       "login" : LoginScreen,
       "logout" : LogoutScreen,
-      "settings" : SettingsScreen
+      "settings" : SettingsScreen,
+      "data" : DataScreen
     });
     UI.switchScreen("main");
   </script>
