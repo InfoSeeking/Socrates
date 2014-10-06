@@ -18,26 +18,28 @@ var LoginScreen = (function(){
     }
 
     function logIn(){
-      var uinput = $('#username').val();
-      username = uinput.toLowerCase();
-      if (username){
-        console.log("Attempting to log in as: " + username);
+      var uinput = $('#login-name').val();
+      var pinput = $('#login-password').val();
+
+      if (uinput){
+        console.log("Attempting to log in as: " + uinput);
         $.ajax({
-          url : UTIL.CFG.api_endpoint + "resume/" + username,
+          url : UTIL.CFG.api_endpoint,
+          type : "POST",
+          data : {
+            "username" : uinput,
+            "password" : pinput
+          },
           dataType: "json",
           success : function(data, status){
-            if (data.length > 0){
-              for (var i = 0; i < data.length; i++) {
-                addData(data[i]['setname'], data[i]['working_set_id'],"collection");
-              }
-              console.log(data);
-              console.log(status);
+            console.log(data);
+            if (data.error){
+              UI.feedback(data.message, true);
+            }
+            else {
               UI.setLoggedIn(true);
               UI.feedback("Welcome back," + uinput + ".");
               UI.switchScreen("main");
-            } else {
-              console.log(data);
-              UI.feedback("Username not found.", true);
             }
           }
         });

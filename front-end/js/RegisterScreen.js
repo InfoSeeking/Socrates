@@ -17,7 +17,7 @@ var RegisterScreen = (function(){
     function register(){
       var uinput = $('#register-name').val();
       var pinput = $('#register-password').val();
-      if (username){
+      if (uinput){
         $.ajax({
           url : UTIL.CFG.api_endpoint,
           type: "POST",

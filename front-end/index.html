@@ -93,7 +93,7 @@
         </div>
         <nav>
           <a href="#" title="Home" id="home-btn" class="button">Home</a>
-          <a href="#" title="Login" id="login-btn" class="button">Login</a>
+          <a href="#" title="Login" id="login-btn" class="button">Account</a>
           <a href="#" title="Data" id="data-btn" class="button">Saved Datasets</a>
           <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>       
           <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
@@ -113,15 +113,19 @@
         </div>
         <div class="screen login">
           <h2>Log in</h2>
-          <input type="text" class="login-field" id="username">
-          <!-- <label for="password">Password: </label><input type="password" id="password"> -->
-          <button class="login-btns" id="login-submit-btn">Enter</button> <br>
+          <div class="form_grid">
+            <div class="row"><label>Username</label><input type="text" class="login-field" id="login-name"></div>
+            <div class="row"><label>Password</label><input type="password" class="login-field" id="login-password"></div>
+          </div>
+          <button class="login-btns" id="login-submit-btn">Log in</button> <br>
           <a href="#" class="sub-link" id="login-register-btn">Register</a>
         </div>
         <div class="screen register">
           <h2>Register</h2>
-          <label>Username</label> <input type="text" class="login-field" id="register-name"><br/>
-          <label>Password</label> <input type="password" class="login-field" id="register-password">
+          <div class="form_grid">
+            <div class="row"><label>Username</label><input type="text" class="login-field" id="registers-name"></div>
+            <div class="row"><label>Password</label><input type="password" class="login-field" id="registers-password"></div>
+          </div>
           <button class="login-btns" id="register-btn">Sign up</button> <br>
           <a href="#" class="sub-link" id="register-back-btn">Back</a>
         </div>

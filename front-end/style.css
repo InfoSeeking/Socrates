@@ -494,6 +494,13 @@ form .row .comment .optional{
 	background-color: #FF7373;
 }
 
+.form_grid .row {
+	margin-bottom: 5px;
+}
+.form_grid .row label{
+	width: 120px;
+	display: inline-block;
+}
 /*
 #download-json{
 	display: none;

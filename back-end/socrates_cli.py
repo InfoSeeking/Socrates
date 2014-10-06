@@ -97,8 +97,8 @@ def run(typ, mod, fn, param, working_set=None):
                 'data' : data, #only if specified
                 'meta' : fn_specs[fn]['returns']
                 }
-            #Store this data
-            return working_set
+        return working_set
+    return None
 
 def parse_params(parameters):
     try:
@@ -148,7 +148,10 @@ def parse_params(parameters):
                 return err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
+            user.log_run(typ, mod, fn)
 
+            if working_set is None:
+                return err("Internal operation error")
             if 'error' in working_set and working_set['error']:
                 return err("Error: " + working_set['message'])
 
