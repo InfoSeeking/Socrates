@@ -40,8 +40,12 @@ var UI = (function(){
           }
         });
 
-        $("#login-btn").click(function(){
-            UI.switchScreen("login");
+        $("#account-btn").click(function(){
+            if (UI.isLoggedIn()){
+                UI.switchScreen("logout");
+            } else  {
+                UI.switchScreen("login");
+            }
         });
 
         $("#settings-btn").click(function(){
@@ -125,12 +129,24 @@ var UI = (function(){
       }
     }
 
-    that.setLoggedIn = function(val){
+    that.setLoggedIn = function(val, u){
         loggedIn = val;
+        if (val) {
+            $("#data-btn").removeClass("inactive");
+        } else {
+            $("#data-btn").removeClass("active");
+        }
+        if (u) {
+            username = u;
+        }
     };
 
     that.isLoggedIn = function() {
         return loggedIn;
+    };
+
+    that.getUsername = function() {
+        return username;
     };
 
 

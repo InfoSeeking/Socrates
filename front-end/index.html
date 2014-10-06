@@ -93,8 +93,8 @@
         </div>
         <nav>
           <a href="#" title="Home" id="home-btn" class="button">Home</a>
-          <a href="#" title="Login" id="login-btn" class="button">Account</a>
-          <a href="#" title="Data" id="data-btn" class="button">Saved Datasets</a>
+          <a href="#" title="Manage your account" id="account-btn" class="button">Account</a>
+          <a href="#" title="Data" id="data-btn" class="inactive button">Your Datasets</a>
           <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>       
           <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
         </nav>
@@ -119,6 +119,10 @@
           </div>
           <button class="login-btns" id="login-submit-btn">Log in</button> <br>
           <a href="#" class="sub-link" id="login-register-btn">Register</a>
+        </div>
+        <div class="screen logout">
+          <h2>Logged in as <span class='username'></span></h2>
+          <button class="button" id="logout-btn">Log out</button>
         </div>
         <div class="screen register">
           <h2>Register</h2>
@@ -210,6 +214,7 @@
   <script src="js/MainScreen.js"></script>
   <script src="js/RegisterScreen.js"></script>
   <script src="js/LoginScreen.js"></script>
+  <script src="js/LogoutScreen.js"></script>
   <script src="js/SettingsScreen.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
@@ -219,6 +224,7 @@
       "main" : MainScreen,
       "register" : RegisterScreen,
       "login" : LoginScreen,
+      "logout" : LogoutScreen,
       "settings" : SettingsScreen
     });
     UI.switchScreen("main");
