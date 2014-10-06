@@ -54,7 +54,7 @@ def restoreOutput():
 
 def err(msg):
     return json.dumps({
-    'error' : True,
+    'error' : 'true',
     'message': msg
     })
 
@@ -105,7 +105,7 @@ def parse_params(parameters):
         client = MongoClient()
         mongodb = client.socrates
 
-        result = "" #string result from each run-type to print at the end
+        result = "{}" #string result from each run-type to print at the end
         working_set = None
         working_set_id = -1
 
@@ -118,7 +118,7 @@ def parse_params(parameters):
             else:
                 #authenticate
                 if not user.authenticate(parameters['username'], parameters['password']):
-                    return err("Invalid username and password", True)
+                    return err("Invalid username and password")
         else:
             #use default user
             user.setDefault()
@@ -145,12 +145,12 @@ def parse_params(parameters):
                 return_all_data = parameters["return_all_data"]
 
             if typ == "analysis" and working_set is None:
-                err("Working set id not included")
+                return err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
 
             if 'error' in working_set and working_set['error']:
-                err("Error: " + working_set['message'])
+                return err("Error: " + working_set['message'])
 
             #store new/modified working set
             if typ == "collection":
@@ -199,6 +199,8 @@ def parse_params(parameters):
             # del working_set["_id"] #for some reason ObjectID is not JSON serializable
             # working_set['working_set_id'] = str(insert_id)
             # print working_set['working_set_id']
+
+        return result
 
     except Exception as e:
         sys.stderr.write("Exception caught: %s\n" % e)
