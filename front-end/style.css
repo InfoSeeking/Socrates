@@ -166,6 +166,9 @@ form .row .comment .optional{
 	padding-top: 3px;
 	padding-right: 5px;
 }
+#sidebar #data-btn{
+	display: none;
+}
 
 #settings nav a:hover{
 	background-color: #5ecff9;

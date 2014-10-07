@@ -86,9 +86,9 @@ var MainScreen = (function(){
             //show analysis/visualization buttons
             params["input"] = {};
             params['return_all_data'] = $("#allData").prop("checked") ? true : false;
-            if((type == "analysis" || type == "visualization") && curRefId != null){
+            if((type == "analysis" || type == "visualization") && UTIL.getCachedWorkingSetID() != null){
               //add current reference id
-              params["working_set_id"] = curRefId;
+              params["working_set_id"] = UTIL.getCachedWorkingSetID();
             }
             for(var i = 0; i < inputs.size(); i++){
               var inp = $(inputs.get(i));
@@ -98,7 +98,11 @@ var MainScreen = (function(){
               var sel = $(selects.get(i));
               params["input"][sel.attr("name")] = sel.val();
             }
-            //params["username"] = username;
+
+            if(UI.isLoggedIn()){
+              params["username"] = UI.getUsername();
+              params["password"] = UI.getPassword();
+            }
             params["setname"] = setName;
             //ajax call
             if(type == "visualization"){
@@ -132,7 +136,7 @@ var MainScreen = (function(){
                     console.log("Operator output:");
                     console.log(data);
                     if(data.hasOwnProperty("error")){
-                      showError(data.message);
+                      UI.feedback(data.message, true);
                       return;
                     }
                     showResults(data, type, setName);
@@ -145,7 +149,7 @@ var MainScreen = (function(){
                   },
                   complete: function(jqXHR, stat){
                     console.log("Complete: " + stat);
-                    addData(setName, curRefId, type);
+                    addData(setName, UTIL.getCachedWorkingSetID(), type);
                     UI.toggleLoader(false);
                   }
                 });
@@ -454,7 +458,7 @@ var MainScreen = (function(){
     function onDownloadButtonClicked(){
       var btn = $(this);
       UI.toggleLoader(true);
-      getWorkingSet(curRefId, function(ws){
+      getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
         var typ = btn.attr("data-type");
         var index = btn.attr("data-index");
         if(index){
@@ -706,7 +710,7 @@ var MainScreen = (function(){
       var box = createBox(type);
       var h2 = box.find("h2");
       if(type == "collection"){
-        curRefId = working_set["working_set_id"];
+        UTIL.setCachedWorkingSet(working_set);
         //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
         h2.html("Collection Data");
         h2.append(" (" + setName + ")");
