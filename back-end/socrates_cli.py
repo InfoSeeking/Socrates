@@ -79,18 +79,19 @@ def run(typ, mod, fn, param, working_set=None):
         if enforceAndConvert(param, fn_specs[fn]['param'], working_set) is False:
             return err("Parameters are not valid") #get better error from constraint function
 
-            applyDefaults(param, fn_specs[fn]['param'])
+        applyDefaults(param, fn_specs[fn]['param'])
+
         #call and augment with meta information
         if typ == 'analysis':
             results = callingFn(working_set, param)
-            if 'aggregate_result' in  fn_specs[fn]:
+            if 'aggregate_result' in fn_specs[fn]:
                 results['aggregate_meta'] = fn_specs[fn]['aggregate_result']
-                if 'entry_result' in  fn_specs[fn]:
-                    results['entry_meta'] = fn_specs[fn]['entry_result']
-                    if 'analysis' in working_set:
-                        working_set['analysis'].append(results)
-                    else:
-                        working_set['analysis'] = [results]
+            if 'entry_result' in fn_specs[fn]:
+                results['entry_meta'] = fn_specs[fn]['entry_result']
+            if 'analysis' in working_set:
+                working_set['analysis'].append(results)
+            else:
+                working_set['analysis'] = [results]
         elif typ == 'collection':
             data = callingFn(param)
             working_set = {
@@ -148,6 +149,7 @@ def parse_params(parameters):
                 return err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
+
             user.log_run(typ, mod, fn)
 
             if working_set is None:

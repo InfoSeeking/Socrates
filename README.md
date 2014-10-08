@@ -35,10 +35,7 @@ This document primarily consists of development ideas. To get more information o
 - Fields defined in the specs for parameters and return values can be either strings or objects
 
 #Issues
-- On Chrome locally there is an issue where ajax calls take 15-20 seconds. This does not occur in Firefox. [Edit 3/4/2014 : this is a Chrome bug]
-- When I ran an analysis on a data set, a different entry was returned as the first entry (this was with tw\_search)
-- Total for word count is undefined [3/5/2014 fixed]
-
+- Show all data button not working
 
 #Packages Installed
 - PRAW (https://praw.readthedocs.org/en/latest/)
