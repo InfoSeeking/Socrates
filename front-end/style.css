@@ -51,14 +51,12 @@ aside#sidebar .inner{
 .button:hover{
 	background: #5ecff9;
 }
-#setName{
-	margin: 0 0 25px 0;
-}
+
 form label{
 	width: 120px;
 	display: inline-block;
 }
-form input[type=text], form input[type=number], form .fieldChooser, #setName{
+form input[type=text], form input[type=number], form .fieldChooser{
 	border-radius: 4px;
 	border: none;
 	background: #605f5f;
@@ -71,7 +69,7 @@ form .fieldChooser{
 form .fieldChooser:hover{
 	background: #B3B3B3;
 }
-form input[type=text]:focus, form input[type=number]:focus, #setName:focus{
+form input[type=text]:focus, form input[type=number]:focus{
 	background: #FFF;
 }
 form .row{
@@ -489,6 +487,7 @@ form .row .comment .optional{
 	width: 120px;
 	display: inline-block;
 }
+
 /*
 #download-json{
 	display: none;

@@ -65,7 +65,7 @@ var MainScreen = (function(){
                 type = div.attr("data-type"),
                 mod = div.attr("data-mod"),
                 fn = div.attr("data-fn"),
-                setName = div.attr("data-fn"),
+                setName = "Untitled",
                 params = {
                   "type": type,
                   "module" : mod,
@@ -74,8 +74,6 @@ var MainScreen = (function(){
             if (type == "collection"){
               if (form.find("#setName").val()){
                 setName = form.find("#setName").val();
-              }else{
-                UI.feedback("Name your dataset", true);
               }
             }
             $(this).parent().hide();
@@ -343,13 +341,13 @@ var MainScreen = (function(){
 
       //now add rows
       var html = $("<table></table>").empty().append(thead).append(tbody);
-      overlay(html, "data", "Your Data");
+      UI.overlay(html, "data", "Your Data");
     }
 
     function handleDataButton(e){
       UI.toggleLoader(true);
       var btn = $(this);
-      getWorkingSet(curRefId, function(ws){
+      UTIL.getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
           var typ = btn.attr("data-type");
           var index = btn.attr("data-index");
           if(index){
@@ -458,7 +456,7 @@ var MainScreen = (function(){
     function onDownloadButtonClicked(){
       var btn = $(this);
       UI.toggleLoader(true);
-      getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
+      UTIL.getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
         var typ = btn.attr("data-type");
         var index = btn.attr("data-index");
         if(index){
@@ -835,7 +833,8 @@ var MainScreen = (function(){
       }
       form.append("<input type='submit' class='button' />");
       if (type == "collection"){
-        form.prepend("<label for='setName'>Name your set: </label><input type='text' id='setName'>")
+        //injection of dataset name field (ehh...)
+        form.prepend("<div class='row'><label for='setName'>Dataset Name </label><input type='text' id='setName' value='Untitled'><p class='comment'><span class='optional'>(optional)</span></p></div>")
       }
       return form;
     }
