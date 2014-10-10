@@ -271,10 +271,22 @@ form .row .comment .optional{
 
 
 #loader{
-	position: absolute;
-	right: 20px;
-	bottom: 5px;
-	display: none;
+	position: fixed;
+	left: 0px;
+	bottom: 0px;
+	width: 100%;
+	height: 4px;
+	display: block;
+	background: #FFF;
+	z-index: 100;
+	text-align: center;
+}
+#loader #fill{
+	z-index: 101;
+	margin: 0px auto;
+	width: 10px;
+	height: 100%;
+	background: #00aeef;
 }
 
 #overlay{

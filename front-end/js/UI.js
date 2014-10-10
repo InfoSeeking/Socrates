@@ -8,6 +8,8 @@ var UI = (function(){
     var loggedIn = false;
     var username = "";
     var password = "";
+    var loader_val = false;
+    var loader_color = "white";
 
 
     that.init = function(screen_map){
@@ -93,12 +95,43 @@ var UI = (function(){
     }
 
     that.toggleLoader = function(val){
-      if(val){
-        $("#loader").show();
-      }
-      else{
-        $("#loader").hide();
-      }
+        function animate(){
+            $("#loader #fill").width(0).animate({
+                "width": "100%"
+            }, 1000, function(){
+                if(loader_val){
+                    //switch color
+                    if(loader_color == "white"){
+                        loader_color = "blue";
+                        $("#loader").css({
+                            "background" : "#00aeef"
+                        });
+                        $("#loader #fill").css({
+                            "background" : "#ffffff"
+                        });
+                    } else {
+                        loader_color = "white";
+                        $("#loader").css({
+                            "background" : "#ffffff"
+                        });
+                        $("#loader #fill").css({
+                            "background" : "#00aeef"
+                        });
+                    }
+                    //animate again
+                    animate();
+                }
+            });
+        }
+        if(val){
+            loader_val = true;
+            $("#loader").show();
+            animate()
+        }
+        else{
+            loader_val = false;
+            $("#loader").fadeOut();
+        }
     }
 
     that.showError = function(message){
