@@ -14,11 +14,10 @@ This document primarily consists of development ideas. To get more information o
 - Make a web interface for accessing logs
 
 ###Small Goals
-- Using PHP for API calls (buffer stdout and redirect to a log, redirect stderr to an error log, check if shell gives valid JSON, if not throw error to user.)
+- Confirm custom data upload works
 - Better error management and error logging for front-end
 - Detecting when online in front-end
-- Better data and SVG downloading
-- Uploading custom data
+- Better data and SVG downloading (have visualizations generated in back end)
 - Code cleaning
 - Create a cron job to compress logs monthly/yearly
 

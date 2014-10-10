@@ -24,6 +24,7 @@ function enforceMatch($val, $regex, $argname=""){
 }
 
 function writeToTemp($name, $contents, $ext="json") {
+    date_default_timezone_set('America/New_York');
     $filename = "parameters/" . $name . date("h_m_s") . "." . $ext;
     if(file_put_contents($filename, $contents) === false) {
         throw new Exception("Cannot write to parameter file");

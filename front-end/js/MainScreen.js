@@ -9,6 +9,13 @@ var MainScreen = (function(){
       $(".screen.main").hide();
     };
 
+
+    function passCollectionPhase(){
+      $(".type-instructions").hide();
+      $("#topbar .item").removeClass("active");
+      //show next steps
+      $("#next-buttons").fadeIn()
+    }
     /*
     Get all specs, build forms, set up event listeners
     */
@@ -56,7 +63,7 @@ var MainScreen = (function(){
           }
 
           //add listeners on submission
-          $(".function form").on("submit", function(e){0
+          $(".function form").on("submit", function(e){
             e.preventDefault();
             var form = $(this),
                 div = form.parent(),
@@ -74,13 +81,11 @@ var MainScreen = (function(){
             if (type == "collection"){
               if (form.find("#setName").val()){
                 setName = form.find("#setName").val();
+                params["working_set_name"] = setName;
               }
             }
             $(this).parent().hide();
-            $(".type-instructions").hide();
-            $("#topbar .item").removeClass("active");
-            //show next steps
-            $("#next-buttons").fadeIn()
+            passCollectionPhase();
             //show analysis/visualization buttons
             params["input"] = {};
             params['return_all_data'] = $("#allData").prop("checked") ? true : false;
@@ -101,7 +106,6 @@ var MainScreen = (function(){
               params["username"] = UI.getUsername();
               params["password"] = UI.getPassword();
             }
-            params["setname"] = setName;
             //ajax call
             if(type == "visualization"){
               var b = createBox('visualization');
@@ -147,7 +151,6 @@ var MainScreen = (function(){
                   },
                   complete: function(jqXHR, stat){
                     console.log("Complete: " + stat);
-                    addData(setName, UTIL.getCachedWorkingSetID(), type);
                     UI.toggleLoader(false);
                   }
                 });
@@ -488,38 +491,6 @@ var MainScreen = (function(){
       $("#data-list").toggleClass("remove");
     }
 
-    function addData(name, id, type){
-      if (type == "collection"){ // only add data if it is collection
-        if (name && id){
-          $('#data-list').append("<li><button id='" + id + "' class='button' onclick='fetchPrevious(\"" + id + "\", \"" + name + "\")'>" + name + "</button></li>");
-        }
-        else{
-          $('#data-list').append("<li><button id='User' class='button' onclick='fetchPrevious(\"User\")'>User</button></li>");
-        }
-        console.log("Data Added");
-      }
-    };
-
-    function fetchPrevious(id, setName){
-      if ($("#data-list").hasClass("remove")){
-        console.log("removing");
-        $("#" + id).remove();
-      }else{
-        console.log("Fetching previous data for: " + id);
-        $("#workspace").isotope("remove", $("#workspace").children().children());
-        $.ajax({
-          url : UTIL.CFG.api_endpoint + "fetch/" + id,
-          dataType: "json",
-          success : function(json){
-            console.log(json);
-            showResults(json, "collection", setName);
-          }
-        });
-        $("#workspace").isotope();
-      }
-    };
-
-
 
     function closeBoxButton(){
       return $("<a class='button close'>X</a>").click(closeBox);
@@ -691,6 +662,15 @@ var MainScreen = (function(){
     }
     var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(csv), "_blank");
     }
+
+    that.showWorkingSet = function(working_set, name){
+      //clear current working set area
+      $("#workspace").empty();
+      //add box for collection
+      showResults(working_set, "collection", name)
+      passCollectionPhase();
+      //Eventually add boxes for analysis
+    }
     /*
       Given the working_set, it will create a new box for the most recently created data.
     */
@@ -712,7 +692,6 @@ var MainScreen = (function(){
         //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
         h2.html("Collection Data");
         h2.append(" (" + setName + ")");
-        h2.parent().append(closeBoxButton());
         var table = createTable(type, working_set);//this is the HTML created table
         box.append(table);
         box.append(showAllDataBtn().attr("data-type", "collection"));

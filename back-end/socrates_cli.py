@@ -109,6 +109,7 @@ def parse_params(parameters):
         result = "{}" #string result from each run-type to print at the end
         working_set = None
         working_set_id = -1
+        working_set_name = "Untitled"
 
 
         if 'username' in parameters and 'password' in parameters:
@@ -158,6 +159,7 @@ def parse_params(parameters):
                 return err("Error: " + working_set['message'])
 
             #store new/modified working set
+            working_set["working_set_name"] = working_set_name
             if typ == "collection":
                 insert_id = user.addWorkingSet(working_set)
                 working_set['working_set_id'] = str(insert_id)
@@ -193,7 +195,7 @@ def parse_params(parameters):
             for w in working_sets:
                 wid = {
                     "id" : w["working_set_id"],
-                    "name" : "Untitled Working Set"
+                    "name" : "Untitled"
                 }
                 if "working_set_name" in w:
                     wid["name"] = w["working_set_name"]

@@ -164,9 +164,7 @@ form .row .comment .optional{
 	padding-top: 3px;
 	padding-right: 5px;
 }
-#sidebar #data-btn{
-	display: none;
-}
+
 
 #settings nav a:hover{
 	background-color: #5ecff9;
@@ -470,6 +468,13 @@ form .row .comment .optional{
 
 #remove-btn {
 	float:right;
+}
+
+#data-list li{
+	cursor: pointer;
+}
+#data-list li:hover {
+	text-decoration: underline;
 }
 
 #data-list.remove > li > button{

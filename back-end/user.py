@@ -17,7 +17,7 @@ mongodb = client.socrates
 db = _mysql.connect(host=config.CREDS["mysql"]["host"], user=config.CREDS["mysql"]["user"], passwd=config.CREDS["mysql"]["password"], db=config.CREDS["mysql"]["database"])
 
 def authenticate(u, p):
-    global username
+    global username, user_id
     e_user = db.escape_string(u)
     e_password = db.escape_string(p)
     q = "SELECT * FROM user WHERE username='%s' and password=SHA1('%s')" % (e_user, e_password)
@@ -73,7 +73,7 @@ def updateWorkingSet(working_set_id, working_set):
 
 def log_run(typ,mod,fn):
     global user_id
-    q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, user_id)
+    q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, int(user_id))
     db.query(q)
 
 #log any general activity (login, logout, etc.)

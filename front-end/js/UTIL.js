@@ -4,6 +4,7 @@ var UTIL = (function(){
 		working_set_id = null;
 
 	that.CFG = {
+		//api_endpoint: "http://peopleanalytics.org/socrates/transition/back-end/listener.php",
 		api_endpoint: "http://localhost/socrates/back-end/listener.php/",
 		debug : true
 	};
@@ -24,10 +25,14 @@ var UTIL = (function(){
 			console.log("Fetching working set for " + refID);
 			//download fresh data
 			$.ajax({
-				url: CFG.api_endpoint + "fetch/" + refID,
+				url: that.CFG.api_endpoint,
 				dataType: "json",
-				type: "get",
-				data: {'returnAllData': true, 'working_set_id': refID},
+				type: "POST",
+				data: {
+					'fetch' : true,
+					'returnAllData': true, 
+					'working_set_id': refID
+				},
 				success : function(data, stat, jqXHR){
 					working_set_cache = data;
 					callback.call(window, data);

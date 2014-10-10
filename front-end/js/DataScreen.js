@@ -14,7 +14,7 @@ var DataScreen = (function(){
         success: function(data, jqxhr){
           console.log(data);
           for(var i = 0; i < data.ids.length; i++){
-            addWorkingSet(data.ids[i]["id"], data.ids[i]["name"]);
+            addWorkingSet(data.ids[i]["id"], data.ids[i]["name"], data.ids[i]["function"]);
           }
         }
       })
@@ -32,7 +32,13 @@ var DataScreen = (function(){
     };
 
     that.init = function(){
-
+      $(".screen.data #data-list").delegate("li", "click", function(){
+        var item = $(this);
+        //get working set
+        UTIL.getWorkingSet(item.attr("data-id"), function(working_set){
+          MainScreen.showWorkingSet(working_set, item.html());
+        });
+      })
     }
 
     return that;

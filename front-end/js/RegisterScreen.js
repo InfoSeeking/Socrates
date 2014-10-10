@@ -32,7 +32,7 @@ var RegisterScreen = (function(){
               if (data.taken){
                 UI.feedback("Username is already taken.", true);
               } else {
-                loggedIn = true;
+                UI.setLoggedIn(true, uinput, pinput);
                 UI.feedback("Welcome to SOCRATES, " + uinput + ".");
                 UI.switchScreen("main");
               }
