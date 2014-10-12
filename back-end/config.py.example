@@ -16,5 +16,6 @@ CREDS = {
         "user" : "",
         "password" : "",
         "database" : ""
-    }
+    },
+    "facebook_token" : "179777262045118|ea5f31c138bbcfbe88147210-100001922464631|-1CbD-hpIzdQwaut3zonK8e38aw"
 }

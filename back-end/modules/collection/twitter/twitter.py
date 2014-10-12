@@ -12,7 +12,7 @@ import os
 
 SPECS = {
     'functions': {
-            'tw_search' : {
+            'twitter_search' : {
                 #as a workaround for Python's reordering of dictionary keys (instead of making things even more verbose) I think the best option is to specify ordering
                 'param_order': ['query', 'count', 'lang', 'latitude', 'longitude', 'radius'],
                 'param' : {
@@ -74,7 +74,7 @@ def tw_oauth(authfile):
     auth1.set_access_token(ak[2].replace("\n",""), ak[3].replace("\n",""))
     return tweepy.API(auth1)
 
-def tw_search(param=False):
+def twitter_search(param=False):
     query = param['query']
     cnt=int(param['count'])
     lang=param['lang']
