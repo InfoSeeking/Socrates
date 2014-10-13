@@ -24,7 +24,7 @@ var DataScreen = (function(){
       $(".screen.data #data-list").empty();
     }
     function addWorkingSet(id, name){
-      var item = $("<li data-id='" + id + "'> " + name + "</li>");
+      var item = $("<li data-id='" + id + "'><span class='name'>" + name + "</span><span data-action='remove'>Remove</span><span data-action='load'>Load</span></li>");
       $(".screen.data #data-list").append(item);
     }
     that.hide = function(){
@@ -32,11 +32,17 @@ var DataScreen = (function(){
     };
 
     that.init = function(){
-      $(".screen.data #data-list").delegate("li", "click", function(){
-        var item = $(this);
+      $(".screen.data #data-list").delegate("[data-action=load]", "click", function(){
+        var item = $(this).parent();
         //get working set
         UTIL.getWorkingSet(item.attr("data-id"), function(working_set){
           MainScreen.showWorkingSet(working_set, item.html());
+        });
+      });
+      $(".screen.data #data-list").delegate("[data-action=remove]", "click", function(){
+        var item = $(this).parent();
+        UTIL.removeWorkingSet(item.attr("data-id"), function(){
+          item.detach();
         });
       })
     }

@@ -385,21 +385,6 @@ form .row .comment .optional{
 	display: none;
 }
 
-#data-list {
-	list-style: none;
-}
-
-#data-list li {
-	margin: 5px 5px 5px 0;
-	padding-right: 0px;
-}
-#data-list li > .button {
-	background-color: #21A814;
-}
-
-#data-list li > .button:hover {
-	background-color: #80FA75;
-}
 
 .bar > h2 {
 	display: inline-block;
@@ -483,19 +468,31 @@ form .row .comment .optional{
 	float:right;
 }
 
-#data-list li{
+#data-list {
+	list-style: none;
+}
+#data-list li {
+	margin: 5px 5px 5px 0;
+	padding-right: 0px;
+}
+#data-list li:nth-child(even){
+	background: rgba(255,255,255,.1);
+}
+#data-list li span.name{
+	display: inline-block;
+	width: 200px;
+	font-size: 12px;
+	color: #00aeef;
+	margin: auto 5px;
+	
+}
+#data-list li span[data-action]{
 	cursor: pointer;
+	display: inline-block;
+	margin: auto 10px;
 }
-#data-list li:hover {
+#data-list li span[data-action]:hover{
 	text-decoration: underline;
-}
-
-#data-list.remove > li > button{
-	background-color: #ED5151;
-}
-
-#data-list.remove > li > button:hover{
-	background-color: #FF7373;
 }
 
 .form_grid .row {
@@ -505,56 +502,3 @@ form .row .comment .optional{
 	width: 120px;
 	display: inline-block;
 }
-
-/*
-#download-json{
-	display: none;
-}
-
-#download-csv{
-	display: none;
-}
-
-#download-tsv{
-	display: none;
-}
-*/
-/*
-screws up visualization for some reason
-
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.25s;
-     -moz-transition-duration: 0.25s;
-      -ms-transition-duration: 0.25s;
-       -o-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-      -ms-transition-property: height, width;
-       -o-transition-property: height, width;
-          transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-     -moz-transition-property:    -moz-transform, opacity;
-      -ms-transition-property:     -ms-transform, opacity;
-       -o-transition-property:      -o-transform, opacity;
-          transition-property:         transform, opacity;
-}
-
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-     -moz-transition-duration: 0s;
-      -ms-transition-duration: 0s;
-       -o-transition-duration: 0s;
-          transition-duration: 0s;
-}
-
-*/

@@ -114,6 +114,7 @@ var MainScreen = (function(){
               VIS.callFunction(b[0], mod, fn, params,
                 function(){
                   $("#workspace").append(b);
+                  b.hide().fadeIn();
                     //Code "borrowed" from http://stackoverflow.com/questions/8973711/export-an-svg-from-dom-to-file
                     // Add some critical information
                     var svg = b.find("svg");
@@ -141,7 +142,7 @@ var MainScreen = (function(){
                       UI.feedback(data.message, true);
                       return;
                     }
-                    showResults(data, type, setName);
+                    showResults(data, type);
                     if(params['return_all_data']){
                       //then this can be put in cache
                       UTIL.setCurrentWorkingSet(data, true);
@@ -667,21 +668,21 @@ var MainScreen = (function(){
       $("#workspace").empty();
       console.log(working_set);
       //add box for collection
-      showResults(working_set, "collection", name);
+      showResults(working_set, "collection");
       //add box for each analysis
 
       if(working_set.analysis){
         for(var i = 0; i < working_set.analysis.length; i++){
-          showResults(working_set, "analysis", name, i);
+          showResults(working_set, "analysis", i);
         }
       } 
       passCollectionPhase();
-      //Eventually add boxes for analysis
     }
     /*
       Given the working_set, it will create a new box for the most recently created data.
     */
-    function showResults(working_set, type, setName, analysis_index){
+    function showResults(working_set, type, analysis_index){
+      var setName = working_set["working_set_name"];
       if(showResults.first){
         showResults.first = false;
         $("#workspace #intro").detach();
@@ -708,6 +709,7 @@ var MainScreen = (function(){
         if(analysis_index !== undefined){
           curIndex = analysis_index;
         }
+        console.log("Showing " + curIndex);
         if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
           //show all data button
           box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
@@ -724,6 +726,7 @@ var MainScreen = (function(){
         box.append(getDownloadButton().attr("data-type", "collection"));
       }
       $("#workspace").append(box);
+      box.hide().fadeIn();
     }
     showResults.first = true;
 
@@ -845,7 +848,7 @@ var MainScreen = (function(){
           url : UTIL.CFG.api_endpoint + "upload/" + results,
           dataType: "json",
           success : function(json){
-            showResults(json, "collection", "Your Data");
+            showResults(json, "collection");
           }
         });
           //document.getElementById('list').innerHTML = "<br>" + csvJSON(results);

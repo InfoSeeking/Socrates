@@ -184,10 +184,13 @@ def parse_params(parameters):
             return json.dumps(getAllSpecs())
 
         elif 'fetch' in parameters:
-            print "Fetching working set %s\n" % working_set_id
             working_set = user.getWorkingSet(working_set_id)
             working_set['working_set_id'] = str(working_set_id)
             return json.dumps(working_set)
+
+        elif 'remove' in parameters:
+            user.removeWorkingSet(working_set_id)
+            return json.dumps({"status" : "success"})
 
         elif 'fetch_all_ids' in parameters:
             working_sets = user.getWorkingSets()

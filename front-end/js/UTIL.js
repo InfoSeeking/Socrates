@@ -37,13 +37,39 @@ var UTIL = (function(){
 				},
 				success : function(data, stat, jqXHR){
 					working_set_cache = data;
-					callback.call(window, data);
+					if(callback){
+						callback.call(window, data);
+					}
 				},
 				error: function(){
 					UI.feedback("Error fetching dataset", true);
 				}
 			});
 		}
+	}
+
+	that.removeWorkingSet = function(working_set_id, callback){
+		UI.toggleLoader(true);
+		$.ajax({
+			url: that.CFG.api_endpoint,
+			dataType: "json",
+			type: "POST",
+			data: {
+				'remove' : true,
+				'working_set_id': working_set_id
+			},
+			success : function(data, stat, jqXHR){
+				working_set_cache = data;
+				if(callback){
+					callback.call(window, data);
+				}
+				UI.toggleLoader(false);
+			},
+			error: function(){
+				UI.feedback("Error removing dataset", true);
+				UI.toggleLoader(false);
+			}
+		});
 	}
 	that.supports_html5_storage = function(){
       try {
