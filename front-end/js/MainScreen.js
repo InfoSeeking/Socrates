@@ -113,7 +113,7 @@ var MainScreen = (function(){
               b.find("h2").parent().append(closeBoxButton());
               VIS.callFunction(b[0], mod, fn, params,
                 function(){
-                  $("#workspace").isotope("insert", b);
+                  $("#workspace").append(b);
                     //Code "borrowed" from http://stackoverflow.com/questions/8973711/export-an-svg-from-dom-to-file
                     // Add some critical information
                     var svg = b.find("svg");
@@ -499,9 +499,6 @@ var MainScreen = (function(){
 
     function closeBox(){
       $(this).parent().parent().detach();
-      if ($("#workspace").children().length > 0){
-        $("#workspace").isotope();
-      }
     }
 
     function getDownloadButton(){
@@ -667,14 +664,14 @@ var MainScreen = (function(){
     that.showWorkingSet = function(working_set, name){
       UTIL.setCurrentWorkingSet(working_set);
       //clear current working set area
-      $("#workspace").isotope('remove', $(".results"));
+      $("#workspace").empty();
       console.log(working_set);
       //add box for collection
       showResults(working_set, "collection", name);
       //add box for each analysis
 
       if(working_set.analysis){
-        for(var i = 0; i < working_set.analsis.length; i++){
+        for(var i = 0; i < working_set.analysis.length; i++){
           showResults(working_set, "analysis", name, i);
         }
       } 
@@ -688,10 +685,6 @@ var MainScreen = (function(){
       if(showResults.first){
         showResults.first = false;
         $("#workspace #intro").detach();
-        $("#workspace").isotope({
-          itemSelector: '.results', 
-          layoutMode: 'masonry'
-        });
       }
       //if type is collection, add collection data
       //if type is analysis, add most recent analysis
@@ -730,7 +723,7 @@ var MainScreen = (function(){
         box.append(showAllDataBtn().attr("data-type", "collection"));
         box.append(getDownloadButton().attr("data-type", "collection"));
       }
-      $("#workspace").isotope('insert' , box);
+      $("#workspace").append(box);
     }
     showResults.first = true;
 
