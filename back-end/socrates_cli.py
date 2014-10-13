@@ -128,6 +128,7 @@ def parse_params(parameters):
         if 'working_set_id' in parameters:
             working_set_id = parameters['working_set_id']
             working_set = user.getWorkingSet(working_set_id)
+            working_set_name = working_set["working_set_name"]
 
         if 'working_set_name' in parameters:
             working_set_name = parameters['working_set_name']

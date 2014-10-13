@@ -18,6 +18,9 @@ var UTIL = (function(){
 	that.getCurrentWorkingSetID = function(){
 		return working_set_id;
 	}
+	that.clearWorkingSetCache = function(){
+		working_set_cache = null;
+	}
 	that.getWorkingSet = function(refID, callback){
 		//check if cached
 		if(working_set_cache != null && working_set_id == refID){

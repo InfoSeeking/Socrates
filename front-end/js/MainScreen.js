@@ -127,8 +127,8 @@ var MainScreen = (function(){
             }
             else{
               UI.toggleLoader(true);
-              //clear cache
-              working_set_cache = null;
+              //clear cache, since now working set is modified
+              UTIL.clearWorkingSetCache();
               console.log(params)
                $.ajax({
                   url: UTIL.CFG.api_endpoint,
