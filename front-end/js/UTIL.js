@@ -9,11 +9,13 @@ var UTIL = (function(){
 		debug : true
 	};
 
-	that.setCachedWorkingSet = function(ws){
+	that.setCurrentWorkingSet = function(ws, cache){
 		working_set_id = ws["working_set_id"];
-		working_set_cache = ws;
+		if(cache){
+			working_set_cache = ws;
+		}
 	}
-	that.getCachedWorkingSetID = function(){
+	that.getCurrentWorkingSetID = function(){
 		return working_set_id;
 	}
 	that.getWorkingSet = function(refID, callback){
@@ -37,8 +39,18 @@ var UTIL = (function(){
 					working_set_cache = data;
 					callback.call(window, data);
 				},
+				error: function(){
+					UI.feedback("Error fetching dataset", true);
+				}
 			});
 		}
 	}
+	that.supports_html5_storage = function(){
+      try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+      } catch (e) {
+        return false;
+      }
+    }
 	return that;
 }());

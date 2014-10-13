@@ -26,21 +26,7 @@ var UI = (function(){
         });
 
         $("#refresh-btn").click(function(){
-          if (loggedIn){
-            $("#workspace").children().children().detach();
-            $("#settings-btn").html("Settings");
-            $("#data-btn").html("Saved Data");
-            $("#next-buttons").hide();
-            $("#topbar .item .c").addClass("active");
-            $(".function").hide();
-            $(".functions .button").hide();
-            $(".collection .sub.fn").hide();
-            $(".sub.mod").find(".chosen").html("");
-            $(".type-instructions").hide();
-            $(".type-instructions.collection").show();
-            $(".collection .modules .button").show();
-            that.switchScreen("main");
-          }
+          location.reload();
         });
 
         $("#account-btn").click(function(){
@@ -66,6 +52,14 @@ var UI = (function(){
           });
 
         $("#confirm-btn").click(confirm);
+
+        if(UTIL.supports_html5_storage()){
+          var u = window.localStorage.getItem("username");
+          var p = window.localStorage.getItem("password");
+          if (u && p) {
+            UI.setLoggedIn(true, u, p);
+          }
+        }
     };
 
     function updateNav(){
@@ -154,14 +148,20 @@ var UI = (function(){
 
     that.setLoggedIn = function(val, u, p){
         loggedIn = val;
-        if (val) {
+        if (val && u && p) {
             $("#data-btn").removeClass("inactive");
-        } else {
-            $("#data-btn").addClass("inactive");
-        }
-        if (u && p) {
             username = u;
             password = p;
+            if(UTIL.supports_html5_storage()){
+                window.localStorage.setItem("username", u);
+                window.localStorage.setItem("password", p);
+            }
+        } else {
+            $("#data-btn").addClass("inactive");
+            if(UTIL.supports_html5_storage()){
+                window.localStorage.removeItem("username");
+                window.localStorage.removeItem("password");
+            }
         }
     };
 

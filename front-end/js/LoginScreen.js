@@ -17,6 +17,7 @@ var LoginScreen = (function(){
         })
     }
 
+
     function logIn(){
       var uinput = $('#login-name').val();
       var pinput = $('#login-password').val();

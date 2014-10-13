@@ -12,7 +12,7 @@ var DataScreen = (function(){
           "fetch_all_ids" : true
         },
         success: function(data, jqxhr){
-          console.log(data);
+          clearList();
           for(var i = 0; i < data.ids.length; i++){
             addWorkingSet(data.ids[i]["id"], data.ids[i]["name"], data.ids[i]["function"]);
           }

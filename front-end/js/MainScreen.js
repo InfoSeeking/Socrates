@@ -28,15 +28,15 @@ var MainScreen = (function(){
             "specs" : true
         },
         type: "POST",
+        error: function(){
+          UI.feedback("Cannot fetch specs", true);
+          UI.toggleLoader(false);
+        },
         success : function(data, stat, jqXHR){
           UI.toggleLoader(false);
           console.log(data);
           //Add Visualization specs
           data.visualization = VIS.specs;
-          /*
-          - generate the forms
-          - attach event listeners
-          */
           //generate all forms
           var types = ["analysis", "collection", "visualization"];
           for(var i = 0; i < types.length; i++){
@@ -89,9 +89,9 @@ var MainScreen = (function(){
             //show analysis/visualization buttons
             params["input"] = {};
             params['return_all_data'] = $("#allData").prop("checked") ? true : false;
-            if((type == "analysis" || type == "visualization") && UTIL.getCachedWorkingSetID() != null){
+            if((type == "analysis" || type == "visualization") && UTIL.getCurrentWorkingSetID() != null){
               //add current reference id
-              params["working_set_id"] = UTIL.getCachedWorkingSetID();
+              params["working_set_id"] = UTIL.getCurrentWorkingSetID();
             }
             for(var i = 0; i < inputs.size(); i++){
               var inp = $(inputs.get(i));
@@ -144,7 +144,9 @@ var MainScreen = (function(){
                     showResults(data, type, setName);
                     if(params['return_all_data']){
                       //then this can be put in cache
-                      working_set_cache = data;
+                      UTIL.setCurrentWorkingSet(data, true);
+                    } else {
+                      UTIL.setCurrentWorkingSet(data, false);
                     }
                     //if this was a collection type, show output meta and move onto analysis stage
                     //if this was an analysis type, show output and additional analysis options
@@ -214,8 +216,7 @@ var MainScreen = (function(){
                 type: "GET",
                 data: {'working_set_id': $("#view #refID").val(), 'returnAllData': "true"},
                 success : function(data, stat, jqXHR){
-                  console.log(data);
-                  working_set_cache = data;
+                  UTIL.setCurrentWorkingSet(data);
                   $("#view textarea").html(JSON.stringify(data));
                 },
             });
@@ -350,7 +351,7 @@ var MainScreen = (function(){
     function handleDataButton(e){
       UI.toggleLoader(true);
       var btn = $(this);
-      UTIL.getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
+      UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), function(ws){
           var typ = btn.attr("data-type");
           var index = btn.attr("data-index");
           if(index){
@@ -459,7 +460,7 @@ var MainScreen = (function(){
     function onDownloadButtonClicked(){
       var btn = $(this);
       UI.toggleLoader(true);
-      UTIL.getWorkingSet(UTIL.getCachedWorkingSetID(), function(ws){
+      UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), function(ws){
         var typ = btn.attr("data-type");
         var index = btn.attr("data-index");
         if(index){
@@ -664,17 +665,26 @@ var MainScreen = (function(){
     }
 
     that.showWorkingSet = function(working_set, name){
+      UTIL.setCurrentWorkingSet(working_set);
       //clear current working set area
-      $("#workspace").empty();
+      $("#workspace").isotope('remove', $(".results"));
+      console.log(working_set);
       //add box for collection
-      showResults(working_set, "collection", name)
+      showResults(working_set, "collection", name);
+      //add box for each analysis
+
+      if(working_set.analysis){
+        for(var i = 0; i < working_set.analsis.length; i++){
+          showResults(working_set, "analysis", name, i);
+        }
+      } 
       passCollectionPhase();
       //Eventually add boxes for analysis
     }
     /*
       Given the working_set, it will create a new box for the most recently created data.
     */
-    function showResults(working_set, type, setName){
+    function showResults(working_set, type, setName, analysis_index){
       if(showResults.first){
         showResults.first = false;
         $("#workspace #intro").detach();
@@ -688,9 +698,9 @@ var MainScreen = (function(){
       var box = createBox(type);
       var h2 = box.find("h2");
       if(type == "collection"){
-        UTIL.setCachedWorkingSet(working_set);
+        UTIL.setCurrentWorkingSet(working_set);
         //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
-        h2.html("Collection Data");
+        h2.html("Collection");
         h2.append(" (" + setName + ")");
         var table = createTable(type, working_set);//this is the HTML created table
         box.append(table);
@@ -698,10 +708,13 @@ var MainScreen = (function(){
         box.append(getDownloadButton().attr("data-type", "collection"));
       }
       else if(type == "analysis"){
-        h2.html("Analysis Data");
+        h2.html("Analysis");
         h2.parent().append(closeBoxButton());
         box.append(createTable(type, working_set));
         var curIndex = working_set["analysis"].length - 1;
+        if(analysis_index !== undefined){
+          curIndex = analysis_index;
+        }
         if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
           //show all data button
           box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
