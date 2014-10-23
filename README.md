@@ -15,10 +15,10 @@ This document primarily consists of development ideas. To get more information o
 
 ###Small Goals
 - Confirm custom data upload works
+- Store visualizations in back-end
 - Better error management and error logging for front-end
 - Detecting when online in front-end
 - Better data and SVG downloading (have visualizations generated in back end)
-- Code cleaning
 - Create a cron job to compress logs monthly/yearly
 
 #Ideas

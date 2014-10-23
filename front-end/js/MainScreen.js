@@ -470,7 +470,7 @@ var MainScreen = (function(){
 
         if(document.getElementById('JSON').checked){
           console.log("downloading in json");
-          downloadBoxjson(ws);
+          UTIL.downloadWorkingSet(UTIL.getCurrentWorkingSetID());
         }
         else if (document.getElementById('CSV').checked){
           console.log("downloading in csv");
@@ -844,6 +844,7 @@ var MainScreen = (function(){
       reader.onload = function(e) {
         var results = e.target.result;
         console.log(results);
+        /*
         $.ajax({
           url : UTIL.CFG.api_endpoint + "upload/" + results,
           dataType: "json",
@@ -851,6 +852,7 @@ var MainScreen = (function(){
             showResults(json, "collection");
           }
         });
+        */
           //document.getElementById('list').innerHTML = "<br>" + csvJSON(results);
       }
       reader.readAsText(file);

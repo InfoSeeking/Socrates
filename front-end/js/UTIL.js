@@ -27,7 +27,6 @@ var UTIL = (function(){
 			callback.call(window, working_set_cache);
 		}
 		else{
-			console.log("Fetching working set for " + refID);
 			//download fresh data
 			$.ajax({
 				url: that.CFG.api_endpoint,
@@ -74,6 +73,14 @@ var UTIL = (function(){
 			}
 		});
 	}
+
+	that.downloadWorkingSet = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+      		var json = JSON.stringify(working_set);
+      		var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
+		})
+	}
+
 	that.supports_html5_storage = function(){
       try {
         return 'localStorage' in window && window['localStorage'] !== null;

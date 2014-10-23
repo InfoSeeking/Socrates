@@ -23,8 +23,11 @@ var DataScreen = (function(){
     function clearList(){
       $(".screen.data #data-list").empty();
     }
+    function showButtons(){
+      $(".screen.data .data-buttons").fadeIn();
+    }
     function addWorkingSet(id, name){
-      var item = $("<li data-id='" + id + "'><span class='name'>" + name + "</span><span data-action='remove'>Remove</span><span data-action='load'>Load</span></li>");
+      var item = $("<li data-id='" + id + "'><span class='name'>" + name + "</span></li>");
       $(".screen.data #data-list").append(item);
     }
     that.hide = function(){
@@ -32,18 +35,30 @@ var DataScreen = (function(){
     };
 
     that.init = function(){
-      $(".screen.data #data-list").delegate("[data-action=load]", "click", function(){
-        var item = $(this).parent();
+      $(".screen.data #data-list").delegate("li", "click", function(){
+        $(".screen.data #data-list li").removeClass("selected");
+        $(this).addClass("selected");
+        showButtons();
+      })
+      $(".screen.data [data-action=load]").on("click", function(){
+        var item = $(".screen.data #data-list .selected");
+        if(item.size() == 0){return;}
         //get working set
         UTIL.getWorkingSet(item.attr("data-id"), function(working_set){
           MainScreen.showWorkingSet(working_set, item.html());
         });
       });
-      $(".screen.data #data-list").delegate("[data-action=remove]", "click", function(){
-        var item = $(this).parent();
+      $(".screen.data [data-action=remove]").on("click", function(){
+        var item = $(".screen.data #data-list .selected");
+        if(item.size() == 0){return;}
         UTIL.removeWorkingSet(item.attr("data-id"), function(){
           item.detach();
         });
+      })
+      $(".screen.data [data-action=export]").on("click", function(){
+        var item = $(".screen.data #data-list .selected");
+        if(item.size() == 0){return;}
+        UTIL.downloadWorkingSet(item.attr("data-id"));
       })
     }
 

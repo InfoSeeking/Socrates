@@ -95,9 +95,10 @@
           <a href="#" title="Manage your account" id="account-btn" class="button">Account</a>
           <a href="#" title="Data" id="data-btn" class="inactive button">Your Datasets</a>
           <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>       
-          <a href="#" title="Settings" id="settings-btn" class="button">Settings</a>
+          <!--<a href="#" title="Settings" id="settings-btn" class="button">Settings</a>-->
         </nav>
         <div class="ruler"></div>
+
         <div class="screen settings">
           <div>
             <h2>Export/Import Format</h2>
@@ -109,6 +110,7 @@
             </ul>
           </div>
         </div>
+
         <div class="screen login">
           <h2>Log in</h2>
           <div class="form_grid">
@@ -118,10 +120,12 @@
           <button class="login-btns" id="login-submit-btn">Log in</button> <br>
           <a href="#" class="sub-link" id="login-register-btn">Register</a>
         </div>
+
         <div class="screen logout">
           <h2>Logged in as <span class='username'></span></h2>
           <button class="button" id="logout-btn">Log out</button>
         </div>
+
         <div class="screen register">
           <h2>Register</h2>
           <div class="form_grid">
@@ -131,17 +135,36 @@
           <button class="login-btns" id="register-btn">Sign up</button> <br>
           <a href="#" class="sub-link" id="register-back-btn">Back</a>
         </div>
+
         <div class="screen data">
           <h2>Your saved data</h2>
           <!-- <button id="remove-btn" class="button" onclick="removeData()">Delete</button> -->
           <!--//Taking out accounts for now, focusing on multiple data sets in one continuous session
           <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
           <ul id="data-list"></ul>
-
+          <div class="data-buttons">
+            <button class="button" data-action="load">Load</button>
+            <button class="button" data-action="export">Export</button>&nbsp;&nbsp;
+            <button class="button red" data-action="remove">Remove</button>
+          </div>
           <input id="fileupload" type="file" name="upfile">
-          <button id="import-btn" class="button">Import Data</button>
 
+          <div class="ruler"></div>
+          <h3>Import Data</h3>
+          <h4>Format</h4>
+          <ul class="formatSelect">
+            <li><input id="CSV" type="radio" name="format" value="CSV" checked="checked"> <label for="CSV">CSV</label></li>
+            <li><input id="JSON"type="radio" name="format" value="JSON"> <label for="JSON">SOCRATES JSON</label></li>
+            <!--
+            <li><input id="XML" type="radio" name="format" value="XML"> <label for="XML">XML</label></li>
+            <li><input id="TSV" type="radio" name="format" value="TSV"> <label for="TSV">TSV</label></li>
+            -->
+          </ul>
+          <p><i>CSV</i> format should have the first line of all labels.<br/>
+          <i>SOCRATES JSON</i> format is the same format as what SOCRATES exports.</p>
+          <button id="import-btn" class="button">Select File</button>
         </div>
+
         <div class="screen main">
           <div id="topbar">
             <div class="active item c">

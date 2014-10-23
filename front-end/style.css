@@ -48,6 +48,12 @@ aside#sidebar .inner{
 	border-radius: 4px;
 	text-decoration: none;
 }
+.button.red{
+	background: #F5716C;
+}
+.button.red:hover{
+	background: #FF8A8A
+}
 .button:hover{
 	background: #5ecff9;
 }
@@ -157,6 +163,10 @@ form .row .comment .optional{
 	background: #4c4c4c;
 }
 
+#sidebar p{
+	font-size: 12px;
+	margin: 1em 0;
+}
 #sidebar nav a{
 	display: inline-block;
 	height: 17px;
@@ -468,6 +478,9 @@ form .row .comment .optional{
 	float:right;
 }
 
+.screen.data .data-buttons{
+	display: none;
+}
 #data-list {
 	list-style: none;
 }
@@ -475,24 +488,15 @@ form .row .comment .optional{
 	margin: 5px 5px 5px 0;
 	padding-right: 0px;
 }
-#data-list li:nth-child(even){
-	background: rgba(255,255,255,.1);
-}
-#data-list li span.name{
-	display: inline-block;
-	width: 200px;
-	font-size: 12px;
+#data-list li{
+	font-size: 14px;
 	color: #00aeef;
-	margin: auto 5px;
-	
-}
-#data-list li span[data-action]{
+	margin: 5px 0px;
+	padding: 2px 5px;
 	cursor: pointer;
-	display: inline-block;
-	margin: auto 10px;
 }
-#data-list li span[data-action]:hover{
-	text-decoration: underline;
+#data-list li.selected{
+	background: rgba(255,255,255,.1);
 }
 
 .form_grid .row {
