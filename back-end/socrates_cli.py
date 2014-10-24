@@ -26,7 +26,7 @@ reference: http://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-
 I'd like for this to be cleaner
 '''
 
-def redirectOutput():
+def _redirectOutput():
     try:
         #why? - to check if we have write permissions 
         f = open("logs/python.out.log", "a")
@@ -42,7 +42,7 @@ def redirectOutput():
         print "I/O error on log redirection: %s" % (e.strerror)
         sys.exit(1) #without error logging, all hope is lost
 
-def restoreOutput():
+def _restoreOutput():
     sys.stdout.flush()
     sys.stderr.flush()
     os.close(1)
@@ -52,11 +52,29 @@ def restoreOutput():
     os.dup(origStderr)
     os.close(origStderr)
 
-def err(msg):
+def _err(msg):
     return json.dumps({
     'error' : 'true',
     'message': msg
     })
+
+
+def _parseCSV(csv_str):
+    rows = csv_str.split('\n')
+    keys = rows[0].split(",")
+    working_set = {
+        "meta" : {},
+        "data" : []
+    }
+    for k in keys:
+        working_set["meta"][k] = "text" #for now, assume text field
+    for r in rows[1:]:
+        row_obj = {}
+        row_parts = r.split(",")
+        for i in range(len(row_parts)):
+            row_obj[keys[i]] = row_parts[i]
+        working_set["data"].append(row_obj)
+    return working_set
 
 '''
 The run method ties together the running of operators.
@@ -68,7 +86,7 @@ def run(typ, mod, fn, param, working_set=None):
         #if this is an analysis call, check if the user has already stored data
         if typ == 'analysis':
             if working_set is None:
-                return err("Data not provided")
+                return _err("Data not provided")
 
         #get module/function references
         callingTyp = getattr(modules, typ)
@@ -77,7 +95,7 @@ def run(typ, mod, fn, param, working_set=None):
         fn_specs = callingMod.SPECS['functions']
         #validate parameters from constraints
         if enforceAndConvert(param, fn_specs[fn]['param'], working_set) is False:
-            return err("Parameters are not valid") #get better error from constraint function
+            return _err("Parameters are not valid") #get better error from constraint function
 
         applyDefaults(param, fn_specs[fn]['param'])
 
@@ -120,7 +138,7 @@ def parse_params(parameters):
             else:
                 #authenticate
                 if not user.authenticate(parameters['username'], parameters['password']):
-                    return err("Invalid username and password")
+                    return _err("Invalid username and password")
         else:
             #use default user
             user.setDefault()
@@ -148,16 +166,16 @@ def parse_params(parameters):
                 return_all_data = parameters["return_all_data"]
 
             if typ == "analysis" and working_set is None:
-                return err("Working set id not included")
+                return _err("Working set id not included")
 
             working_set = run(typ, mod, fn, param, working_set)
 
             user.log_run(typ, mod, fn)
 
             if working_set is None:
-                return err("Internal operation error")
+                return _err("Internal operation error")
             if 'error' in working_set and working_set['error']:
-                return err("Error: " + working_set['message'])
+                return _err("error: " + working_set['message'])
 
             #store new/modified working set
             working_set["working_set_name"] = working_set_name
@@ -216,15 +234,15 @@ def parse_params(parameters):
             data = parameters['working_set_data']
             format = parameters['format']
             if format not in ["csv", "json"]:
-                return err("Invalid upload format selected")
+                return _err("Invalid upload format selected")
             if format == "json":
                 try:
                     working_set = json.loads(data) #no additional parsing necessary
                 except ValueError as ve:
-                    return err("Working set JSON could not be parsed")
+                    return _err("Working set JSON could not be parsed")
             elif format == "csv":
                 #parse string as csv
-                return err("CSV not yet supported")
+                working_set = _parseCSV(data)
 
             if working_set is not None:
                 if "working_set_name" not in working_set:
@@ -235,7 +253,7 @@ def parse_params(parameters):
                     "name" : working_set["working_set_name"]
                     })
             else:
-                return err("Could not upload")
+                return _err("Could not upload")
         return result
 
     except Exception as e:
@@ -254,10 +272,10 @@ def init():
         parameters = json.load(param_file)
         param_file.close()
     if not parameters:
-        return err("No parameter file passed")
+        return _err("No parameter file passed")
 
     if args.log:
-        redirectOutput() #if any stdout/stderr from modules occurs, log it (used for API logging)
+        _redirectOutput() #if any stdout/stderr from modules occurs, log it (used for API logging)
         dateStr = "--start-%s--\n" % datetime.now()
         sys.stderr.write(dateStr)
         sys.stdout.write(dateStr)
@@ -267,7 +285,7 @@ def init():
     if args.log:
         sys.stdout.write("--end--\n")
         sys.stderr.write("--end--\n")
-        restoreOutput()
+        _restoreOutput()
     return result
 
     
