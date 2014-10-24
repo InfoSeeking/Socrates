@@ -211,14 +211,31 @@ def parse_params(parameters):
                 })
             
         elif 'upload' in parameters:
-            data = parameters['upload']
-            print "Upload Data: %s\n" % data
-            working_set = data
-            # insert_id = mongodb.collectionData.insert(working_set)
-            # del working_set["_id"] #for some reason ObjectID is not JSON serializable
-            # working_set['working_set_id'] = str(insert_id)
-            # print working_set['working_set_id']
+            working_set = None
+            default_working_set_name = "Imported Dataset"
+            data = parameters['working_set_data']
+            format = parameters['format']
+            if format not in ["csv", "json"]:
+                return err("Invalid upload format selected")
+            if format == "json":
+                try:
+                    working_set = json.loads(data) #no additional parsing necessary
+                except ValueError as ve:
+                    return err("Working set JSON could not be parsed")
+            elif format == "csv":
+                #parse string as csv
+                return err("CSV not yet supported")
 
+            if working_set is not None:
+                if "working_set_name" not in working_set:
+                    working_set["working_set_name"] = default_working_set_name
+                working_set_id = user.addWorkingSet(working_set)
+                return json.dumps({
+                    "id" : str(working_set_id),
+                    "name" : working_set["working_set_name"]
+                    })
+            else:
+                return err("Could not upload")
         return result
 
     except Exception as e:

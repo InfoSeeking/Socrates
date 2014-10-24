@@ -19,6 +19,11 @@ var DataScreen = (function(){
         }
       })
     };
+
+    that.hide = function(){
+      $(".screen.data").hide();
+    };
+
     
     function clearList(){
       $(".screen.data #data-list").empty();
@@ -30,11 +35,47 @@ var DataScreen = (function(){
       var item = $("<li data-id='" + id + "'><span class='name'>" + name + "</span></li>");
       $(".screen.data #data-list").append(item);
     }
-    that.hide = function(){
-      $(".screen.data").hide();
-    };
+
+
+    //File selection
+    function handleFileSelect(evt) {
+      var file = evt.target.files[0];
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var raw_data = e.target.result;
+        var params = {
+          "username" : UI.getUsername(),
+          "password" : UI.getPassword(),
+          "upload" : true,
+          "working_set_data" : raw_data,
+          "format" : $(".screen.data .formatSelect [name=format]:checked").val()
+        };
+
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          dataType: "json",
+          data: params,
+          type: "POST",
+          success : function(response){
+            if(response.error){
+              UI.feedback(response.message, true);
+            } else {
+              addWorkingSet(response.id, response.name);
+            }
+          },
+          error: function(){
+            UI.feedback("Error uploading data", true);
+          }
+        });
+      }
+
+      reader.readAsText(file);
+
+    }
 
     that.init = function(){
+      $(".screen.data #fileupload").on("change", handleFileSelect);
       $(".screen.data #data-list").delegate("li", "click", function(){
         $(".screen.data #data-list li").removeClass("selected");
         $(this).addClass("selected");

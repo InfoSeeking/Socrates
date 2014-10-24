@@ -283,7 +283,7 @@ var MainScreen = (function(){
      
 
       $("#showAllData").on("click", handleDataButton);
-      $("#fileupload").on("change", handleFileSelect);
+
 
     } 
     /*
@@ -836,28 +836,6 @@ var MainScreen = (function(){
     }
 
 
-
-    //File selection
-    function handleFileSelect(evt) {
-      var file = evt.target.files[0];
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var results = e.target.result;
-        console.log(results);
-        /*
-        $.ajax({
-          url : UTIL.CFG.api_endpoint + "upload/" + results,
-          dataType: "json",
-          success : function(json){
-            showResults(json, "collection");
-          }
-        });
-        */
-          //document.getElementById('list').innerHTML = "<br>" + csvJSON(results);
-      }
-      reader.readAsText(file);
-
-    }
 
 
     function json2xml(o, tab) {
