@@ -266,8 +266,8 @@ var MainScreen = (function(){
         dataType: "json",
         success : function(json){
           console.log(json);
-          var dateStr = json.updated_at + "";
-          $("#last-modified").html("SOCRATES code base last updated on " + dateStr.replace(/[TZ]/g, ' '));
+          var dateStr = json.pushed_at + "";
+          $("#last-modified").html("SOCRATES last updated on " + dateStr.replace(/[TZ]/g, ' '));
         }
       })
 
