@@ -74,6 +74,13 @@ def updateWorkingSet(working_set_id, working_set):
     mongodb.working_set.save(working_set)
     del working_set['_id']
 
+def renameWorkingSet(working_set_id, new_name):
+    working_set = getWorkingSet(working_set_id)
+    working_set["working_set_name"] = new_name
+    working_set["_id"] = ObjectId(working_set_id)
+    mongodb.working_set.save(working_set)
+    del working_set['_id']
+
 def log_run(typ,mod,fn):
     global user_id
     q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, int(user_id))

@@ -211,6 +211,10 @@ def parse_params(parameters):
             user.removeWorkingSet(working_set_id)
             return json.dumps({"status" : "success"})
 
+        elif 'rename' in parameters:
+            user.renameWorkingSet(working_set_id, parameters['new_name'])
+            return json.dumps({"status" : "success"})
+
         elif 'fetch_all_ids' in parameters:
             working_sets = user.getWorkingSets()
             working_set_identifiers = []
@@ -252,6 +256,7 @@ def parse_params(parameters):
                     "id" : str(working_set_id),
                     "name" : working_set["working_set_name"]
                     })
+
             else:
                 return _err("Could not upload")
         return result
