@@ -1,0 +1,13 @@
+{
+    "input": {
+        "field" : "friends"
+    },
+    "return_all_data": "false",
+    "setname": "test",
+    "type": "analysis",
+    "module": "stats",
+    "function": "basic",
+    "working_set_id": "5434ac0239827c1e12edcb2b",
+    "return_all_data": false,
+    "setname": "basic"
+}

@@ -1,0 +1,15 @@
+{
+    "function": "tw_search",
+    "input": {
+        "count": "10",
+        "lang": "en",
+        "latitude": "",
+        "longitude": "",
+        "query": "test",
+        "radius": ""
+    },
+    "module": "twitter",
+    "return_all_data": "false",
+    "setname": "test",
+    "type": "collection"
+}

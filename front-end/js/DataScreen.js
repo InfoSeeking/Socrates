@@ -101,6 +101,17 @@ var DataScreen = (function(){
         if(item.size() == 0){return;}
         UTIL.downloadWorkingSet(item.attr("data-id"));
       })
+      $(".screen.data [data-action=rename]").on("click", function(){
+        var new_name = window.prompt("New Dataset Name");
+        if(new_name.trim() == ""){
+          return;
+        }
+        var item = $(".screen.data #data-list .selected");
+        if(item.size() == 0){return;}
+        UTIL.renameWorkingSet(item.attr("data-id"), new_name, function(){
+          item.html(new_name);
+        });
+      })
     }
 
     return that;

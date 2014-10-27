@@ -1,0 +1,10 @@
+{
+    "function": "facebook_search",
+    "input": {
+        "query" : "test"
+    },
+    "module": "facebook",
+    "return_all_data": "false",
+    "setname": "test",
+    "type": "collection"
+}

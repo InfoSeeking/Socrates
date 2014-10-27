@@ -85,7 +85,9 @@ def facebook_search(param=False):
         row['from_name'] = res['from']['name']
         row['from_id'] = int(res['from']['id'])
         row['type'] = res['type']
-        row['num_likes'] = res.get('likes', {}).get('count', 0)
+        row['num_likes'] = 0
+        if 'likes' in res:
+            row['num_likes'] = len(res['likes'])
         row['created_time'] = res['created_time']
         row['message'] = res.get('message', '')
         row['link'] = res.get('link', '')

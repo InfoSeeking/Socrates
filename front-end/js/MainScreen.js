@@ -467,24 +467,7 @@ var MainScreen = (function(){
         if(index){
           index = parseInt(index);
         }
-
-        if(document.getElementById('JSON').checked){
-          console.log("downloading in json");
-          UTIL.downloadWorkingSet(UTIL.getCurrentWorkingSetID());
-        }
-        else if (document.getElementById('CSV').checked){
-          console.log("downloading in csv");
-          downloadBoxcsv(ws, typ, index);
-        } 
-        else if (document.getElementById('XML').checked){
-          console.log("downloading in xml");
-          downloadBoxXML(ws, typ, index);
-        }
-        else{
-          console.log("downloading in tsv");
-          downloadBoxtsv(ws, typ, index);
-        }
-      
+        UTIL.downloadWorkingSet(UTIL.getCurrentWorkingSetID());
         UI.toggleLoader(false);
       });
     }

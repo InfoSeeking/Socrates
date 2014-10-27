@@ -14,10 +14,9 @@ This document primarily consists of development ideas. To get more information o
 - Make a web interface for accessing logs
 
 ###Small Goals
-- Confirm custom data upload works
+- Add logging for front-end errors
 - Store visualizations in back-end
-- Better error management and error logging for front-end
-- Detecting when online in front-end
+- Detect when online in front-end
 - Better data and SVG downloading (have visualizations generated in back end)
 - Create a cron job to compress logs monthly/yearly
 
