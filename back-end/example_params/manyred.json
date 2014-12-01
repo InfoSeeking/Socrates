@@ -1,0 +1,14 @@
+{
+    "type":"collection",
+    "module":"reddit",
+    "function":"fetchManyPosts",
+    "working_set_name":"Untitled",
+    "input" : {
+        "count" :"10",
+        "sub":"funny",
+        "reddit_sorting":"hot"
+    },
+    "return_all_data":"false",
+    "username":"test",
+    "password":"test"
+}

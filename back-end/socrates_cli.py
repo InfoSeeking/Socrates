@@ -99,6 +99,7 @@ def run(typ, mod, fn, param, working_set=None):
         if typ == 'analysis':
             if working_set is None:
                 return _err("Data not provided")
+            is_new = False
             results = callingFn(working_set, param)
             if 'aggregate_result' in fn_specs[fn]:
                 results['aggregate_meta'] = fn_specs[fn]['aggregate_result']
@@ -110,11 +111,23 @@ def run(typ, mod, fn, param, working_set=None):
                 working_set['analysis'] = [results]
         elif typ == 'collection':
             #check for long term
-            if 'long_term' in fn_specs[fn]:
-                if working_set is None:
-                    return _err("Data not provided")
-                data = callingFn(param)
-                working_set.data.extend(data)
+            if 'campaign' in fn_specs[fn]:
+                campaign_meta = None
+                if working_set is not None:
+                    campaign_meta = working_set["meta"]["campaign"]
+                    is_new = False
+                else:
+                    is_new = True
+
+                data = callingFn(param, campaign_meta) #campaign_meta may be none if first trial
+                if is_new:
+                    working_set = {
+                        'data' : data, #only if specified
+                        'meta' : fn_specs[fn]['returns'],
+                        'input' : param
+                    }
+                else:
+                    working_set.data.extend(data)
             else:
                 is_new = True
                 data = callingFn(param)

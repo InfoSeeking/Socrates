@@ -65,7 +65,7 @@ SPECS = {
                     'parent_id': "text",
                     'content': "text"
                     }
-                }
+                },
             'fetchManyPosts' : {
                 'param': {
                     'sub' : {
@@ -193,7 +193,8 @@ def fetchPosts(param):
 '''
 long term collection function experiment
 '''
-def fetchManyPosts(param, long_term):
+def fetchManyPosts(param, campaign_meta=None):
+    #get the last "checkpoint" from the working_set campaign metadata
     sub = param['sub']
     count = int(param['count'])
     reddit_sorting = param['reddit_sorting']

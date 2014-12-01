@@ -1,5 +1,5 @@
 {
-    "function": "tw_search",
+    "function": "twitter_search",
     "input": {
         "count": "10",
         "lang": "en",
