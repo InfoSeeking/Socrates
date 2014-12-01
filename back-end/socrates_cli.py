@@ -82,12 +82,8 @@ It will run the operator, store results, and return appropriate data to be sent 
 It will store/retrieve stored collection data
 '''
 def run(typ, mod, fn, param, working_set=None):
+    is_new = False
     if typ in MODULE_LIST and mod in MODULE_LIST[typ]:
-        #if this is an analysis call, check if the user has already stored data
-        if typ == 'analysis':
-            if working_set is None:
-                return _err("Data not provided")
-
         #get module/function references
         callingTyp = getattr(modules, typ)
         callingMod = getattr(callingTyp, mod)
@@ -101,6 +97,8 @@ def run(typ, mod, fn, param, working_set=None):
 
         #call and augment with meta information
         if typ == 'analysis':
+            if working_set is None:
+                return _err("Data not provided")
             results = callingFn(working_set, param)
             if 'aggregate_result' in fn_specs[fn]:
                 results['aggregate_meta'] = fn_specs[fn]['aggregate_result']
@@ -111,13 +109,22 @@ def run(typ, mod, fn, param, working_set=None):
             else:
                 working_set['analysis'] = [results]
         elif typ == 'collection':
-            data = callingFn(param)
-            working_set = {
-                'data' : data, #only if specified
-                'meta' : fn_specs[fn]['returns']
-                }
-        return working_set
-    return None
+            #check for long term
+            if 'long_term' in fn_specs[fn]:
+                if working_set is None:
+                    return _err("Data not provided")
+                data = callingFn(param)
+                working_set.data.extend(data)
+            else:
+                is_new = True
+                data = callingFn(param)
+                working_set = {
+                    'data' : data, #only if specified
+                    'meta' : fn_specs[fn]['returns'],
+                    'input' : param
+                    }
+        return (working_set, is_new)
+    return (None, False)
 
 def parse_params(parameters):
     try:
@@ -168,7 +175,7 @@ def parse_params(parameters):
             if typ == "analysis" and working_set is None:
                 return _err("Working set id not included")
 
-            working_set = run(typ, mod, fn, param, working_set)
+            (working_set, is_new) = run(typ, mod, fn, param, working_set)
 
             user.log_run(typ, mod, fn)
 
@@ -179,10 +186,10 @@ def parse_params(parameters):
 
             #store new/modified working set
             working_set["working_set_name"] = working_set_name
-            if typ == "collection":
+            if is_new:
                 insert_id = user.addWorkingSet(working_set)
                 working_set['working_set_id'] = str(insert_id)
-            elif typ == "analysis":
+            else:
                 user.updateWorkingSet(working_set_id, working_set) #overwrite in database
                 working_set['working_set_id'] = str(working_set_id)
 

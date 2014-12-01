@@ -105,7 +105,6 @@ def twitter_search(param=False):
     if(not geo):
         tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang)
     else:
-        print "Searching from " + geo
         tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang, geocode=geo)
 
     for tweet in tResults.items():
