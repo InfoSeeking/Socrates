@@ -171,6 +171,11 @@ def parse_params(parameters):
         if 'working_set_name' in parameters:
             working_set_name = parameters['working_set_name']
 
+        if 'run_campaigns' in parameters:
+            #run on cron job
+            #run collection for each campaign
+            pass
+
         #mutually exclusive if-elif
         if 'module' in parameters:
             typ = parameters['type']
@@ -205,6 +210,10 @@ def parse_params(parameters):
             else:
                 user.updateWorkingSet(working_set_id, working_set) #overwrite in database
                 working_set['working_set_id'] = str(working_set_id)
+
+            #check if user is creating a campaign
+            if "add_campaign" in parameters:
+                user.addCampaign(str(working_set_id), param)
 
             if not return_all_data:
                 #remove all data except first entry

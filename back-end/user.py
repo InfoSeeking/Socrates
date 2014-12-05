@@ -81,6 +81,14 @@ def renameWorkingSet(working_set_id, new_name):
     mongodb.working_set.save(working_set)
     del working_set['_id']
 
+def addCampaign(working_set_id, inp):
+    campaign = {
+        "working_set_id" : working_set_id,
+        "input" : inp,
+        "user_id" : user_id
+    }
+    mongodb.campaign.insert(campaign)
+
 def log_run(typ,mod,fn):
     global user_id
     q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, int(user_id))

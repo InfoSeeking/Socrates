@@ -6,6 +6,9 @@ This document primarily consists of development ideas. To get more information o
 ##Future Goals
 ###Big Goals
 - Plan out infrastructure in cleanest possible way.
+	+ Split collection and analysis data to their own Mongo collections. This way, they can refer to each other and chaining multiple datasets will be easier
+	+ Add classes for accessing function specs and working_set in python. This will essentially be a python library but no longer have everything rely on the JSON structure
+	+ Move visualization to server side
 - User system for storing/sharing working\_sets
 - Long-term data collection campaigns to get around API limits
 - Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization

@@ -1,0 +1,15 @@
+def DataIterator:
+    def hasNext():
+        pass
+
+def WorkingSet():
+    def getMeta(self, key):
+        pass
+    def getDataIterator(self):
+        pass
+    def addData():
+        pass
+    def fromJSON(self, json):
+        pass
+    def asJSON():
+        pass
