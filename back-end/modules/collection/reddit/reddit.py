@@ -229,8 +229,7 @@ def fetchManyPosts(param, campaign):
         current_count += count
         if current_count > desired_count:
             #campaign is over
-            campaign.end()
+            campaign.finish()
         else:
             campaign.setCheckpointField("current_count", current_count)
-            campaign.save()
     return pList

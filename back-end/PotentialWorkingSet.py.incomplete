@@ -1,8 +1,6 @@
-def DataIterator:
-    def hasNext():
-        pass
-
 def WorkingSet():
+    def __init__(self, working_set_id):
+        pass
     def getMeta(self, key):
         pass
     def getDataIterator(self):

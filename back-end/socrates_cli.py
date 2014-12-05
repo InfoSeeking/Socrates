@@ -82,7 +82,7 @@ The run method ties together the running of operators.
 It will run the operator, store results, and return appropriate data to be sent back to user.
 It will store/retrieve stored collection data
 '''
-def run(typ, mod, fn, param, working_set=None):
+def run(typ, mod, fn, param, working_set=None, campaign=None):
     is_new = False
     if typ in MODULE_LIST and mod in MODULE_LIST[typ]:
         #get module/function references
@@ -113,12 +113,13 @@ def run(typ, mod, fn, param, working_set=None):
         elif typ == 'collection':
             #check for long term
             if 'campaign' in fn_specs[fn]:
+                campaign.setSpecs(fn_specs[fn]["campaign"], mod, fn)
                 if working_set is not None:
                     is_new = False
                 else:
                     is_new = True
-                campaign = Campaign(working_set, fn_specs[fn]['campaign'], param, is_new)
-                data = callingFn(param, campaign) #campaign_meta may be none if first trial
+                
+                data = callingFn(param, campaign) #campaign may be none if first trial
                 if is_new:
                     working_set = {
                         'data' : data, #only if specified
@@ -126,7 +127,7 @@ def run(typ, mod, fn, param, working_set=None):
                         'input' : param
                     }
                 else:
-                    working_set.data.extend(data)
+                    working_set["data"].extend(data)
             else:
                 is_new = True
                 data = callingFn(param)
@@ -173,7 +174,16 @@ def parse_params(parameters):
         if 'run_campaigns' in parameters:
             #run on cron job
             #run collection for each campaign
-            pass
+            ids = Campaign.getAllWorkingSetIds()
+            for wid in ids:
+                c = Campaign()
+                c.load(wid)
+                working_set = user.getWorkingSet(wid)
+                (working_set, is_new) = run("collection", c.getMod(), c.getFn(), c.getInput(), working_set, c)
+                user.updateWorkingSet(wid, working_set)
+                if not c.isFinished():
+                    c.setWorkingSetId(wid)
+                    c.save()
 
         #mutually exclusive if-elif
         if 'module' in parameters:
@@ -192,7 +202,12 @@ def parse_params(parameters):
             if typ == "analysis" and working_set is None:
                 return _err("Working set id not included")
 
-            (working_set, is_new) = run(typ, mod, fn, param, working_set)
+            campaign = None
+            if 'start_campaign' in parameters:
+                campaign = Campaign()
+                campaign.setInput(param)
+
+            (working_set, is_new) = run(typ, mod, fn, param, working_set, campaign)
 
             user.log_run(typ, mod, fn)
 
@@ -211,8 +226,10 @@ def parse_params(parameters):
                 working_set['working_set_id'] = str(working_set_id)
 
             #check if user is creating a campaign
-            if "add_campaign" in parameters:
-                user.addCampaign(str(working_set_id), param)
+            if 'start_campaign' in parameters:
+                if not campaign.isFinished():
+                    campaign.setWorkingSetId(working_set['working_set_id'])
+                    campaign.save()
 
             if not return_all_data:
                 #remove all data except first entry

@@ -10,5 +10,6 @@
     },
     "return_all_data":"false",
     "username":"test",
-    "password":"test"
+    "password":"test",
+    "start_campaign" : true
 }

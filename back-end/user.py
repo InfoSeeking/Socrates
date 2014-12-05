@@ -69,7 +69,6 @@ def removeWorkingSet(working_set_id):
     mongodb.working_set.remove({"_id" : ObjectId(working_set_id)});
 
 def updateWorkingSet(working_set_id, working_set):
-    working_set['user_id'] = user_id
     working_set["_id"] = ObjectId(working_set_id)
     mongodb.working_set.save(working_set)
     del working_set['_id']
