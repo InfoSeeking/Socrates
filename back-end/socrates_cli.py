@@ -16,6 +16,7 @@ from pymongo import MongoClient
 from bson import objectid
 from bson.objectid import ObjectId
 import user
+from campaign import Campaign
 
 origStdout = os.dup(1)
 origStderr = os.dup(2)
@@ -112,14 +113,12 @@ def run(typ, mod, fn, param, working_set=None):
         elif typ == 'collection':
             #check for long term
             if 'campaign' in fn_specs[fn]:
-                campaign_meta = None
                 if working_set is not None:
-                    campaign_meta = working_set["meta"]["campaign"]
                     is_new = False
                 else:
                     is_new = True
-
-                data = callingFn(param, campaign_meta) #campaign_meta may be none if first trial
+                campaign = Campaign(working_set, fn_specs[fn]['campaign'], param, is_new)
+                data = callingFn(param, campaign) #campaign_meta may be none if first trial
                 if is_new:
                     working_set = {
                         'data' : data, #only if specified

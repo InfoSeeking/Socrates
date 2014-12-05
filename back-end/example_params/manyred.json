@@ -4,7 +4,7 @@
     "function":"fetchManyPosts",
     "working_set_name":"Untitled",
     "input" : {
-        "count" :"10",
+        "count" :"1000",
         "sub":"funny",
         "reddit_sorting":"hot"
     },

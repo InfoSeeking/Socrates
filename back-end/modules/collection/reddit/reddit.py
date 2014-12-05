@@ -98,12 +98,7 @@ SPECS = {
                     "created_utc": "numeric"
                     },
                 'campaign' : {
-                    'limitations' : {
-                            'time' : '5'
-                        },
-                    'meta' : {
-
-                        }
+                        'max_count' : 50
                     }
                 }
             }
@@ -193,9 +188,10 @@ def fetchPosts(param):
 '''
 long term collection function experiment
 '''
-def fetchManyPosts(param, campaign_meta=None):
+def fetchManyPosts(param, campaign):
     sub = param['sub']
-    count = int(param['count'])
+    desired_count = int(param['count'])
+    count = min(desired_count, campaign.getSpec("max_count"))
     reddit_sorting = param['reddit_sorting']
     r = _getPraw()
     posts = []
@@ -226,4 +222,15 @@ def fetchManyPosts(param, campaign_meta=None):
                 "created_utc": p.created_utc
                 }
         pList.append(post)
+
+    #update campaign object
+    if campaign is not None:
+        current_count = campaign.getCheckpointField("current_count")
+        current_count += count
+        if current_count > desired_count:
+            #campaign is over
+            campaign.end()
+        else:
+            campaign.setCheckpointField("current_count", current_count)
+            campaign.save()
     return pList
