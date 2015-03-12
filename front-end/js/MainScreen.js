@@ -33,6 +33,10 @@ var MainScreen = (function(){
           UI.toggleLoader(false);
         },
         success : function(data, stat, jqXHR){
+          if(!UI.isLoggedIn()) {
+            console.log("Switching");
+            UI.switchScreen("login");
+          }
           UI.toggleLoader(false);
           console.log(data);
           //Add Visualization specs

@@ -42,7 +42,9 @@ var UI = (function(){
         });
 
         $("#home-btn").click(function(){
-            UI.switchScreen("main");
+            if (UI.isLoggedIn()){
+                UI.switchScreen("main");    
+            }
         })
 
         $("#data-btn").click(function(){
@@ -150,6 +152,7 @@ var UI = (function(){
         loggedIn = val;
         if (val && u && p) {
             $("#data-btn").removeClass("inactive");
+            $("#home-btn").removeClass("inactive");
             username = u;
             password = p;
             if(UTIL.supports_html5_storage()){
@@ -158,6 +161,7 @@ var UI = (function(){
             }
         } else {
             $("#data-btn").addClass("inactive");
+            $("#home-btn").addClass("inactive");
             if(UTIL.supports_html5_storage()){
                 window.localStorage.removeItem("username");
                 window.localStorage.removeItem("password");

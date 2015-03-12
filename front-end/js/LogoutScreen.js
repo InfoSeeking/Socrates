@@ -17,7 +17,7 @@ var LogoutScreen = (function(){
     function logOut(){
       UI.setLoggedIn(false);
       UI.feedback("Logged out");
-      UI.switchScreen("main");
+      UI.switchScreen("login");
     }
     return that;
 }());
