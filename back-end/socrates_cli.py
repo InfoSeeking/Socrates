@@ -139,7 +139,7 @@ def run(typ, mod, fn, param, working_set=None, campaign=None):
         return (working_set, is_new)
     return (None, False)
 
-def parse_params(parameters):
+def parse_params(parameters, ip=False):
     try:
         client = MongoClient()
         mongodb = client.socrates
@@ -148,7 +148,6 @@ def parse_params(parameters):
         working_set = None
         working_set_id = -1
         working_set_name = "Untitled"
-
 
         if 'username' in parameters and 'password' in parameters:
             if 'register' in parameters:
@@ -210,6 +209,8 @@ def parse_params(parameters):
             (working_set, is_new) = run(typ, mod, fn, param, working_set, campaign)
 
             user.log_run(typ, mod, fn)
+            if ip:
+                user.log_activity("run_ip", ip)
 
             if working_set is None:
                 return _err("Internal operation error")
@@ -245,6 +246,8 @@ def parse_params(parameters):
 
         elif 'specs' in parameters:
             print "Fetching specs\n"
+            if ip:
+                user.log_activity("fetch_ip", ip)
             return json.dumps(getAllSpecs())
 
         elif 'fetch' in parameters:
@@ -314,6 +317,7 @@ def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
     parser.add_argument("--param", help="Reference to parameter file", default=False)
     parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
+    parser.add_argument("--ip", help="Stores ip address", default=False)
     args = parser.parse_args()
 
     parameters = None
@@ -330,7 +334,7 @@ def init():
         sys.stderr.write(dateStr)
         sys.stdout.write(dateStr)
     
-    result = parse_params(parameters)
+    result = parse_params(parameters, args.ip)
 
     if args.log:
         sys.stdout.write("--end--\n")

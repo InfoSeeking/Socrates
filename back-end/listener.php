@@ -56,13 +56,13 @@ if(getParam('force_download', $_GET, false, false)){
     header('Pragma: public');
 
     $param_file = writeToTemp("p_", json_encode($_GET), "json");
-    $cmd = sprintf("python socrates_cli.py --log --param %s 2>&1", $param_file);
+    $cmd = sprintf("python socrates_cli.py --log --param %s --ip '%s' 2>&1", $param_file, $_SERVER['REMOTE_ADDR']);
     echo shell_exec($cmd);
     unlink($param_file);
 } else{
     //standard run, uses POST request
     $param_file = writeToTemp("p_", json_encode($_POST), "json");
-    $cmd = sprintf("python socrates_cli.py --log --param %s 2>&1", $param_file);
+    $cmd = sprintf("python socrates_cli.py --log --param %s --ip '%s' 2>&1", $param_file, $_SERVER['REMOTE_ADDR']);
     echo shell_exec($cmd);
     unlink($param_file);
 }

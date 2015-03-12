@@ -10,6 +10,7 @@ Defaults to using a test user
 
 username = ""
 user_id = -1
+run_id = -1
 
 client = MongoClient()
 mongodb = client.socrates
@@ -81,13 +82,16 @@ def renameWorkingSet(working_set_id, new_name):
     del working_set['_id']
 
 def log_run(typ,mod,fn):
-    global user_id
+    global user_id, run_id
     q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, int(user_id))
     db.query(q)
+    run_id = db.insert_id()
 
 #log any general activity (login, logout, etc.)
-def log_activity(activity):
-    pass
+def log_activity(name, value):
+    global user_id, run_id
+    q = "INSERT INTO activity_log (`name`, `value`, `time`, `user_id`, `run_id`) VALUES('%s', '%s', NOW(), %d, %d)" % (name, value, int(user_id), run_id)
+    db.query(q)
 
 ''' Sets to using default user '''
 def setDefault():
