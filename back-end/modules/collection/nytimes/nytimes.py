@@ -1,7 +1,7 @@
 #5 Different methods of searching comments on NY Times
 #RECENT xml error
 #RANDOM xml error
-#DATE 
+#DATE
 #USER ID
 #URL
 
@@ -56,14 +56,24 @@ SPECS = {
 						"choices" : ["newest", "oldest"]
 					},
 					"default" : "newest"
-				}				
+				},
+				"begin_date" : {
+					"type" : "text",
+					"comment" : "format YYYYMMDD",
+					"optional" : True
+				},
+				"end_date" : {
+					"type" : "text",
+					"comment" : "format YYYYMMDD",
+					"optional" : True
+				}
 			},
 			'returns' : {
 				"web_url" : "text",
 				"headline" : "text",
 				"abstract" : "text",
 				"word_count" : "numeric",
-				"lead_paragraph" : "text", 
+				"lead_paragraph" : "text",
 				"snippet" : "text"
 			}
 		}#,
@@ -72,7 +82,7 @@ SPECS = {
 		#		"date" : {
 		#			"type" : "text",
 		#			"comment" : "YYYYMMDD"
-		#		}	
+		#		}
 		#	},
 		#	'returns': {
 		#		'approveDate': "text",
@@ -94,7 +104,7 @@ SPECS = {
 		#}
 	}
 }
-	
+
 def comments_by_URL(param):
 	matchtype = "exact-match"
 	cosearch = "http://api.nytimes.com/svc/community/v2/comments/url/"+matchtype+".json?"
@@ -108,7 +118,7 @@ def comments_by_URL(param):
 	def call_the_articles():
 		result = urllib2.urlopen(url).read()
 		return json.loads(result)
-		
+
 	articles = call_the_articles()
 	commentList = []
 	for comments in articles['results']['comments']:
@@ -136,6 +146,11 @@ def article_search(param):
 	sort = param['sort']
 	key = "688a998952b3b054ef2cbf264a8d1fc7:8:69414651"
 	q = {"q":query, "sort": sort, "api-key":key}
+	if "begin_date" in param and param["begin_date"] != "":
+		q["begin_date"] = param["begin_date"]
+	if "end_date" in param and param["end_date"] != "":
+		q["end_date"] = param["end_date"]
+
 	url = arsearch+urllib.urlencode(q)
 
 	def call_the_articles():
