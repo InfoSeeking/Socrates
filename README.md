@@ -15,6 +15,7 @@ This document primarily consists of development ideas. To get more information o
 - Extensive documentation, auto-generated from comments and tutorials on creating collection, analysis, and visualization modules
 - Set up a virtual\_env for all package installations, maybe make a shell script setup for this
 - Make a web interface for accessing logs
+- Make specs into objects as opposed to JSON
 
 ###Small Goals
 - Add logging for front-end errors
