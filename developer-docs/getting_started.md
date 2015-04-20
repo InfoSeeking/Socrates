@@ -34,16 +34,27 @@ Install the dependencies:
 - Python (we are using version 2.7.3)
 - MongoDB (we are using version 2.4.9)
 - [PRAW](https://praw.readthedocs.org/en/latest/)
+This can be done with `pip install praw`
 - [TextBlob](http://textblob.readthedocs.org/en/latest/install.html)
+This can be done with `pip install textblob`
 - [pymongo](http://api.mongodb.org/python/current/installation.html)
 - [Tweepy](https://github.com/tweepy/tweepy)
+This can be done with `pip install tweepy`
 - [MySQL driver for Python](http://sourceforge.net/projects/mysql-python/)
+This can be installed with `pip install MySQL-python`. If you are using MariaDB, you may need to install an additional package ('yum install mariadb-devel')
+- SimpleJSON
+This can be done with `pip install simplejson`
 
 Afterwards, download the source from GitHub at https://github.com/kevinAlbs/Socrates
 
-The resulting downloaded directory should be placed in your Apache web root (likely named htdocs).
+Make sure the directory is lowercase, e.g. socrates, not Socrates. Place it directly in your Apache web root (likely named htdocs). 
 
-Modify the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) to put in your MySQL credentials.
+In MySQL, create an empty database to be used for storing users/log data. Then, import the database table schemas in [db.sql](https://github.com/InfoSeeking/Socrates/blob/master/back-end/db.sql). You can do this in phpMyAdmin or another GUI environment, or simpley run in command line the following:
+
+`mysql -u=user -p=password socrates-db < db.sql`
+
+Rename the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) file to config.py and put in your MySQL credentials.
+
 
 If I wrote this getting started page correctly (which is nearly impossible) and all went well (which is nearly impossible) you can navigate to http://localhost/Socrates/front-end and see a your local copy running.
 

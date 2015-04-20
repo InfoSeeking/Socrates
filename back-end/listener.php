@@ -37,9 +37,9 @@ function getFilename($base, $ext){
 
 function writeToTemp($name, $contents, $ext="json") {
     date_default_timezone_set('America/New_York');
-    $filename = getFilename("parameters/" . $name . date("h_m_s") , $ext);
+    $filename = "parameters/" . getFilename($name . date("h_m_s") , $ext);
     if(file_put_contents($filename, $contents) === false) {
-        throw new Exception("Cannot write to parameter file");
+        throw new Exception("Cannot write to parameter file " . $filename);
     }
     return $filename;
 }
