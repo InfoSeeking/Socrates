@@ -1,171 +1,113 @@
-'''
-This code was taken from contextminer and retrofitted for the socrates infrastructure
-
-Right now this seems to get only the most recent
-'''
-
+#Anastasia Version 1
+#READY FOR TESTING
 import csv
 import io
-import logging
 import urllib2
 import urllib
 import urlparse
+import config
 try:
     import simplejson as json
 except ImportError:
     import json
-import urllib
 
 SPECS = {
     "functions": {
         "search" : {
-            "param_order" : ["query", "time", "orderby"],
+            "param_order" : ["query", "order"],
             "param" : {
                 "query" : {
                     "type" : "text",
                     "comment" : "The query for the YouTube search"
                 },
-                "time" : {
-                    "type" : "text",
-                    "comment" : "Time video was published",
-                    "constraints":{
-                        "choices" : ["all_time", "this_month", "this_week", "today"]
-                    }
-                },
-                "orderby" :{
+                "order" : {
                     "type" : "text",
                     "constraints":{
-                        "choices" : ["relevance", "published", "viewCount", "rating"]
-                    }
+                        "choices" : ["date", "rating", "relevance", "title", "videoCount", "viewCount"]
                 }
+        }
             },
             "returns" : {
                 "title" : "text",
-                "category" : "text",
-                "url" : "text",
-                "date_uploaded" : "text",
-                "duration" : "numeric",
-                "views" : "numeric",
-                "num_likes" : "numeric",
-                "num_dislikes" : "numeric"
-            }
-        }
-    }
+                "publishedAt" : "text",
+                "id" : "text",
+                "viewCount" : "numeric",
+                "likeCount" : "numeric",
+                "dislikeCount" : "numeric",
+                "favoriteCount" : "numeric",
+                "commentCount" : "numeric",
+                "duration" : "text",
+                "caption" : "text",
+                "dimension" : "text",
+                "definition" : "text",
+                "licensedContent" : "text"
 }
-
-base_url = "https://gdata.youtube.com/"
-logging.basicConfig(level=logging.DEBUG)
-
-def _make_url(endpoint, **kwargs):
-    url = '%s?%s' % (
-	urlparse.urljoin(base_url, endpoint),
-	urllib.urlencode(_fix_kwargs(kwargs))
-    )
-    return url
-
-def _fix_kwargs(kwargs):
-    """
-    Remove kwargs that are None
-    """
-    return dict([(k, v) for k, v in kwargs.items() if v != None])
-
+}
+}
+}
 def _request(url, data=None):
     """
-    If data is None, makes a GET request, else makes a POST request
-    """
+        If data is None, makes a GET request, else makes a POST request
+        """
     res = urllib2.urlopen(url, data)
     return json.loads(res.read())
-
-def name():
+def getAllData(url):
     """
-    Returns the human-readable name of this source
-    """
-    return "YouTube Search"
-
-def list_attrs():
-    """
-    Returns a list of attributes that this miner can mine
-    """
-    return []
-
-def to_csv(data):
-    result = io.BytesIO()
-    writer = csv.writer(result)
-    writer.writerow(['Title', 'Author', 'Published', 'Category', 
-		     'Description', 'Video'])
-    for d in data:
-	if 'mediagroup' in d['data']:
-	    description = d['data'].get('mediagroup').get('mediadescription').get('t').encode('ascii', 'backslashreplace')
-	else:
-	    description = ''
-
-	writer.writerow([d['data']['title']['t'].encode('ascii', 'backslashreplace'), 
-			', '.join([a['name']['t'] for a in d['data']['author']]), 
-			d['data']['published']['t'],
-			', '.join([c['label'] for c in d['data']['category'] if 'label' in c]),
-			description,
-			d['data']['content']['src'].encode('ascii', 'backslashreplace')])
-
-    return [('youtube_search', result.getvalue())]
-
-def ysearch(**kwargs):
-    """
-    Queries the search endpoint with given params. Query to search for is found
-    in the q param. 
-    """
+        Gets 3 pages of results
+        """
     result = []
-    url = _make_url('/feeds/api/videos', **kwargs)
-    for i in range(1): #the 1 can be increased to add additional results
-	logging.debug("url: " + url)
-	res = _request(url)
-	if not res:
-	    break
-	#logging.debug(res)
-	if not 'entry' in res['feed']:
-	    break
-	else:
-	    result.extend(res['feed']['entry'])
-
-	# find the next url
-	nurl = ''
-	for link in res['feed']['link']:
-	    if link['rel'] == 'next':
-		nurl = link['href']
-	if not nurl:
-	    break
-	else: 
-	    url = nurl
+    original_url = url
+    res = _request(url)
+    for i in range(3):
+        if i != 0:
+            res = _request(url)
+        result.extend(res['items'])
+        try:
+            url = original_url + "&pageToken=" + res['nextPageToken']
+        except:
+            break
     return result
-
-def search(param):
-    query = param['query']
-    objs = ysearch(q=query, orderby=param["orderby"], alt="json", v=2, time=param['time'])
-    #make objects a little nicer and flatter
-    result = []
-    for o in objs:
-        cat = ""
-        if "category" in o:
-            for c in o["category"]:
-                if "label" in c:
-                    cat = c["label"]
-                    break
-        views = 0
-        likes = 0
-        dislikes = 0
-        if "yt$statistics" in o:
-            views = o["yt$statistics"]["viewCount"]
-        if "yt$rating" in o:
-            likes = int(o["yt$rating"]["numLikes"])
-            dislikes = int(o["yt$rating"]["numDislikes"])
-        r = {
-            "title" : o["title"]["$t"],
-            "category" : cat,
-            "url" : o["media$group"]["media$player"]["url"],
-            "date_uploaded" : o["media$group"]["yt$uploaded"]["$t"],
-            "duration" : float(o["media$group"]["yt$duration"]["seconds"]),
-            "views" : int(views),
-            "num_likes" : likes,
-            "num_dislikes" : dislikes
-        }
-        result.append(r)
-    return result
+def search(param=False):
+    """
+        Queries the search endpoint with given params.
+        """
+    #final result of all the data
+    data = []
+    key = config.CREDS["YouTube_key"]
+    urlparam = {
+        "q" : param["query"],
+        "key" : key,
+        "order": param["order"],
+        "maxResults" : 50,
+        "type" : "video"
+    }
+    #search url
+    q_url = "https://www.googleapis.com/youtube/v3/search?%s" % (urllib.urlencode(urlparam))
+    #video url
+    v_url = "https://www.googleapis.com/youtube/v3/videos?key="+key
+    snippet_url = q_url + "&part=snippet"
+    snip_result = getAllData(snippet_url)
+    for res in snip_result:
+        row = {}
+        row['title'] = res['snippet']['title']
+        row['publishedAt'] = res['snippet']['publishedAt']
+        id = res['id']['videoId']
+        row['id'] = id
+        #request to get the statistics for a specific video with its id
+        stat_result = _request(v_url+"&id="+id+"&part=statistics")
+        stats = stat_result['items']
+        row['viewCount'] = stats[0]['statistics']['viewCount']
+        row['likeCount'] = stats[0]['statistics']['likeCount']
+        row['dislikeCount'] = stats[0]['statistics']['dislikeCount']
+        row['favoriteCount'] = stats[0]['statistics']['favoriteCount']
+        row['commentCount'] = stats[0]['statistics']['commentCount']
+        #request to get the statistics for a specific video with its id
+        content_result = _request(v_url+"&id="+id+"&part=contentDetails")
+        det = content_result['items']
+        row['duration'] = det[0]['contentDetails']['duration']
+        row['caption'] = det[0]['contentDetails']['caption']
+        row['dimension'] = det[0]['contentDetails']['dimension']
+        row['definition'] = det[0]['contentDetails']['definition']
+        row['licensedContent'] = det[0]['contentDetails']['licensedContent']
+        data.append(row)
+    return data
