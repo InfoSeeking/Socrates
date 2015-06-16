@@ -1,5 +1,3 @@
-#Anastasia Version 1
-#READY FOR TESTING
 import csv
 import io
 import urllib2
