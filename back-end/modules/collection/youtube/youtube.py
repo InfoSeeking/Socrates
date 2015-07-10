@@ -5,6 +5,7 @@ import urllib2
 import urllib
 import urlparse
 import config
+import youtube_categories
 try:
     import simplejson as json
 except ImportError:
@@ -23,8 +24,8 @@ SPECS = {
                     "type" : "text",
                     "constraints":{
                         "choices" : ["date", "rating", "relevance", "title", "videoCount", "viewCount"]
-                    }
                 }
+        }
             },
             "returns" : {
                 "title" : "text",
@@ -37,8 +38,6 @@ SPECS = {
                 "commentCount" : "numeric",
                 "duration(sec)" : "numeric",
                 "caption" : "boolean",
-                "dimension" : "text",
-                "definition" : "text",
                 "channelTitle" : "text",
                 "category" : "text"
             }
@@ -46,9 +45,6 @@ SPECS = {
     }
 }
 def formatDuration(s):
-    '''
-    Converts duration string into an number (duration in seconds)
-    '''
     new = s[2:]
     total = 0
     x = -1
@@ -70,17 +66,17 @@ def formatDuration(s):
         myS = int(new[x+1:y])
         total = total + myS
     return float(total)
-    
+
 def _request(url, data=None):
     """
-    If data is None, makes a GET request, else makes a POST request
-    """
+        If data is None, makes a GET request, else makes a POST request
+        """
     res = urllib2.urlopen(url, data)
     return json.loads(res.read())
 def getAllData(url):
     """
-    Gets 2 pages of results
-    """
+        Gets 2 pages of results
+        """
     result = []
     original_url = url
     res = _request(url)
@@ -95,8 +91,8 @@ def getAllData(url):
     return result
 def search(param=False):
     """
-    Queries the search endpoint with given params.
-    """
+        Queries the search endpoint with given params.
+        """
     #final result of all the data
     data = []
     key = config.CREDS["YouTube_key"]
@@ -107,13 +103,6 @@ def search(param=False):
         "maxResults" : 50,
         "type" : "video"
     }
-    #categories url
-    cat_url = "https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&key="+key
-    categories = {}
-    #currently regionCode only seems to be working with US (YouTube API issue)
-    result = _request(cat_url+"&regionCode=US")
-    for res in result['items']:
-        categories[int(res['id'])] = res['snippet']['title']
     #search url
     q_url = "https://www.googleapis.com/youtube/v3/search?%s" % (urllib.urlencode(urlparam))
     #video url
@@ -136,15 +125,14 @@ def search(param=False):
         row['commentCount'] = stats[0]['statistics']['commentCount']
         #request to get the statistics for a specific video with its id
         content_result = _request(v_url+"&id="+id+"&part=contentDetails")
+        #convert duration string into and int (duration in seconds)
         det = content_result['items']
         s = det[0]['contentDetails']['duration']
         row['duration(sec)'] = formatDuration(s)
         row['caption'] = det[0]['contentDetails']['caption']
-        row['dimension'] = det[0]['contentDetails']['dimension']
-        row['definition'] = det[0]['contentDetails']['definition']
         id_snip_result = _request(v_url+"&id="+id+"&part=snippet")
         det = id_snip_result['items']
         row['channelTitle'] = det[0]['snippet']['channelTitle']
-        row['category'] = categories[int(det[0]['snippet']['categoryId'])]
+        row['category'] = youtube_categories.categories[int(det[0]['snippet']['categoryId'])]
         data.append(row)
     return data
