@@ -75,12 +75,41 @@
       <p id="last-modified"></p>
       <div id="workspace">
         <div id="intro">
-          <h2>Getting Started</h2>
-          <p>If this is your first time using SOCRATES explore the features by first collecting data.</p>
-          <p>To learn more visit the <a href="http://peopleanalytics.org/socrates/" title="SOCRATES" target="_blank">SOCRATES website</a>.</p>
-          <p>If you are interested in modifying SOCRATES for your own purposes, <a href="https://github.com/kevinAlbs/Socrates" target="_blank" title="View on GitHub">download it on GitHub</a> and see our <a href="http://peopleanalytics.org/socrates/docs/" target="_blank" title="View documentation">documentation</a>.</p>
-          <p><b>Note:</b> If you would like to download your data from SOCRATES, you need to have pop-ups enabled</p>
+            <div id="interface">
+              <h2 id="gettingStarted" align="center">Getting Started</h2>
+              <blockquote id="smallerText">Welcome to SOCRATES 2.0 <br>
+                  We are now introducing a new interface which will collect and analyse data through a series of questions. <br>
+                  If you would like to use this new feature click <b> Get Suggestions</b>, <br>
+                  otherwise, proceed as usual in the left side bar. <br>
+                  Note: SOCRATES 2.0 is still in development (not all social media is available).</blockquote>
+              <button id="getSuggestions" align="center">Get Suggestions</button>
+              <div id="count">
+                <br>
+                <p>How much data would you like to collect? </p>
+                <input id ="countInput" type="number" name="quantity" min="1" max="200" value="25">
+                <br>
+                <br>
+              </div>
+              <div id="social"></div>
+              <div id="interfaceAnalysis"></div>
+              <div id="interfaceAnalysisOptions"></div>
+              <input id="interfaceInput">
+              <button id="interfaceNext1">Next</button>
+              <button id="interfaceNext2">Next</button>
+              <button id="interfaceBack">Back</button>
+              <button id="interfaceDone">Done</button>
+              <div id="interfaceWorkflow" align="center">
+                  <p id="BeatsResults"></p>
+                  <button class="button" id="interfaceExecuteBtn">Execute</button>
+                  <button id="interfaceReset">Reset</button>
+              </div>
+              <div id="interfaceExecute">
+                  <button class="button" id="getAnalysisBtn">Analysis</button>
+                  <button class="button" id="resetBtn">Reset</button>
+              </div>
+            </div>
         </div>
+          <div id="finalResult"></div>
       </div>
     </div><!--/#wrapper -->
     <aside id="sidebar">
@@ -246,6 +275,7 @@
   <script src="js/LogoutScreen.js"></script>
   <script src="js/SettingsScreen.js"></script>
   <script src="js/DataScreen.js"></script>
+  <script src="js/Interface.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
