@@ -47,6 +47,7 @@ aside#sidebar .inner{
 	border: none;
 	border-radius: 4px;
 	text-decoration: none;
+    margin: 3px;
 }
 .button.red{
 	background: #F5716C;
@@ -510,4 +511,120 @@ form .row .comment .optional{
 .form_grid .row label{
 	width: 120px;
 	display: inline-block;
+}
+.circle-btn{
+    width: 100px;
+
+    color: rgba(0, 0, 0, 0.55);
+    text-align: center;
+    font-family: "Alegreya Sans", "Helvetica", "Arial", "sans-serif";
+    font-weight: bold;
+    cursor: pointer;
+    color: #ffffff;
+    line-height: 100px;
+
+    background: -webkit-linear-gradient(top, #00BAFF, #112D38);
+    background: -moz-linear-gradient(top, #00BAFF, #112D38);
+    background: -o-linear-gradient(top, #00BAFF, #112D38);
+    background: -ms-linear-gradient(top, #00BAFF, #112D38);
+    background: linear-gradient(top, #00BAFF, #112D38);
+
+    -webkit-border-radius: 100px;
+    -khtml-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+
+    text-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
+
+    display:inline-block;
+    margin-right:7px;
+}
+
+.circle-btn:hover{
+    -webkit-filter: brightness(0.75);
+}
+#gettingStarted{
+    padding-bottom: 10px;
+}
+#interfaceResults{
+    align-items: center;
+}
+#getSuggestions{
+    font-size: 14px;
+    padding: 10px 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    display: inline-block;
+}
+#interfaceNext,#interfaceReset,#changeSrc,#changeAnalysis{
+    font-size: 12px;
+    padding: 5px 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    display: inline-block;
+}
+#interfaceInput{
+    height: 23px;
+    width: 120px;
+}
+#interfaceNext1{
+    margin-top: 15px;
+    font-size: 12px;
+    padding: 5px 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline-block;
+    margin-bottom: 0px;
+}
+#interfaceNext2,#interfaceDone{
+    position: absolute;
+    margin-top: 15px;
+    right: 100px;
+    font-size: 12px;
+    padding: 5px 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline-block;
+    margin-bottom: 0px;
+}
+#BeatsResults{
+    font-size: 20px;
+    background-color: #d7d7d7;
+    width: 370px;
+    height: 200;
+    padding: 15px;
+    margin: 15px;
+    border: 1px;
+}
+#interfaceBack{
+    margin-top: 20px;
+    font-size: 12px;
+    padding: 5px 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline-block;
+}
+#smallerText{
+    padding-bottom: 10px;
+    color: #6d6d6d;
+}
+div#interfaceExecute{
+    margin: auto;
+}
+#interfaceExecuteBtn{
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+.interfaceEdit{
+    background: #0195cc;
+    color: #FFF;
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 3px;
 }
