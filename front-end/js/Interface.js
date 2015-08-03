@@ -3,64 +3,82 @@
  */
 $(document).ready(function() {
     var currentMedia = new Array();
-    var twitter = new Array();
-    var youtube = new Array();
-    var reddit = new Array();
-    var nyt = new Array();
-    var flickr = new Array();
-    var fb = new Array();
-    var myMedia = new Array();
+    var twitter = new Array(), youtube = new Array(), nyt = new Array(), reddit = new Array(), fb = new Array(), flickr = new Array();
+    var myMedia = new Array(), myGraphs = new Array();
 
-    //add Flickr and Reddit when ready
-    myMedia[0] = {0: "Twitter", 1: "Youtube", 2: "NY Times", 3: "Facebook"};
+    myMedia[0] = {0: "Twitter", 1: "Youtube", 2: "NY Times", 3: "Facebook", 4: "Reddit"};
+    myGraphs[0] = {0: "histogram", 1: "scatterplot", 2: "piechart", 3: "regression"};
 
     twitter["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
-    twitter["analysisText"] = {0: "content"};
+    twitter["analysisText"] = {0: "content", 1: "tweet_id",2: "created", 3: "authorloc", 4: "username", 5: "source", 6: "authorid"};
     twitter["analysisStat"] = {0: "friends", 1: "followers", 2: "retwc"};
+    twitter["textPic"] = "img/twitter_text.png";
+    twitter["statPic"] = "img/twitter_stat.png";
 
-    youtube["analysis"] = {0: "correlation", 1: "regression", 2: "basic"};
+    youtube["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
     youtube["analysisStat"] = {0: "dislikeCount", 1: "likeCount", 2: "commentCount", 3: "viewCount", 4: "duration(sec)", 5: "favoriteCount"};
+    youtube["analysisText"] = {0: "publishedAt", 1: "id", 2: "category", 3: "title", 4: "channelTitle"};
+    youtube["sorting"] = {0: "date", 1: "rating", 2: "relevance", 3: "title", 4: "videoCount", 5: "viewCount"};
+    youtube["textPic"] = "img/youtube_text.png";
+    youtube["statPic"] = "img/youtube_stat.png";
 
     nyt["analysis"] = {0: "sentiment", 1: "word_count", 2: "basic"};
-    nyt["analysisText"] = {0: "lead_paragraph", 1: "abstract"};
+    nyt["analysisText"] = {0: "lead_paragraph", 1: "headline", 2: "abstract", 3: "snippet", 4: "web_url"};
     nyt["analysisStat"] = {0: "word_count"};
+    nyt["sorting"] = {0: "newest", 1: "oldest"};
+    nyt["textPic"] = "img/nyt_text.png";
+    nyt["statPic"] = "img/nyt_stat.png";
+
+    reddit["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
+    reddit["analysisText"] = {0: "content", 1: "user", 2: "user", 3: "id", 4: "title", 5: "url", 6: "domain"};
+    reddit["analysisStat"] = {0: "downvotes", 1: "created_utc", 2: "upvotes"};
+    reddit["sorting"] = {0: "hot", 1: "new", 2: "rising", 3: "controversial", 4: "top"};
+    reddit["textPic"] = "img/reddit_text.png";
+    reddit["statPic"] = "img/reddit_stat.png";
 
     fb["analysis"] = {0: "sentiment", 1: "word_count"};
     fb["analysisText"] = {0: "category", 1: "name"};
+    fb["textPic"] = "img/fb_text";
 
-    var count = 25;
-    var query= "";
-    var media = "";
-    var analysis = "";
-    var mediaArr = new Array();
-    var analysisArr = new Array();
+    //Not finished
+    flickr["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
 
-    var analysisParam = new Array();
-    var hasTwoFields = false;
-    var myData;
-    var params;
+    var count = 25, numsplits = 10, subreddit, sorting;
+    var query = "", media = "", analysis = "", exploration = "";
+    var mediaArr = new Array(), analysisArr = new Array(), expArr = new Array();
+    var analysisParam = new Array(), expParam = new Array();
+    var hasTwoFields = false, isDataGotten = false;
+    var myData, params;
     var browser;
+    var setName;
     var header1 = "1. What topic you are interested in?";
     var header2 = "2. Where would you like to get the data from?";
     var header3 = "3. What would you like to do with the data you collect about these topics?";
     var header4 = "4. Pick parameters for analysis";
+    var header5 = "Research Statement";
+    var header6 = "5. What kind of graph would you like to explore?";
+    var header7 = "6. What kind of parameter(s) would you like to use?";
     var smHeader1 = "Please type one or more words:";
     var smHeader2 = "The social media sources available to you are (choose one):";
     var smHeader3 = "The analysis modules available to you are:";
-    $("#social, #interfaceAnalysis, #interfaceWorkflow, #interfaceNext1, #interfaceNext2, #interfaceBack, #interfaceInput, #interfaceDone, #interfaceExecute, #count").hide();
-    document.getElementById("interfaceReset").addEventListener("click", reset, true);
-    document.getElementById("resetBtn").addEventListener("click", reset, true);
-    document.getElementById("getSuggestions").addEventListener("click", q1, true);
-    document.getElementById("interfaceNext1").addEventListener("click", q2, true);
+    $("#social, #interfaceAnalysis, #interfaceWorkflow, #interfaceNext1, #interfaceNext2, " +
+        "#interfaceBack, #interfaceInput, #interfaceDone, #interfaceExecute, #count, #interfaceExp, " +
+        "#numSplits, #interfaceExpResults, #redditSub, #sortOptions").hide();
+    $("#interfaceReset").click(reset);
+    $("#resetBtn").click(reset);
+    $("#expResetBtn").click(expReset);
+    $("#getSuggestions").click(q1);
+    $("#interfaceNext1").click(q2);
+    $("#explorationBtn").click(q5);
 
     //Question 1: asks about query
     function q1(){
         if (UI.isLoggedIn()) {
-            $("#interfaceInfo,#interfaceWorkflow").hide();
+            $("#interfaceInfo,#interfaceWorkflow, #count").hide();
             $(this).hide();
             $("#interfaceNext1").fadeIn();
-            gettingStarted.innerHTML = header1;
-            smallerText.innerHTML = smHeader1;
+            $("#mainHeader").text(header1);
+            $("#smallerHeader").text(smHeader1);
             $("#interfaceInput").fadeIn();
         }else{
             alert("Please log in");
@@ -68,58 +86,125 @@ $(document).ready(function() {
     }
     //Questions 2: asks about social media
     function q2(){
-        interfaceNext2.innerHTML = "Next";
-        query = document.getElementById("interfaceInput").value;
+        $("#interfaceNext2").text("Next");
+        //query = document.getElementById("interfaceInput").value;
+        query = $("#interfaceInput").val();
         if (query == "") {
             alert("Please enter keyword(s)");
         }else {
             $(this).hide();
-            getSocial();
+            getCircleBtns("social", myMedia[0]);
             $("#interfaceNext2, #interfaceBack, #social, #count").fadeIn();
-            $("#interfaceInput, #interfaceNext1,#interfaceWorkflow").hide();
-            gettingStarted.innerHTML = header2;
-            smallerText.innerHTML = smHeader2;
+            $("#interfaceInput, #interfaceNext1,#interfaceWorkflow,#redditSub,#sortOptions").hide();
+            $("#mainHeader").text(header2);
+            $("#smallerHeader").text(smHeader2);
         }
     }
     //Questions 3: asks about analysis, dependant on social media chosen
     function q3(){
-        count = document.getElementById("countInput").value;
-        console.log(count);
+        //count = document.getElementById("countInput").value;
+        count = $("#countInput").val();
         if(mediaArr.length !== 1) {
             alert("Please select one social media");
         }else {
             media = mediaArr[0];
-            interfaceNext2.innerHTML = "Next";
-            $("#interfaceAnalysis, #interfaceNext2").fadeIn();
-            gettingStarted.innerHTML = header3;
-            smallerText.innerHTML = smHeader3;
+            if (media == "Reddit") {
+                $("#redditSub").fadeIn();
+            }
+            $("#interfaceNext2").text("Next");
+            $("#interfaceAnalysis, #interfaceNext2, #sortOptions").fadeIn();
+            $("#mainHeader").text(header3);
+            $("#smallerHeader").text(smHeader3);
             $("#social,#interfaceWorkflow, #count").hide();
-            getAnalysisBtns(media);
+            currentMedia = getMedia(media);
+            getSorting(currentMedia["sorting"]);
+            getCircleBtns("interfaceAnalysis", currentMedia["analysis"]);
         }
     }
     //Question 4: asks about analysis parameters specific to social media and analysis
     function q4(){
-        if (analysisArr.length !== 1) {
-            alert("Please select one analysis");
-        }else {
+        subreddit = $("#subreddit").val();
+        if (analysisArr.length !== 1 || ((subreddit == "" || !subreddit) && media == "Reddit")) {
+            if (analysisArr.length !== 1) {
+                alert("Please select one analysis.");
+            }else {
+                alert("Please enter a subreddit.");
+            }
+        }else{
             analysis = analysisArr[0];
-            gettingStarted.innerHTML = header4;
-            $("#interfaceAnalysis,#interfaceWorkflow").hide();
+            if (media == "Reddit"){
+                subreddit = $("#subreddit").val();
+            }
+            sorting = $("#sorting").val();
+            $("#mainHeader").text(header4);
+            $("#interfaceAnalysis,#interfaceWorkflow,#redditSub,#sortOptions").hide();
             $("#interfaceAnalysisOptions, #interfaceNext2").fadeIn();
             $("#interfaceAnalysisOptions").empty();
-            interfaceNext2.innerHTML = "Finish";
+            $("#interfaceNext2").text("Finish");
+            var src;
+            var image;
+            if (isTextAnalysis(analysis)){
+                src = currentMedia["textPic"];
+            }else {
+                src = currentMedia["statPic"];
+            }
+            image = "<br><br><img src="+src+">";
             if (isTextAnalysis(analysis) || analysis == "basic") {
                 hasTwoFields = false;
-                smallerText.innerHTML = "Please select a parameter for this field:";
+                $("#smallerHeader").text("Please select a parameter for this field:");
                 $("#interfaceAnalysisOptions").append($("<h4>Field:</h4>"));
                 getAnalysisParams();
+                $("#interfaceAnalysisOptions").append(image);
             } else {
                 hasTwoFields = true;
-                smallerText.innerHTML = "Please select a parameter for field1 and field2:";
-                $("#interfaceAnalysisOptions").append($("<h4>Field1:</h4>"));
+                $("#smallerHeader").text("Please select a parameter for field_1 and field_2:");
+                $("#interfaceAnalysisOptions").append($("<h4>field_1:</h4>"));
                 getAnalysisParams();
-                $("#interfaceAnalysisOptions").append($("<h4>Field2:</h4>"));
+                $("#interfaceAnalysisOptions").append($("<h4>field_2:</h4>"));
                 getAnalysisParams();
+                $("#interfaceAnalysisOptions").append(image);
+            }
+        }
+    }
+    //Question 5: which exploration
+    function q5(){
+        $("#interfaceWorkflow, #interfaceExpOptions, #numSplits, #sortOptions").hide();
+        $("#interfaceNext2").text("Next");
+        $("#smallerHeader").text("");
+        getCircleBtns("interfaceExp", myGraphs[0]);
+        $("#interfaceNext2, #interfaceBack, #interfaceExp").fadeIn();
+        $("#mainHeader").text(header6);
+    }
+    //Question 6: which params for exploration
+    function q6(){
+        if (expArr.length !== 1) {
+            alert("Please select one graph");
+        }else {
+            $("#interfaceExpOptions").empty();
+            exploration = expArr[0];
+            $("#interfaceExp").hide();
+            $("#interfaceExpOptions").fadeIn();
+            $("#interfaceNext2").text("Finish");
+            $("#mainHeader").text(header7);
+            $("#smallerHeader").text("");
+            if (exploration == "piechart") {
+                hasTwoFields = false;
+                $("#smallerHeader").text("Please select a parameter for this field:");
+                $("#interfaceExpOptions").append($("<h4>field:</h4>"));
+                getExpParams(exploration);
+            } else if (exploration == "histogram"){
+                hasTwoFields = false;
+                $("#smallerHeader").text("Please select a parameter for this field:");
+                $("#interfaceExpOptions").append($("<h4>field:</h4>"));
+                getExpParams(exploration);
+                $("#numSplits").fadeIn();
+            } else {
+                hasTwoFields = true;
+                $("#smallerHeader").text("Please select a parameter for x_field and y_field:");
+                $("#interfaceExpOptions").append($("<h4>x_field:</h4>"));
+                getExpParams(exploration);
+                $("#interfaceExpOptions").append($("<h4>y_field:</h4>"));
+                getExpParams(exploration);
             }
         }
     }
@@ -163,7 +248,7 @@ $(document).ready(function() {
             $(this).css("background", orange);
             this.setAttribute("background", orange);
         }
-        var text;
+        var text = "";
         if (browser.indexOf("Firefox") != -1) {
             text = this.textContent;
         }else {
@@ -178,46 +263,33 @@ $(document).ready(function() {
             if (index !== -1) {
                 mediaArr.splice(index,1);
             }
-        }
-        if ($("#interfaceAnalysis").is(":visible") && isOrange){
+        }else if ($("#interfaceAnalysis").is(":visible") && isOrange){
             analysisArr.push(text);
         }else if ($("#interfaceAnalysis").is(":visible") && !isOrange) {
             index = analysisArr.indexOf(text);
             if (index !== -1) {
                 analysisArr.splice(index,1);
             }
-        }
-    }
-    //Set up social media buttons
-    function getSocial(){
-        if (document.getElementById("social").innerHTML == "") {
-            var arr = myMedia;
-            var count = 0;
-            var temp;
-            while (true) {
-                temp = arr[0][count];
-                if (temp != null) {
-                    var btn = $("<div class='circle-btn'>" + temp + "</div>").click(circleBtns);
-                    $("#social").append(btn);
-                    count++;
-                } else {
-                    break;
-                }
+        }else if ($("#interfaceExp").is(":visible") && isOrange){
+            expArr.push(text);
+        }else if ($("#interfaceExp").is(":visible") && !isOrange) {
+            index = expArr.indexOf(text);
+            if (index !== -1) {
+                expArr.splice(index,1);
             }
         }
     }
-    //Set up analysis buttons
-    function getAnalysisBtns(myMedia) {
-        if (document.getElementById("interfaceAnalysis").innerHTML == "") {
-            var arr = getMedia(myMedia);
-            currentMedia = arr;
+    //Creates circle buttons with in id(html div) with content of arr
+    function getCircleBtns(id, arr){
+        var ID = "#"+id;
+        if ($(ID) == "") {
             var count = 0;
             var temp;
             while (true) {
-                temp = arr["analysis"][count];
+                temp = arr[count];
                 if (temp != null) {
                     var btn = $("<div class='circle-btn'>" + temp + "</div>").click(circleBtns);
-                    $("#interfaceAnalysis").append(btn);
+                    $(ID).append(btn);
                     count++;
                 } else {
                     break;
@@ -271,7 +343,6 @@ $(document).ready(function() {
                 break;
             }
         }
-
     }
     function isTextAnalysis(param) {
         if (param == "sentiment" || param == "word_count") {
@@ -297,92 +368,162 @@ $(document).ready(function() {
         }
         $(this).toggleClass("red");
     }
+    function getExpParams(exp){
+        var count = 0;
+        var arr;
+        var temp;
+        expParam = new Array();
+        if (isTextExp(exp)) {
+            arr = currentMedia["analysisText"];
+        }else {
+            arr = currentMedia["analysisStat"];
+        }
+        while(true) {
+            temp = arr[count];
+            var btn;
+            if (temp != null) {
+                btn = $("<button class='button'>"+temp+"</button>").click(expParamBtn);
+                $("#interfaceExpOptions").append(btn);
+                count++;
+            } else {
+                break;
+            }
+        }
+    }
+    function isTextExp(param) {
+        if (param == "piechart") {
+            return true;
+        }else {
+            return false;
+        }
+    }
+    function expParamBtn(){
+        var text;
+        if (browser.indexOf("Firefox") != -1) {
+            text = this.textContent;
+        }else {
+            text = this.innerText;
+        }
+        if(expParam.indexOf(text) == -1 && !$(this).hasClass("red")) {
+            expParam.push(text);
+        }else if(($(this).hasClass("red"))){
+            var index = expParam.indexOf(text);
+            if(index != -1){
+                expParam.splice(index, 1);
+            }
+        }
+        $(this).toggleClass("red");
+    }
+    function getSorting(list){
+        if (list !== null) {
+            var temp = list;
+            var options = "";
+            var i;
+            for (i in temp) {
+                options +="<option value="+temp[i]+">"+temp[i]+"</option>";
+            }
+            $("#sorting").html(options);
+        }
+    }
     $("#interfaceNext2").click(function() {
-        var text = gettingStarted.innerHTML;
-        if(text == header2){
-            q3();
-        }else if (text == header3) {
-            q4();
-        }else{
-            showWorkflow();
+        var text = $("#mainHeader").text();
+        switch (text){
+            case (header2):
+                q3();
+                break;
+            case (header3):
+                q4();
+                break;
+            case (header4):
+                showWorkflow(false);
+                break;
+            case (header6):
+                q6();
+                break;
+            case (header7):
+                //exploration results "page"
+                numsplits = $("#numSplitCount").val();
+                if(((hasTwoFields && expParam.length != 2) || (!hasTwoFields && expParam.length != 1))) {
+                    if(hasTwoFields){
+                        alert("Please select two parameters.");
+                    }else {
+                        alert("Please select one parameter.");
+                    }
+                }else {
+                    $("#interfaceExpOptions, #interfaceBack, #interfaceNext2, #numSplits").hide();
+                    $("mainHeader").text("Exploration Results");
+                    //ADD DATASETNAME!!!!!****
+                    //$("#smallerHeader").text("Dataset: "+ setName);
+                    $("#interfaceExpResults").fadeIn();
+                    getDataParams();
+                    break;
+                }
         }
     });
-    function showWorkflow() {
-        if((hasTwoFields && analysisParam.length != 2) || (!hasTwoFields && analysisParam.length != 1)) {
+    function showWorkflow(isBack) {
+        if(((hasTwoFields && analysisParam.length != 2) || (!hasTwoFields && analysisParam.length != 1)) && !isBack) {
             if(hasTwoFields){
-                alert("Please select two parameter.");
+                alert("Please select two parameters.");
             }else {
                 alert("Please select one parameter.");
             }
         }else {
             $("#interfaceAnalysis, #interfaceNext2, #interfaceBack,#interfaceAnalysisOptions").hide();
-            smallerText.innerHTML = "";
-            gettingStarted.innerHTML = "Research Statement";
-            BeatsResults.innerHTML = "I'm interested in <b>" + query + "</b> <button class='interfaceEdit' id='edit1'>edit</button><br>" +
+            $("#smallerHeader").text("");
+            $("#mainHeader").text(header5);
+            $("#BeatsResults").html("I'm interested in <b>" + query + "</b> <button class='interfaceEdit' id='edit1'>edit</button><br>" +
                 "I want to use <b>" + media + "</b> (count "+count+"), <button class='interfaceEdit' id='edit2'>edit</button><br>" +
                 "My method is <b>" + analysis + "</b>, <button class='interfaceEdit' id='edit3'>edit</button><br> " +
-                "With parameter(s) <b>" + analysisParam.toString() + ". <button class='interfaceEdit' id='edit4'>edit</button>";
+                "With parameter(s) <b>" + analysisParam.toString() + ". <button class='interfaceEdit' id='edit4'>edit</button>");
             $("#interfaceWorkflow").fadeIn();
-            document.getElementById("edit1").addEventListener("click", q1, true);
-            document.getElementById("edit2").addEventListener("click", q2, true);
-            document.getElementById("edit3").addEventListener("click", q3, true);
-            document.getElementById("edit4").addEventListener("click", q4, true);
+            $("#edit1").click(q1);
+            $("#edit2").click(q2);
+            $("#edit3").click(q3);
+            $("#edit4").click(q4);
         }
     };
-
     $("#interfaceBack").click(function() {
-       text = gettingStarted.innerHTML
+       text = $("#mainHeader").text();
        if(text.indexOf("3") != -1) {
-           q2();
            $("#interfaceAnalysis, #interfaceInput").hide();
-
+           mediaArr = new Array();
+           $("#social").html("");
+           q2();
        }else if(text.indexOf("2") != -1){
            $("#social, #interfaceNext2, #interfaceBack").hide();
            q1();
        } else if (text.indexOf("4") != -1){
            $("#interfaceAnalysisOptions").hide();
            q3();
+       } else if (text.indexOf("5") != -1) {
+           $("#interfaceExp").hide();
+           $("#BeatsResults").fadeIn();
+           showWorkflow(true);
+       } else if (text.indexOf("6") != -1){
+            q5();
        }
     });
-    $("#interfaceDone").click(function() {
-        $("#social, #interfaceDone, #interfaceNext2").hide();
-        showWorkflow();
-    });
-
     function reset(){
-        query= "";
-        media = "";
-        analysis = "";
-        mediaArr = new Array();
-        analysisArr = new Array();
-        document.getElementById("interfaceInput").value = "";
-        $("#interfaceWorkflow, #interfaceExecute").hide();
-        $("#getSuggestions").fadeIn();
-        gettingStarted.innerHTML = "Getting Started";
-        interfaceNext2.innerHTML = "Next";
-        document.getElementById("smallerText").innerHTML = "Welcome to SOCRATES 2.0"+ "<br>"+
-        "We are now introducing a new interface which will collect and analyse data through a series of questions." +"<br>"+
-        "If you would like to use this new feature click"+"<b>"+" Get Suggestions"+"</b>, <br>"+
-            "otherwise, proceed as usual in the left side bar.";
-        document.getElementById("social").innerHTML = "";
-        document.getElementById("interfaceAnalysis").innerHTML = "";
-        document.getElementById("interfaceAnalysisOptions").innerHTML = "";
-        document.getElementById("finalResult").innerHTML = "";
-        document.getElementById("countInput").value = 25;
-        analysisParam = null;
-        analysisParam = new Array();
+        window.location.href = "socrates2.html";
+    }
+    function expReset(){
+        $("#interfaceExpResults").hide();
+        $("#BeatsResults").html("");
+        showWorkflow(true);
+        $("#finalResult").empty();
     }
     $("#interfaceExecuteBtn").click(function(){
-        gettingStarted.innerHTML = "Result";
+        $("#mainHeader").text("Analysis Result");
+        //ADD DATASETNAME!!!!!****
+        //$("#smallerHeader").text("Dataset: "+ setName);
         $("#interfaceWorkflow").hide();
         $("#interfaceExecute, #interfaceReset").fadeIn();
-        //count = prompt("Please enter number of items:");
         getDataParams();
-        //getAparams();
     });
 
+    //Gets data before analysis/exploration
     function getDataParams() {
-        var params = {
+        params = {
             "password": UI.getPassword(),
             "username": UI.getUsername(),
             "working_set_name": "Untitled",
@@ -403,7 +544,7 @@ $(document).ready(function() {
             params["function"] = "search";
             params["module"] = "youtube";
             params["input"] = {};
-            params["input"]["order"] = "relevance";
+            params["input"]["order"] = sorting;
             params["input"]["query"] = query;
         }
         else if (media == "NY Times") {
@@ -413,7 +554,7 @@ $(document).ready(function() {
             params["input"]["begin_date"] = "";
             params["input"]["end_date"] = "";
             params["input"]["query"] = query;
-            params["input"]["sort"] = "newest";
+            params["input"]["sort"] = sorting;
          } else if (media == "Facebook") {
             params["function"] = "facebook_search";
             params["module"] = "facebook";
@@ -421,11 +562,17 @@ $(document).ready(function() {
             params["input"]["count"] = count;
             params["input"]["query"] = query;
             params["input"]["type"] = "page";
+        } else if (media == "Reddit"){
+            params["function"] = "fetchPosts";
+            params["module"] = "reddit";
+            params["input"] = {};
+            params["input"]["count"] = count;
+            params["input"]["reddit_sorting"] = sorting;
+            params["input"]["sub"] = subreddit;
         }
         //clear cache, since now working set is modified
         UTIL.clearWorkingSetCache();
         UI.toggleLoader(true);
-        console.log(params);
         $.ajax({
             url: UTIL.CFG.api_endpoint,
             dataType: "json",
@@ -438,88 +585,152 @@ $(document).ready(function() {
                     UI.feedback(data.message, true);
                     return;
                 }
-
                 if (params['return_all_data']) {
                     //then this can be put in cache
                     UTIL.setCurrentWorkingSet(data, true);
                 } else {
                     UTIL.setCurrentWorkingSet(data, false);
                 }
-
                 myData = data;
                 var myType = params["type"];
                 MainScreen.InterfaceShowResults(myData, myType, null);
-
                 //if this was a collection type, show output meta and move onto analysis stage
                 //if this was an analysis type, show output and additional analysis options
             },
             complete: function (jqXHR, stat) {
-                console.log(UTIL.CFG.api_endpoint);
                 console.log("Complete: " + stat);
                 UI.toggleLoader(false);
                 //interfaceShowAllData(myData.data, myData.meta, myData.analysis, "collection", 0);
+                isDataGotten = true;
+                var ws = UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), false);
+                //setName = ws["working_set_name"];
             }
         });
     }
     $("#getAnalysisBtn").click(function() {
-        params = {};
-        params = {
-            "password": UI.getPassword(),
-            "return_all_data": false,
-            "type": "analysis",
-            "username": UI.getUsername(),
-            "working_set_id" : UTIL.getCurrentWorkingSetID()
-        };
+        if (isDataGotten) {
+            params = {};
+            params = {
+                "password": UI.getPassword(),
+                "return_all_data": false,
+                "type": "analysis",
+                "username": UI.getUsername(),
+                "working_set_id": UTIL.getCurrentWorkingSetID()
+            };
 
-        params["function"] = String(analysis);
-        if (isTextAnalysis(analysis)) {
-            params["module"] = "text";
-        } else {
-            params["module"] = "stats";
-        }
-        if (hasTwoFields) {
-            params["input"]["field_1"] = String(analysisParam[0]);
-            params["input"]["field_2"] = String(analysisParam[1]);
-        } else {
-            params["input"] = {"field": String(analysisParam[0])};
-        }
-        //myData = null;
-        UI.toggleLoader(true);
-        //clear cache, since now working set is modified
-        UTIL.clearWorkingSetCache();
-        console.log(params);
-        $.ajax({
-            url: UTIL.CFG.api_endpoint,
-            dataType: "json",
-            type: "POST",
-            data: params,
-            success: function (data, stat, jqXHR) {
-                console.log("Operator output:");
-                console.log(data);
-                if (data.hasOwnProperty("error")) {
-                    UI.feedback(data.message, true);
-                    return;
-                }
-
-                if (params['return_all_data']) {
-                    //then this can be put in cache
-                    UTIL.setCurrentWorkingSet(data, true);
-                } else {
-                    UTIL.setCurrentWorkingSet(data, false);
-                }
-                myData = data;
-                var myType = params["type"];
-                MainScreen.InterfaceShowResults(myData, myType, 0);
-                //if this was a collection type, show output meta and move onto analysis stage
-                //if this was an analysis type, show output and additional analysis options
-            },
-            complete: function (jqXHR, stat) {
-                console.log(UTIL.CFG.api_endpoint);
-                console.log("Complete: " + stat);
-                UI.toggleLoader(false);
-                //MainScreen.interfaceShowAllData(myData["data"], myData["meta"], myData["analysis"], "analysis", 0);
+            params["function"] = String(analysis);
+            if (isTextAnalysis(analysis)) {
+                params["module"] = "text";
+            } else {
+                params["module"] = "stats";
             }
-        });
-    });
+            if (hasTwoFields) {
+                params["input"] = {
+                    "field_1": String(analysisParam[0]),
+                    "field_2": String(analysisParam[1])
+                }
+            } else {
+                if (analysis == "word_count") {
+                    params["input"] = {
+                        "field": String(analysisParam[0]),
+                        "ignore_stopwords": "true"};
+                } else {
+                    params["input"] = {"field": String(analysisParam[0])};
+                }
+            }
+            //myData = null;
+            UI.toggleLoader(true);
+            //clear cache, since now working set is modified
+            UTIL.clearWorkingSetCache();
+            console.log(params);
+            $.ajax({
+                url: UTIL.CFG.api_endpoint,
+                dataType: "json",
+                type: "POST",
+                data: params,
+                success: function (data, stat, jqXHR) {
+                    console.log("Operator output:");
+                    console.log(data);
+                    if (data.hasOwnProperty("error")) {
+                        UI.feedback(data.message, true);
+                        return;
+                    }
 
+                    if (params['return_all_data']) {
+                        //then this can be put in cache
+                        UTIL.setCurrentWorkingSet(data, true);
+                    } else {
+                        UTIL.setCurrentWorkingSet(data, false);
+                    }
+                    myData = data;
+                    var myType = params["type"];
+                    MainScreen.InterfaceShowResults(myData, myType, 0);
+                    //if this was a collection type, show output meta and move onto analysis stage
+                    //if this was an analysis type, show output and additional analysis options
+                },
+                complete: function (jqXHR, stat) {
+                    console.log(UTIL.CFG.api_endpoint);
+                    console.log("Complete: " + stat);
+                    UI.toggleLoader(false);
+                    //MainScreen.interfaceShowAllData(myData["data"], myData["meta"], myData["analysis"], "analysis", 0);
+                }
+            });
+        }
+    });
+    function getVisualization(){
+        if (isDataGotten) {
+            var VISparams = {
+                "function": exploration,
+                "module": "graph",
+                "password": UI.getPassword(),
+                "return_all_data": false,
+                "type": "visualization",
+                "username": UI.getUsername(),
+                "working_set_id": UTIL.getCurrentWorkingSetID()
+            };
+            if (exploration == "regression" || exploration == "scatterplot") {
+                VISparams["input"] = {
+                    "x-field": expParam[0],
+                    "y-field": expParam[1]
+                };
+            } else if (exploration == "histogram") {
+                VISparams["input"] = {
+                    "field": expParam[0],
+                    "num_splits": 10
+                };
+            } else {
+                VISparams["input"] = {"field": expParam[0]};
+            }
+            var b = createBox('visualization');
+            b.find("h2").html("Exploration Results");
+            b.find("h2").parent().append(closeBoxButton());
+            var mod = "graph";
+            var fn = exploration;
+            VIS.callFunction(b[0], mod, fn, VISparams,
+                function () {
+                    $("#finalResult").append(b);
+                    b.hide().fadeIn();
+                    //Code "borrowed" from http://stackoverflow.com/questions/8973711/export-an-svg-from-dom-to-file
+                    // Add some critical information
+                    var svg = b.find("svg");
+                    svg.attr({ version: '1.1', xmlns: "http://www.w3.org/2000/svg"});
+                    var svg = '<svg>' + svg.html() + '</svg>';
+                    var b64 = btoa(svg); // or use btoa if supported
+                    // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
+                    b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n" + b64 + "' title='file.svg'>Download</a>"));
+                });
+            function createBox(type, index) {
+                //create a new empty box
+                return $("<div class='results " + type + "'><div class='bar group'><h2></h2></div></div>");
+            }
+
+            function closeBoxButton() {
+                return $("<a class='button close'>X</a>").click(closeBox);
+            }
+
+            function closeBox() {
+                $(this).parent().parent().detach();
+            }
+        }
+    }
 });
