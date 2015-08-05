@@ -12,33 +12,34 @@ $(document).ready(function() {
     twitter["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
     twitter["analysisText"] = {0: "content", 1: "tweet_id",2: "created", 3: "authorloc", 4: "username", 5: "source", 6: "authorid"};
     twitter["analysisStat"] = {0: "friends", 1: "followers", 2: "retwc"};
-    twitter["textPic"] = "img/twitter_text.png";
-    twitter["statPic"] = "img/twitter_stat.png";
+    twitter["textPic"] = "front-end/img/twitter_text.png";
+    twitter["statPic"] = "front-end/img/twitter_stat.png";
 
     youtube["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
     youtube["analysisStat"] = {0: "dislikeCount", 1: "likeCount", 2: "commentCount", 3: "viewCount", 4: "duration(sec)", 5: "favoriteCount"};
     youtube["analysisText"] = {0: "publishedAt", 1: "id", 2: "category", 3: "title", 4: "channelTitle"};
     youtube["sorting"] = {0: "date", 1: "rating", 2: "relevance", 3: "title", 4: "videoCount", 5: "viewCount"};
-    youtube["textPic"] = "img/youtube_text.png";
-    youtube["statPic"] = "img/youtube_stat.png";
+    youtube["textPic"] = "front-end/img/youtube_text.png";
+    youtube["statPic"] = "front-end/img/youtube_stat.png";
 
-    nyt["analysis"] = {0: "sentiment", 1: "word_count", 2: "basic"};
+    //FIX word_count
+    nyt["analysis"] = {0: "sentiment", 1: "basic"};
     nyt["analysisText"] = {0: "lead_paragraph", 1: "headline", 2: "abstract", 3: "snippet", 4: "web_url"};
     nyt["analysisStat"] = {0: "word_count"};
     nyt["sorting"] = {0: "newest", 1: "oldest"};
-    nyt["textPic"] = "img/nyt_text.png";
-    nyt["statPic"] = "img/nyt_stat.png";
+    nyt["textPic"] = "front-end/img/nyt_text.png";
+    nyt["statPic"] = "front-end/img/nyt_stat.png";
 
     reddit["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
     reddit["analysisText"] = {0: "content", 1: "user", 2: "user", 3: "id", 4: "title", 5: "url", 6: "domain"};
     reddit["analysisStat"] = {0: "downvotes", 1: "created_utc", 2: "upvotes"};
     reddit["sorting"] = {0: "hot", 1: "new", 2: "rising", 3: "controversial", 4: "top"};
-    reddit["textPic"] = "img/reddit_text.png";
-    reddit["statPic"] = "img/reddit_stat.png";
+    reddit["textPic"] = "front-end/img/reddit_text.png";
+    reddit["statPic"] = "front-end/img/reddit_stat.png";
 
     fb["analysis"] = {0: "sentiment", 1: "word_count"};
     fb["analysisText"] = {0: "category", 1: "name"};
-    fb["textPic"] = "img/fb_text";
+    fb["textPic"] = "front-end/img/fb_text";
 
     //Not finished
     flickr["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
@@ -50,7 +51,7 @@ $(document).ready(function() {
     var hasTwoFields = false, isDataGotten = false;
     var myData, params;
     var browser;
-    var setName;
+    var setName = "Untitled";
     var header1 = "1. What topic you are interested in?";
     var header2 = "2. Where would you like to get the data from?";
     var header3 = "3. What would you like to do with the data you collect about these topics?";
@@ -63,18 +64,20 @@ $(document).ready(function() {
     var smHeader3 = "The analysis modules available to you are:";
     $("#social, #interfaceAnalysis, #interfaceWorkflow, #interfaceNext1, #interfaceNext2, " +
         "#interfaceBack, #interfaceInput, #interfaceDone, #interfaceExecute, #count, #interfaceExp, " +
-        "#numSplits, #interfaceExpResults, #redditSub, #sortOptions").hide();
+        "#numSplits, #interfaceExpResults, #redditSub, #sortOptions, #NameDataset").hide();
     $("#interfaceReset").click(reset);
     $("#resetBtn").click(reset);
-    $("#expResetBtn").click(expReset);
+    $("#expResetBtn").click(showResearchState);
+    $("#showResearchState").click(showResearchState);
     $("#getSuggestions").click(q1);
     $("#interfaceNext1").click(q2);
     $("#explorationBtn").click(q5);
-
+    $("#getExpBtn").click(getVisualization);
+    $("#renameSet").click(getRenameInput);
     //Question 1: asks about query
     function q1(){
         if (UI.isLoggedIn()) {
-            $("#interfaceInfo,#interfaceWorkflow, #count").hide();
+            $("#interfaceInfo, #interfaceWorkflow, #count, #NameDataset").hide();
             $(this).hide();
             $("#interfaceNext1").fadeIn();
             $("#mainHeader").text(header1);
@@ -94,8 +97,8 @@ $(document).ready(function() {
         }else {
             $(this).hide();
             getCircleBtns("social", myMedia[0]);
-            $("#interfaceNext2, #interfaceBack, #social, #count").fadeIn();
-            $("#interfaceInput, #interfaceNext1,#interfaceWorkflow,#redditSub,#sortOptions").hide();
+            $("#interfaceNext2, #interfaceBack, #social, #count, #NameDataset").fadeIn();
+            $("#interfaceInput, #interfaceNext1,#interfaceWorkflow, #redditSub, #sortOptions").hide();
             $("#mainHeader").text(header2);
             $("#smallerHeader").text(smHeader2);
         }
@@ -107,17 +110,21 @@ $(document).ready(function() {
         if(mediaArr.length !== 1) {
             alert("Please select one social media");
         }else {
+            setName = $("#setName").val();
+            console.log(setName);
             media = mediaArr[0];
             if (media == "Reddit") {
                 $("#redditSub").fadeIn();
             }
             $("#interfaceNext2").text("Next");
-            $("#interfaceAnalysis, #interfaceNext2, #sortOptions").fadeIn();
+            $("#interfaceAnalysis, #interfaceNext2").fadeIn();
             $("#mainHeader").text(header3);
             $("#smallerHeader").text(smHeader3);
-            $("#social,#interfaceWorkflow, #count").hide();
+            $("#social, #interfaceWorkflow, #count, #NameDataset").hide();
             currentMedia = getMedia(media);
-            getSorting(currentMedia["sorting"]);
+            if (getSorting(currentMedia["sorting"])) {
+                $("#sortOptions").fadeIn();
+            }
             getCircleBtns("interfaceAnalysis", currentMedia["analysis"]);
         }
     }
@@ -137,7 +144,7 @@ $(document).ready(function() {
             }
             sorting = $("#sorting").val();
             $("#mainHeader").text(header4);
-            $("#interfaceAnalysis,#interfaceWorkflow,#redditSub,#sortOptions").hide();
+            $("#interfaceAnalysis, #interfaceWorkflow, #redditSub, #sortOptions").hide();
             $("#interfaceAnalysisOptions, #interfaceNext2").fadeIn();
             $("#interfaceAnalysisOptions").empty();
             $("#interfaceNext2").text("Finish");
@@ -282,7 +289,7 @@ $(document).ready(function() {
     //Creates circle buttons with in id(html div) with content of arr
     function getCircleBtns(id, arr){
         var ID = "#"+id;
-        if ($(ID) == "") {
+        if ($(ID).html() == "") {
             var count = 0;
             var temp;
             while (true) {
@@ -415,7 +422,7 @@ $(document).ready(function() {
         $(this).toggleClass("red");
     }
     function getSorting(list){
-        if (list !== null) {
+        if (list) {
             var temp = list;
             var options = "";
             var i;
@@ -423,6 +430,9 @@ $(document).ready(function() {
                 options +="<option value="+temp[i]+">"+temp[i]+"</option>";
             }
             $("#sorting").html(options);
+            return true;
+        }else{
+            return false;
         }
     }
     $("#interfaceNext2").click(function() {
@@ -451,9 +461,8 @@ $(document).ready(function() {
                     }
                 }else {
                     $("#interfaceExpOptions, #interfaceBack, #interfaceNext2, #numSplits").hide();
-                    $("mainHeader").text("Exploration Results");
-                    //ADD DATASETNAME!!!!!****
-                    //$("#smallerHeader").text("Dataset: "+ setName);
+                    $("#mainHeader").text("Exploration Results");
+                    $("#smallerHeader").text("Showing dataset: "+ setName);
                     $("#interfaceExpResults").fadeIn();
                     getDataParams();
                     break;
@@ -471,10 +480,16 @@ $(document).ready(function() {
             $("#interfaceAnalysis, #interfaceNext2, #interfaceBack,#interfaceAnalysisOptions").hide();
             $("#smallerHeader").text("");
             $("#mainHeader").text(header5);
-            $("#BeatsResults").html("I'm interested in <b>" + query + "</b> <button class='interfaceEdit' id='edit1'>edit</button><br>" +
+            var interest;
+            if (media !== "Reddit") {
+                interest = query;
+            }else{
+                interest = subreddit;
+            }
+            $("#BeatsResults").html("I'm interested in <b>" + interest + "</b> <button class='interfaceEdit' id='edit1'>edit</button><br>" +
                 "I want to use <b>" + media + "</b> (count "+count+"), <button class='interfaceEdit' id='edit2'>edit</button><br>" +
-                "My method is <b>" + analysis + "</b>, <button class='interfaceEdit' id='edit3'>edit</button><br> " +
-                "With parameter(s) <b>" + analysisParam.toString() + ". <button class='interfaceEdit' id='edit4'>edit</button>");
+                "I want to analyze <b>" + analysis + "</b>, <button class='interfaceEdit' id='edit3'>edit</button><br> " +
+                "Using <b>" + analysisParam.toString() + ". <button class='interfaceEdit' id='edit4'>edit</button>");
             $("#interfaceWorkflow").fadeIn();
             $("#edit1").click(q1);
             $("#edit2").click(q2);
@@ -506,27 +521,42 @@ $(document).ready(function() {
     function reset(){
         window.location.href = "socrates2.html";
     }
-    function expReset(){
-        $("#interfaceExpResults").hide();
+    function showResearchState(){
+        $("#interfaceExpResults, #finalResult, #DatasetRename, #interfaceExecute").hide();
         $("#BeatsResults").html("");
         showWorkflow(true);
         $("#finalResult").empty();
     }
     $("#interfaceExecuteBtn").click(function(){
         $("#mainHeader").text("Analysis Result");
-        //ADD DATASETNAME!!!!!****
-        //$("#smallerHeader").text("Dataset: "+ setName);
+        $("#smallerHeader").text("Showing dataset: "+ setName);
         $("#interfaceWorkflow").hide();
         $("#interfaceExecute, #interfaceReset").fadeIn();
         getDataParams();
     });
-
+    function getRenameInput(){
+        var renameInput = $("<input id='renameInput'>").val(setName);
+        var saveBtn = $("<button id='setNameSave' class='button'>Save</button>").click(saveSetName);
+        $("#DatasetRename").append(renameInput);
+        $("#DatasetRename").append(saveBtn);
+    }
+    function saveSetName(){
+        setName = $("#renameInput").val();
+        $("#DatasetRename").hide();
+        $("#smallerHeader").text("Showing dataset: "+setName);
+        UTIL.renameWorkingSet(UTIL.getCurrentWorkingSetID(), setName, false);
+        $("#smallerHeader").hide().show();
+        $("#DatasetRename").html("");
+    }
     //Gets data before analysis/exploration
     function getDataParams() {
+        if (!setName) {
+            setName = "Untitled";
+        }
         params = {
             "password": UI.getPassword(),
             "username": UI.getUsername(),
-            "working_set_name": "Untitled",
+            "working_set_name": String(setName),
             "type": "collection",
             "return_all_data": false
         }
@@ -568,11 +598,12 @@ $(document).ready(function() {
             params["input"] = {};
             params["input"]["count"] = count;
             params["input"]["reddit_sorting"] = sorting;
-            params["input"]["sub"] = subreddit;
+            params["input"]["sub"] = String(subreddit);
         }
         //clear cache, since now working set is modified
         UTIL.clearWorkingSetCache();
         UI.toggleLoader(true);
+        console.log(params);
         $.ajax({
             url: UTIL.CFG.api_endpoint,
             dataType: "json",
