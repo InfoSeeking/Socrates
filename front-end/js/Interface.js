@@ -64,20 +64,21 @@ $(document).ready(function() {
     var smHeader3 = "The analysis modules available to you are:";
     $("#social, #interfaceAnalysis, #interfaceWorkflow, #interfaceNext1, #interfaceNext2, " +
         "#interfaceBack, #interfaceInput, #interfaceDone, #interfaceExecute, #count, #interfaceExp, " +
-        "#numSplits, #interfaceExpResults, #redditSub, #sortOptions, #NameDataset").hide();
+        "#numSplits, #interfaceExpResults, #redditSub, #sortOptions").hide();
     $("#interfaceReset").click(reset);
     $("#resetBtn").click(reset);
     $("#expResetBtn").click(showResearchState);
     $("#showResearchState").click(showResearchState);
     $("#getSuggestions").click(q1);
     $("#interfaceNext1").click(q2);
-    $("#explorationBtn").click(q5);
+    $(".explorationBtn").click(q5);
     $("#getExpBtn").click(getVisualization);
     $("#renameSet").click(getRenameInput);
     //Question 1: asks about query
     function q1(){
         if (UI.isLoggedIn()) {
-            $("#interfaceInfo, #interfaceWorkflow, #count, #NameDataset").hide();
+        //if (true){
+            $("#interfaceInfo, #interfaceWorkflow, #count").hide();
             $(this).hide();
             $("#interfaceNext1").fadeIn();
             $("#mainHeader").text(header1);
@@ -97,7 +98,7 @@ $(document).ready(function() {
         }else {
             $(this).hide();
             getCircleBtns("social", myMedia[0]);
-            $("#interfaceNext2, #interfaceBack, #social, #count, #NameDataset").fadeIn();
+            $("#interfaceNext2, #interfaceBack, #social, #count").fadeIn();
             $("#interfaceInput, #interfaceNext1,#interfaceWorkflow, #redditSub, #sortOptions").hide();
             $("#mainHeader").text(header2);
             $("#smallerHeader").text(smHeader2);
@@ -110,7 +111,6 @@ $(document).ready(function() {
         if(mediaArr.length !== 1) {
             alert("Please select one social media");
         }else {
-            setName = $("#setName").val();
             console.log(setName);
             media = mediaArr[0];
             if (media == "Reddit") {
@@ -120,7 +120,7 @@ $(document).ready(function() {
             $("#interfaceAnalysis, #interfaceNext2").fadeIn();
             $("#mainHeader").text(header3);
             $("#smallerHeader").text(smHeader3);
-            $("#social, #interfaceWorkflow, #count, #NameDataset").hide();
+            $("#social, #interfaceWorkflow, #count").hide();
             currentMedia = getMedia(media);
             if (getSorting(currentMedia["sorting"])) {
                 $("#sortOptions").fadeIn();
@@ -158,24 +158,26 @@ $(document).ready(function() {
             image = "<br><br><img src="+src+">";
             if (isTextAnalysis(analysis) || analysis == "basic") {
                 hasTwoFields = false;
-                $("#smallerHeader").text("Please select a parameter for this field:");
+                $("#smallerHeader").text("Please select a field to perform the analysis:");
                 $("#interfaceAnalysisOptions").append($("<h4>Field:</h4>"));
                 getAnalysisParams();
-                $("#interfaceAnalysisOptions").append(image);
+                //$("#interfaceAnalysisOptions").append(image);
             } else {
                 hasTwoFields = true;
-                $("#smallerHeader").text("Please select a parameter for field_1 and field_2:");
+                $("#smallerHeader").text("Please select fields to perform the analysis:");
                 $("#interfaceAnalysisOptions").append($("<h4>field_1:</h4>"));
                 getAnalysisParams();
                 $("#interfaceAnalysisOptions").append($("<h4>field_2:</h4>"));
                 getAnalysisParams();
-                $("#interfaceAnalysisOptions").append(image);
+                //$("#interfaceAnalysisOptions").append(image);
             }
         }
+        var d = new Date();
+        setName = String(media+"_"+analysis+"_"+d.toDateString());
     }
     //Question 5: which exploration
     function q5(){
-        $("#interfaceWorkflow, #interfaceExpOptions, #numSplits, #sortOptions").hide();
+        $("#interfaceWorkflow, #interfaceExpOptions, #numSplits, #sortOptions, #interfaceExecute, #finalResult").hide();
         $("#interfaceNext2").text("Next");
         $("#smallerHeader").text("");
         getCircleBtns("interfaceExp", myGraphs[0]);
@@ -550,9 +552,6 @@ $(document).ready(function() {
     }
     //Gets data before analysis/exploration
     function getDataParams() {
-        if (!setName) {
-            setName = "Untitled";
-        }
         params = {
             "password": UI.getPassword(),
             "username": UI.getUsername(),
@@ -741,6 +740,7 @@ $(document).ready(function() {
                 function () {
                     $("#finalResult").append(b);
                     b.hide().fadeIn();
+                    $("#finalResult").show();
                     //Code "borrowed" from http://stackoverflow.com/questions/8973711/export-an-svg-from-dom-to-file
                     // Add some critical information
                     var svg = b.find("svg");

@@ -10,9 +10,13 @@
     <link rel="shortcut icon" type="image/x-icon" href="front-end/img/icon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	 <!-- Bootstrap Core CSS - -->
+    <link href="front-end/css/nav.min.css" rel="stylesheet">
 
+    <!-- Custom CSS -->
+    <link href="front-end/css/nav.css" rel="stylesheet">
     <!-- Custom Fonts -->
-    <link href="front-end/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -73,15 +77,63 @@
             stroke: #fff;
         }
     </style>
+	<script>
+        function goToData(){
+            UI.switchScreen("data");
+        }
+    </script>
 
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
 <body>
+
+<!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<a class="navbar-brand logo" href="#"><img src="front-end/img/logo1.png" height="55" width="55"></a>
+                <a class="navbar-brand" href="#">SOCRATES 2.0</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                     	<a href="socrates2.html" title="Restart session" id="refresh-btn">Restart</a>
+                	</li>
+                	<li class="page-scroll">
+                    	<a href="#" title="Your Datasets" id="data-btn" onclick="goToData()">Your Datasets</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="socrates.html" title="Go to the advanced mode" id="">Advanced</a>
+                    </li>
+					<li class="page-scroll">
+                        <a href="index.html" title="Logout" id="logout-btn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+
 <div id="loader"><div id="fill"></div></div>
 <div id="overlay">
-    <h2><span>Data View</span> <a href="#" class="close">Close</a></h2>
+    <br><br><br>
+	<h2><span>Data View</span> <a href="#" class="close">Close</a></h2>
     <div class="content">
         <table></table>
     </div>
@@ -94,10 +146,6 @@
             <div id="interface">
                     <h2 id="mainHeader" align="center">Welcome to SOCRATES 2.0</h2>
                     <center><button id="getSuggestions" align="center">Get Suggestions</button></center>
-                    <div id="NameDataset">
-                        <p class="grey">What would you like to name your Dataset?</p>
-                        <input id="setName" value="Untitled">
-                    </div>
                     <div id="count">
                         <p class="grey">How much data would you like to collect? </p>
                         <input id ="countInput" type="number" name="quantity" min="1" max="200" value="10">
@@ -115,7 +163,6 @@
                         <p class="grey">How many subdivisions of the data into ranges would you like? </p>
                         <input id ="numSplitCount" type="number" name="quantity" min="1" max="450" value="20">
                     </div>
-                    
                     <div id="DatasetRename"></div>
                     <div id="social"></div>
                     <div id="interfaceAnalysis"></div>
@@ -129,18 +176,19 @@
                     <div id="interfaceWorkflow" align="center">
                         <p id="BeatsResults"></p>
                         <button class="button" id="interfaceExecuteBtn">Execute Analysis</button>
-                        <button class="button" id="explorationBtn">Exploration</button>
+                        <button class="button explorationBtn">Exploration</button>
                         <button id="interfaceReset">Reset</button>
                     </div>
                     <div id="interfaceExecute">
                         <button class="button" id="getAnalysisBtn">Show Analysis</button>
-                        <button class="button" id="renameSet">Rename</button>
-                        <button class="button" id="showResearchState">Research Statement</button>
-                        <button class="button" id="resetBtn">Reset</button>
+                        <!--<button class="button" id="renameSet">Rename Dataset</button>-->
+                        <button class="button" id="showResearchState">Return to Research Statement</button>
+                        <button class="button explorationBtn">Exploration</button>
+                        <!--<button class="button" id="resetBtn">Reset</button>-->
                     </div>
                     <div id="interfaceExpResults">
                         <button class="button" id="getExpBtn">Show Graph</button>
-                        <button class="button" id="expResetBtn">Research Statement</button>
+                        <button class="button" id="expResetBtn">Return to Research Statement</button>
                     </div>
                 </div>
         </div>
@@ -148,19 +196,11 @@
     </div>
 </div><!--/#wrapper -->
 <aside id="sidebar">
-        <h1>Socrates</h1>
         <div class="inner">
             <div id="feedback" class="group err">
                 <div id="feedback-text"></div>
                 <button id="confirm-btn" class="button">Ok</button>
             </div>
-            <nav>
-                <a href="#" title="Home" id="home-btn" class="button">Home</a>
-                <a href="#" title="Manage your account" id="account-btn" class="button">Account</a>
-                <a href="#" title="Data" id="data-btn" class="inactive button">Your Datasets</a>
-                <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>
-            </nav>
-            <div class="ruler"></div>
             <div class="screen data">
                 <h2>Saved Datasets</h2>
                 <ul id="data-list"></ul>
@@ -211,14 +251,16 @@
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
+    <script src="front-end/js/nav.min.js"></script>
 
     <!-- Plugin JavaScript -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <!-- 
-    <script src="js/classie.js"></script>
+	<script src="front-end/js/classie.js"></script>
     <script src="js/cbpAnimatedHeader.js"></script>
-    --> 
+	-->
     <!-- Custom Theme JavaScript -->
+    <script src="front-end/js/nav.js"></script>
 
 <script>
     UI.init({

@@ -1,0 +1,12 @@
+{
+    "function": "fetchPosts",
+    "input": {
+        "sub": "funny",
+        "reddit_sorting": "hot",
+        "count": 20
+    },
+    "module": "reddit",
+    "return_all_data": "false",
+    "setname": "test",
+    "type": "collection"
+}

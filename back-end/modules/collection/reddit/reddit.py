@@ -65,41 +65,6 @@ SPECS = {
                     'parent_id': "text",
                     'content': "text"
                     }
-                },
-            'fetchManyPosts' : {
-                'param': {
-                    'sub' : {
-                        'type' : 'text',
-                        'comment': 'Subreddit'
-                        },
-                    'count': {
-                        'type' : 'numeric',
-                        'comment' : "Number of posts"
-                        },
-                    'reddit_sorting': {
-                        'type' : 'text',
-                        'comment' : 'Reddit sorting method',
-                        'constraints' : {
-                            'choices' : ["hot", "new", "rising", "controversial", "top"]
-                            }
-                        }
-                    }, 
-                'returns': {
-                    "content": "text",
-                    "title": "text",
-                    "upvotes": "numeric",
-                    "downvotes": "numeric",
-                    "user": "text",
-                    "nsfw": "boolean",
-                    "id": "text",
-                    "stickied": "boolean",
-                    "url" : "text",
-                    "domain": "text",
-                    "created_utc": "numeric"
-                    },
-                'campaign' : {
-                        'max_count' : 50
-                    }
                 }
             }
         }

@@ -16,12 +16,9 @@ var LoginScreen = (function(){
             UI.switchScreen("register");
         })
     }
-
-
-    function logIn(){
+	that.logIn = function(){
       var uinput = $('#login-name').val();
       var pinput = $('#login-password').val();
-
       if (uinput){
         console.log("Attempting to log in as: " + uinput);
         $.ajax({
@@ -35,12 +32,14 @@ var LoginScreen = (function(){
           success : function(data, status){
             console.log(data);
             if (data.error){
-              UI.feedback(data.message, true);
+              //UI.feedback(data.message, true);
+              alert("Wrong username or password.");
             }
             else {
               UI.setLoggedIn(true, uinput, pinput);
-              UI.feedback("Welcome back," + uinput + ".");
-              UI.switchScreen("main");
+              //UI.feedback("Welcome back," + uinput + ".");
+              //UI.switchScreen("main");
+              window.location.href = "services.html";
             }
           }
         });

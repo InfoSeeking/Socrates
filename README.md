@@ -1,23 +1,24 @@
 #SOCRATES
-[Live demo of SOCRATES](http://peopleanalytics.org/socrates/front-end/)
+[Live demo of SOCRATES](http://peopleanalytics.org/socrates/)
 
 This document primarily consists of development ideas. To get more information on SOCRATES please visit our [documentation](http://peopleanalytics.org/socrates/docs/)
 
 ##Future Goals
-###Big Goals
+### Large Scope
 - Plan out infrastructure in cleanest possible way.
 	+ Split collection and analysis data to their own Mongo collections. This way, they can refer to each other and chaining multiple datasets will be easier
 	+ Add classes for accessing function specs and working_set in python. This will essentially be a python library but no longer have everything rely on the JSON structure
-	+ Move visualization to server side
+	+ Move visualization to server side to reduce code duplication
 - User system for storing/sharing working\_sets
 - Long-term data collection campaigns to get around API limits
+	- Alternatively, let users add their own API keys
 - Maintenance of multiple working\_sets and ability to use multiple working\_sets in visualization
 - Extensive documentation, auto-generated from comments and tutorials on creating collection, analysis, and visualization modules
 - Set up a virtual\_env for all package installations, maybe make a shell script setup for this
 - Make a web interface for accessing logs
 - Make specs into objects as opposed to JSON
 
-###Small Goals
+### Small Scope
 - Add logging for front-end errors
 - Store visualizations in back-end
 - Detect when online in front-end
@@ -82,17 +83,3 @@ Fetch twitter posts:
 
 Sentiment Analysis:
 ```curl http://localhost:5000/op/analysis/text/sentiment -d "field=content&reference_id=<ref id>"```
-
-
-
-### Rethinking Structure
-Architecture Specifications:
-- Easy uploading/downloading of big data
-- Easily extensible (or easy to add new collection/analysis/visualization) modules
-- Preferably everything in one place (visualization is now almost a separate system, tied to the web)
-- Not specific to a web application, since working with large datasets would likely not be feasible to be uploaded
-- Eventual integration with Hadoop
-
-
-Ideas:
-- Provide a library for clients

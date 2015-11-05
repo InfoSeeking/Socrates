@@ -13,6 +13,40 @@ var RegisterScreen = (function(){
       $("#register-btn").click(register);
       $("#register-back-btn").click(function(){UI.switchScreen("login")});
     }
+    that.register = function(uinput, pinput){
+      if (uinput){
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          type: "POST",
+          data : {
+            "register" : true,
+            "username" : uinput,
+            "password" : pinput
+          },
+          dataType: "json",
+          success : function(data, status){
+            if (data.attempted) {
+              if (data.taken){
+                //UI.feedback("Username is already taken.", true);
+                alert("Username is already taken.");
+              } else {
+                UI.setLoggedIn(true, uinput, pinput);
+                //UI.feedback("Welcome to SOCRATES, " + uinput + ".");
+                //UI.switchScreen("main");
+                console.log("Registration successful");
+                window.location.href = "services.html";
+              }
+            }
+          }
+        });
+      }else{
+        //console.log("No username")
+        //UI.feedback("Please enter a username.", true);
+        alert("Please enter a username.");
+      }
+    }
+    
+    
     
     function register(){
       var uinput = $('#register-name').val();
