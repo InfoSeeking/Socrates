@@ -738,7 +738,6 @@ var MainScreen = (function(){
           }
         }
       }
-      console.log(ordering);
       for(var n = 0; n < ordering.length; n++){
         var p = ordering[n];
         if(!data.hasOwnProperty(p)){continue;}
