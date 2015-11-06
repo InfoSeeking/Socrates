@@ -6,6 +6,7 @@ import urllib
 import urlparse
 import config
 import youtube_categories
+from pprint import pprint
 try:
     import simplejson as json
 except ImportError:
@@ -36,14 +37,20 @@ SPECS = {
                 "dislikeCount" : "numeric",
                 "favoriteCount" : "numeric",
                 "commentCount" : "numeric",
-                "duration(sec)" : "numeric",
                 "caption" : "boolean",
-                "channelTitle" : "text",
-                "category" : "text"
+                "channelTitle" : "text"
             }
         }
     }
 }
+
+def getOrDefault(arr, key, defaultValue):
+    if not key in arr:
+        return defaultValue
+    else:
+        return arr[key]
+
+
 def formatDuration(s):
     new = s[2:]
     total = 0
@@ -100,7 +107,7 @@ def search(param=False):
         "q" : param["query"],
         "key" : key,
         "order": param["order"],
-        "maxResults" : 50,
+        "maxResults" : 20,
         "type" : "video"
     }
     #search url
@@ -109,20 +116,45 @@ def search(param=False):
     v_url = "https://www.googleapis.com/youtube/v3/videos?key="+key
     snippet_url = q_url + "&part=snippet"
     snip_result = getAllData(snippet_url)
+    id_list = []
+    result_map = {}
     for res in snip_result:
         row = {}
         row['title'] = res['snippet']['title']
         row['publishedAt'] = res['snippet']['publishedAt']
-        id = res['id']['videoId']
-        row['id'] = id
-        #request to get the statistics for a specific video with its id
-        stat_result = _request(v_url+"&id="+id+"&part=statistics")
-        stats = stat_result['items']
-        row['viewCount'] = stats[0]['statistics']['viewCount']
-        row['likeCount'] = stats[0]['statistics']['likeCount']
-        row['dislikeCount'] = stats[0]['statistics']['dislikeCount']
-        row['favoriteCount'] = stats[0]['statistics']['favoriteCount']
-        row['commentCount'] = stats[0]['statistics']['commentCount']
+        row['channelTitle'] = res['snippet']['channelTitle']
+        # row['category'] = youtube_categories.categories[int(res['snippet']['categoryId'])]
+        vid = res['id']['videoId']
+        row['id'] = vid
+        result_map[vid] = row
+        id_list.append(vid)
+
+    # Request to get statistics
+    #request to get the statistics for a specific video with its id
+    reqString = "%s&id=%s&maxResults=50&part=statistics,contentDetails" % (v_url, ','.join(id_list))
+    stat_result = getAllData(reqString)
+
+    for res in stat_result:
+        vidId = res['id']
+        result_map[vidId]['viewCount'] = getOrDefault(res['statistics'], 'viewCount', 0)
+        result_map[vidId]['likeCount'] = getOrDefault(res['statistics'], 'likeCount', 0)
+        result_map[vidId]['dislikeCount'] = getOrDefault(res['statistics'], 'dislikeCount', 0)
+        result_map[vidId]['favoriteCount'] = getOrDefault(res['statistics'], 'favoriteCount', 0)
+        result_map[vidId]['commentCount'] = getOrDefault(res['statistics'], 'commentCount', 0)
+        result_map['caption'] = getOrDefault(res['contentDetails'], 'caption', '')
+
+    finalResults = []
+    for key in result_map:
+        finalResults.append(result_map[key])
+
+    return finalResults
+    '''
+    stats = stat_result['items']
+    row['viewCount'] = stats[0]['statistics']['viewCount']
+    row['likeCount'] = stats[0]['statistics']['likeCount']
+    row['dislikeCount'] = stats[0]['statistics']['dislikeCount']
+    row['favoriteCount'] = stats[0]['statistics']['favoriteCount']
+    row['commentCount'] = stats[0]['statistics']['commentCount']
         #request to get the statistics for a specific video with its id
         content_result = _request(v_url+"&id="+id+"&part=contentDetails")
         #convert duration string into and int (duration in seconds)
@@ -135,4 +167,5 @@ def search(param=False):
         row['channelTitle'] = det[0]['snippet']['channelTitle']
         row['category'] = youtube_categories.categories[int(det[0]['snippet']['categoryId'])]
         data.append(row)
-    return data
+    '''
+    # return data
