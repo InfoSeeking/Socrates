@@ -5,7 +5,7 @@
 	font-family: "Alegreya Sans", "Helvetica", "Arial", "sans-serif";
 }
 body{
-	background: url("img/bg.jpg") repeat-y #e5e6db;
+	/* background: url("img/bg.jpg") repeat-y #e5e6db; */
 }
 #sidebar h1{
 	background : #00aeef url("img/logo.png") no-repeat center center;
@@ -19,8 +19,8 @@ p{
 }
 aside#sidebar{
 	float: left;
-	width: 400px;
-	margin-left: -100%;
+	width: 0px;
+	/* margin-left: 100%; */
 }
 aside#sidebar .inner{
 	color: #FFF;
@@ -209,7 +209,7 @@ form .row .comment .optional{
 }
 
 #workspace{
-	margin-left: 400px;
+	margin-left: 0px;
 }
 #wrapper{
 	float: left;
@@ -234,6 +234,7 @@ form .row .comment .optional{
 }
 #workspace .results table{
 	padding: 10px;
+	width: 100%;
 }
 #workspace .results table td, #workspace .results table th{
 	text-align: left;
@@ -247,9 +248,9 @@ form .row .comment .optional{
 	padding: 10px;
 }
 #workspace #intro{
-	width: 80%;
-	margin-top: 5%;
-	margin-left: 5%;
+	width: 60%;
+	position: relative;
+	margin: 5% auto;
 	background: #FFF;
 	padding: 5%;
 }
@@ -317,6 +318,7 @@ form .row .comment .optional{
 }
 #overlay table{
 	margin-top: 10px;
+	width: 100%;
 }
 #overlay .close{
 	position: absolute;
@@ -521,7 +523,8 @@ form .row .comment .optional{
     font-weight: bold;
     cursor: pointer;
     color: #ffffff;
-    line-height: 100px;
+    height: 100px;
+    padding-top: 40px;
 
     background: -webkit-linear-gradient(top, #00BAFF, #112D38);
     background: -moz-linear-gradient(top, #00BAFF, #112D38);
@@ -543,6 +546,18 @@ form .row .comment .optional{
 .circle-btn:hover{
     -webkit-filter: brightness(0.75);
 }
+
+.circle-btn.active {
+	background-image: -webkit-linear-gradient(#FF8400, #944D00);
+	background-image: -o-linear-gradient(#FF8400, #944D00);
+	background-image: linear-gradient(#FF8400, #944D00);
+}
+
+.circle-btn-container {
+	float: left;
+	width: 120px;
+}
+
 #gettingStarted{
     padding-bottom: 10px;
 }
@@ -564,6 +579,9 @@ form .row .comment .optional{
     margin-right: 5px;
     margin-top: 5px;
     display: inline-block;
+}
+#interfaceInputContainer {
+	display: none;
 }
 #interfaceInput{
     height: 23px;

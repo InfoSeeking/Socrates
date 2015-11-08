@@ -38,7 +38,9 @@ SPECS = {
                 "favoriteCount" : "numeric",
                 "commentCount" : "numeric",
                 "caption" : "boolean",
-                "channelTitle" : "text"
+                'category': 'text',
+                "channelTitle" : "text",
+                "description": "text"
             }
         }
     }
@@ -121,6 +123,7 @@ def search(param=False):
     for res in snip_result:
         row = {}
         row['title'] = res['snippet']['title']
+        row['description'] = res['snippet']['description']
         row['publishedAt'] = res['snippet']['publishedAt']
         row['channelTitle'] = res['snippet']['channelTitle']
         # row['category'] = youtube_categories.categories[int(res['snippet']['categoryId'])]
@@ -131,7 +134,7 @@ def search(param=False):
 
     # Request to get statistics
     #request to get the statistics for a specific video with its id
-    reqString = "%s&id=%s&maxResults=50&part=statistics,contentDetails" % (v_url, ','.join(id_list))
+    reqString = "%s&id=%s&maxResults=20&part=statistics,contentDetails" % (v_url, ','.join(id_list))
     stat_result = getAllData(reqString)
 
     for res in stat_result:
@@ -141,10 +144,18 @@ def search(param=False):
         result_map[vidId]['dislikeCount'] = getOrDefault(res['statistics'], 'dislikeCount', 0)
         result_map[vidId]['favoriteCount'] = getOrDefault(res['statistics'], 'favoriteCount', 0)
         result_map[vidId]['commentCount'] = getOrDefault(res['statistics'], 'commentCount', 0)
-        result_map['caption'] = getOrDefault(res['contentDetails'], 'caption', '')
+        result_map[vidId]['caption'] = getOrDefault(res['contentDetails'], 'caption', '')
+
+    # reqString = "https://www.googleapis.com/youtube/v3/videoCategories?key=%s&id=%s&part=snippet" % (key, ','.join(id_list))
+    # category_result = getAllData(reqString)
+
+    # for res in category_result:
+    #     vidId = res['id']
+    #     result_map[vidId]['category'] = getOrDefault(res['snippet'], 'title', '')
 
     finalResults = []
     for key in result_map:
+        print "key is %s" % key
         finalResults.append(result_map[key])
 
     return finalResults

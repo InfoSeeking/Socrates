@@ -957,7 +957,7 @@ var MainScreen = (function(){
         if(type == "collection"){
             //UTIL.setCurrentWorkingSet(working_set);
             //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
-            h2.html("Collection");
+            h2.html("Sample Data");
             //h2.append(" (" + setName + ")");
             var table = InterfaceCreateTable(type, myData.data, myData.meta, myData["analysis"]);//this is the HTML created table
             box.append(table);

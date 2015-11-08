@@ -40,53 +40,53 @@ def convertBasicType(typ, val):
 
 #given the passed parameters, check if the parameters meet the specified constraints
 def enforceAndConvert(param, paramSpecs, working_set=None):
-	try:
-		for key in param:
-			if isSpecialParam(key):
-				#then this parameter is not being fed to our function, so do not check it
-				continue
-			if param[key] == "" and isOptional(paramSpecs[key]):
-				continue
+	# try:
+	for key in param:
+		if isSpecialParam(key):
+			#then this parameter is not being fed to our function, so do not check it
+			continue
+		if param[key] == "" and isOptional(paramSpecs[key]):
+			continue
 
-			fr = re.compile("^field_reference\s+(\w+)$")
-			paramType = getType(paramSpecs[key])
-			match = fr.match(paramType)
+		fr = re.compile("^field_reference\s+(\w+)$")
+		paramType = getType(paramSpecs[key])
+		match = fr.match(paramType)
 
+		if match:
+			typ = match.group(1)
+			field = param[key]
+			#the following will replace the param, it is an array of the data being referred to
+			value = []
+			#check if field is a data field or an analysis field
+			an = re.compile("^analysis\[(\d+)\]\.([_a-zA-Z]+)$")
+			match = an.match(field)
 			if match:
-				typ = match.group(1)
-				field = param[key]
-				#the following will replace the param, it is an array of the data being referred to
-				value = []
-				#check if field is a data field or an analysis field
-				an = re.compile("^analysis\[(\d+)\]\.([_a-zA-Z]+)$")
-				match = an.match(field)
-				if match:
-					#analysis field
-					index = int(match.group(1))
-					field = match.group(2)
-					if "analysis" not in working_set or field not in working_set['analysis'][index]['entry_analysis']:
-						raise TypeError("Reference to analysis field " + field + " does not exist")
-					if getType(working_set['analysis'][index]['entry_meta'][field]) != typ:
-						raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
-					for d in working_set['analysis'][index]['entry_analysis'][field]: #this is an array of the values
-						value.append(d)
-				else:
-					#data field
-					if(len(working_set['data']) > 0):
-						if field not in working_set['data'][0]:
-							raise TypeError("Reference to data field " + field + " does not exist")
-						if getType(working_set['meta'][field]) != typ:
-							raise TypeError("Reference to data field " + field + " is not of type " + typ)
-					for d in working_set['data']:
-						value.append(d[field])
-				param[key] = value
+				#analysis field
+				index = int(match.group(1))
+				field = match.group(2)
+				if "analysis" not in working_set or field not in working_set['analysis'][index]['entry_analysis']:
+					raise TypeError("Reference to analysis field " + field + " does not exist")
+				if getType(working_set['analysis'][index]['entry_meta'][field]) != typ:
+					raise TypeError("Reference to analysis field " + field + " is not of type " + typ)
+				for d in working_set['analysis'][index]['entry_analysis'][field]: #this is an array of the values
+					value.append(d)
 			else:
-				#assume basic type for now
-				param[key] = convertBasicType(paramType, param[key])
-	except TypeError as te:
-		print "TypeError caught in translation:"
-		print te
-		return False
+				#data field
+				if(len(working_set['data']) > 0):
+					if field not in working_set['data'][0]:
+						raise TypeError("Reference to data field " + field + " does not exist")
+					if getType(working_set['meta'][field]) != typ:
+						raise TypeError("Reference to data field " + field + " is not of type " + typ)
+				for d in working_set['data']:
+					value.append(d[field])
+			param[key] = value
+		else:
+			#assume basic type for now
+			param[key] = convertBasicType(paramType, param[key])
+	# except TypeError as te:
+	# 	print "TypeError caught in translation:"
+	# 	print te
+	# 	return False
 
 	return True
 

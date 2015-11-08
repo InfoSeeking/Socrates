@@ -540,8 +540,15 @@ form .row .comment .optional{
     margin-right:7px;
 }
 
+
 .circle-btn:hover{
     -webkit-filter: brightness(0.75);
+}
+
+.circle-btn.active {
+	background-image: -webkit-linear-gradient(#FF8400, #944D00);
+	background-image: -o-linear-gradient(#FF8400, #944D00);
+	background-image: linear-gradient(#FF8400, #944D00);
 }
 #gettingStarted{
     padding-bottom: 10px;

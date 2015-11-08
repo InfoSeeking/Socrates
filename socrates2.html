@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Kevin Albertson">
     <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link href="front-end/style.css" type="text/css" rel="stylesheet" />
+    <link href="front-end/style.css?v4" type="text/css" rel="stylesheet" />
     <link rel="shortcut icon" type="image/x-icon" href="front-end/img/icon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -145,15 +145,21 @@
         <div id="intro">
             <div id="interface">
                     <h2 id="mainHeader" align="center">Welcome to SOCRATES 2.0</h2>
-                    <center><button id="getSuggestions" align="center">Get Suggestions</button></center>
+                    <center id="mainCentered">
+                        <img src="front-end/img/socrates_2.jpg" width="650" /><br/>
+                        <button id="getSuggestions" align="center">Let's Get Started!</button>
+                    </center>
                     <div id="count">
                         <p class="grey">How much data would you like to collect? </p>
-                        <input id ="countInput" type="number" name="quantity" min="1" max="200" value="10">
+                        <p><input id ="countInput" type="number" name="quantity" min="1" max="200" value="10"> data records</p>
                     </div>
                     <div id="redditSub">
                         <p class="grey">Which subreddit would you like to use?</p>
                         <input id="subreddit">
-                        <h5 class="grey">Ex: Sports</h5>
+                        <p class="grey">
+                            Example: <i>sports</i>, <i>funny</i>.<br/>
+                            <small><b>Note</b> subreddits are case-sensitive.</small>
+                        </p>
                     </div>
                     <div id="sortOptions">
                         <p class="grey">How would you like your data to be sorted?</p>
@@ -166,11 +172,16 @@
                     <div id="DatasetRename"></div>
                     <div id="social"></div>
                     <div id="interfaceAnalysis"></div>
+                    <br style="clear:both" />
                     <div id="interfaceAnalysisOptions"></div>
+                    <center id="interfaceInputContainer">
                     <input id="interfaceInput">
                     <button id="interfaceNext1">Next</button>
+                    <p>Example: College Football, Barack Obama, the Kardashians</p>
+                    </center>
                     <center><div id="interfaceExp"></div></center>
                     <div id="interfaceExpOptions"></div>
+                    <br style="clear:both" />
                     <button id="interfaceNext2">Next</button>
                     <button id="interfaceBack">Back</button>
                     <div id="interfaceWorkflow" align="center">
@@ -187,12 +198,14 @@
                         <!--<button class="button" id="resetBtn">Reset</button>-->
                     </div>
                     <div id="interfaceExpResults">
-                        <button class="button" id="getExpBtn">Show Graph</button>
+                        <!--<button class="button" id="getExpBtn">Show Graph</button>-->
                         <button class="button" id="expResetBtn">Return to Research Statement</button>
                     </div>
+
                 </div>
+                <div id="finalResult"></div>
         </div>
-        <div id="finalResult"></div>
+        
     </div>
 </div><!--/#wrapper -->
 <aside id="sidebar">
@@ -239,13 +252,13 @@
 <script src="front-end/js/UI.js"></script>
 <script src="front-end/js/UTIL.js"></script>
 <script src="front-end/js/Screen.js"></script>
-<script src="front-end/js/MainScreen.js"></script>
+<script src="front-end/js/MainScreen.js?v2"></script>
 <script src="front-end/js/RegisterScreen.js"></script>
 <script src="front-end/js/LoginScreen.js"></script>
 <script src="front-end/js/LogoutScreen.js"></script>
 <script src="front-end/js/SettingsScreen.js"></script>
 <script src="front-end/js/DataScreen.js"></script>
-<script src="front-end/js/Interface.js"></script>
+<script src="front-end/js/Interface.js?v1"></script>
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script>
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>

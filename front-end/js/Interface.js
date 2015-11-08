@@ -6,43 +6,156 @@ $(document).ready(function() {
     var twitter = new Array(), youtube = new Array(), nyt = new Array(), reddit = new Array(), fb = new Array(), flickr = new Array();
     var myMedia = new Array(), myGraphs = new Array();
 
-    myMedia[0] = {0: "Twitter", 1: "Youtube", 2: "NY Times", 3: "Facebook", 4: "Reddit"};
-    myGraphs[0] = {0: "histogram", 1: "scatterplot", 2: "piechart", 3: "regression"};
+    var moduleInfo = {
+        'analysis': {
+            'sentiment': {
+                key: 'sentiment',
+                name: 'Sentiment',
+                description: 'Polarity and subjectivity of a corpus'
+            },
+            'word_count': {
+                key: 'word_count',
+                name: 'Word Counts',
+                description: 'Get individual word counts of a corpus'
+            },
+            'correlation': {
+                key: 'correlation',
+                name: 'Correlation',
+                description: 'Get the correlation coefficient between two variables'
+            },
+            'regression': {
+                key: 'regression',
+                name: 'Linear Regression',
+                description: 'Get the coefficients for the best-fit line'
+            },
+            'basic': {
+                key: 'basic',
+                name: 'Basic Statistics',
+                description: 'Get basic statistics like the average and median'
+            }
+        },
+        'collection': {
+            'twitter': {
+                key: 'twitter', name: 'Twitter', description: ''
+            },
+            'facebook': {
+                key: 'facebook', name: 'Facebook', description: ''
+            },
+            'ny_times': {
+                key: 'ny_times', name: 'NY Times', description: ''
+            },
+            'youtube': {
+                key: 'youtube', name: 'YouTube', description: ''
+            },
+            'reddit': {
+                key: 'reddit', name: 'Reddit', description: ''
+            }
+        },
+        'exploration': {
+            'histogram' : {
+                key: 'histogram',
+                name: 'Histogram',
+                description: ''
+            },
+            'scatterplot': {
+                key: 'scatterplot',
+                name: 'Scatterplot',
+                description: 'Show datapoints on an X/Y plot'
+            },
+            'piechart' : {
+                key: 'piechart',
+                name: 'Pie Chart',
+                description: 'For discrete valued variables'
+            },
+            'regression' : {
+                key: 'regression',
+                name: 'Linear Regression',
+                description: 'A scatterplot with a best fit line'
+            }
+        }
+    };
 
-    twitter["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
-    twitter["analysisText"] = {0: "content", 1: "tweet_id",2: "created", 3: "authorloc", 4: "username", 5: "source", 6: "authorid"};
-    twitter["analysisStat"] = {0: "friends", 1: "followers", 2: "retwc"};
-    twitter["textPic"] = "front-end/img/twitter_text.png";
+    myMedia[0] = ["twitter", "youtube", "ny_times", "facebook", "reddit"];
+    myGraphs[0] = ["histogram", "scatterplot", "piechart", "regression"];   
+    twitter["analysis"] = ["sentiment", "word_count", "correlation", "regression", "basic"];
+    twitter["analysisText"] = [
+        {"key": "content", "name": "Text content"},
+        {"key": "tweet_id", "name": "Tweet ID"},
+        {"key": "created", "name": "Date created"},
+        {"key": "authorloc", "name": "Author location"},
+        {"key": "username", "name": "Username"}, 
+        {"key": "source", "name": "Source"},
+        {"key": "authorid", "name": "Author ID"}
+    ];
+    twitter["analysisStat"] = [
+        {"key": "friends", "name": "Friend count"},
+        {"key": "followers", "name": "Follower count"},
+        {"key": "retwc", "name": "Retweet count"}
+    ];
+    twitter["tPic"] = "front-end/img/twitter_text.png";
     twitter["statPic"] = "front-end/img/twitter_stat.png";
 
-    youtube["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
-    youtube["analysisStat"] = {0: "dislikeCount", 1: "likeCount", 2: "commentCount", 3: "viewCount", 4: "duration(sec)", 5: "favoriteCount"};
-    youtube["analysisText"] = {0: "publishedAt", 1: "id", 2: "category", 3: "title", 4: "channelTitle"};
-    youtube["sorting"] = {0: "date", 1: "rating", 2: "relevance", 3: "title", 4: "videoCount", 5: "viewCount"};
+    youtube["analysis"] = ["sentiment", "word_count", "correlation", "regression", "basic"];
+    youtube["analysisStat"] = [
+        {"key": "dislikeCount", "name": "Dislike count"}, 
+        {"key": "likeCount", "name": "Like count"},
+        {"key": "commentCount", "name": "Comment count"},
+        {"key": "viewCount", "name": "View count"}, 
+        {"key": "favoriteCount", "name": "Favorite count"}
+    ];
+    youtube["analysisText"] = [
+        {"key": "publishedAt", "name": "Date published"},
+        {"key": "id", "name": "Video ID"},
+        {"key": "channelTitle", "name": "Channel Title"},
+        {"key": "title", "name": "Video Title"},
+        {"key": "description", "name": "Video Description"}
+    ];
+    youtube["sorting"] = [ "relevance", "date", "rating", "title", "videoCount", "viewCount"];
     youtube["textPic"] = "front-end/img/youtube_text.png";
     youtube["statPic"] = "front-end/img/youtube_stat.png";
 
     //FIX word_count
-    nyt["analysis"] = {0: "sentiment", 1: "basic"};
-    nyt["analysisText"] = {0: "lead_paragraph", 1: "headline", 2: "abstract", 3: "snippet", 4: "web_url"};
-    nyt["analysisStat"] = {0: "word_count"};
-    nyt["sorting"] = {0: "newest", 1: "oldest"};
+    nyt["analysis"] = ["sentiment", "basic"];
+    nyt["analysisText"] = [
+        {"key": "lead_paragraph", "name": "Lead paragraph"},
+        {"key": "headline", "name": "Headline"},
+        {"key": "abstract", "name": "Abstract"},
+        {"key": "snippet", "name": "Snippet"},
+        {"key": "web_url", "name": "URL"}
+    ];
+    nyt["analysisStat"] = [
+        {"key": "word_count", "name": "Word count"}
+    ];
+    nyt["sorting"] = ["newest",  "oldest"];
     nyt["textPic"] = "front-end/img/nyt_text.png";
     nyt["statPic"] = "front-end/img/nyt_stat.png";
 
-    reddit["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
-    reddit["analysisText"] = {0: "content", 1: "user", 2: "user", 3: "id", 4: "title", 5: "url", 6: "domain"};
-    reddit["analysisStat"] = {0: "downvotes", 1: "created_utc", 2: "upvotes"};
-    reddit["sorting"] = {0: "hot", 1: "new", 2: "rising", 3: "controversial", 4: "top"};
+    reddit["analysis"] = ["sentiment",  "word_count",  "correlation",  "regression",  "basic"];
+    reddit["analysisText"] = [
+        {"key": "content", "name": "Content"},
+        {"key": "user", "name": "Username"},
+        {"key": "id", "name": "Post ID"},
+        {"key": "title", "name": "Title"}, 
+        {"key": "url", "name": "URL"},
+        {"key": "domain", "name": "Domain"}
+    ];
+    reddit["analysisStat"] = [
+        {"key": "downvotes", "name": "Downvote count"}, 
+        {"key": "upvotes", "name": "Upvote count"}, 
+        {"key": "created_utc", "name": "Date created"}
+    ];
+    reddit["sorting"] = ["hot",  "new",  "rising",  "controversial",  "top"];
     reddit["textPic"] = "front-end/img/reddit_text.png";
     reddit["statPic"] = "front-end/img/reddit_stat.png";
 
-    fb["analysis"] = {0: "sentiment", 1: "word_count"};
-    fb["analysisText"] = {0: "category", 1: "name"};
+    fb["analysis"] = ["sentiment",  "word_count"];
+    fb["analysisText"] = [
+        {"key": "category", "name": "Category"},
+        {"key": "name", "name": "Name"}];
     fb["textPic"] = "front-end/img/fb_text";
 
     //Not finished
-    flickr["analysis"] = {0: "sentiment", 1: "word_count", 2: "correlation", 3: "regression", 4: "basic"};
+    flickr["analysis"] = [ "sentiment",  "word_count",  "correlation",  "regression",  "basic"];
 
     var count = 25, numsplits = 10, subreddit, sorting;
     var query = "", media = "", analysis = "", exploration = "";
@@ -72,7 +185,7 @@ $(document).ready(function() {
     $("#getSuggestions").click(q1);
     $("#interfaceNext1").click(q2);
     $(".explorationBtn").click(q5);
-    $("#getExpBtn").click(getVisualization);
+    //$("#getExpBtn").click(getVisualization);
     $("#renameSet").click(getRenameInput);
     //Question 1: asks about query
     function q1(){
@@ -80,10 +193,11 @@ $(document).ready(function() {
         //if (true){
             $("#interfaceInfo, #interfaceWorkflow, #count").hide();
             $(this).hide();
+            $(this).parent().hide();
             $("#interfaceNext1").fadeIn();
             $("#mainHeader").text(header1);
             $("#smallerHeader").text(smHeader1);
-            $("#interfaceInput").fadeIn();
+            $("#interfaceInput, #interfaceInputContainer").fadeIn();
         }else{
             alert("Please log in");
         }
@@ -97,9 +211,9 @@ $(document).ready(function() {
             alert("Please enter keyword(s)");
         }else {
             $(this).hide();
-            getCircleBtns("social", myMedia[0]);
+            getCircleBtns("social", myMedia[0], 'collection');
             $("#interfaceNext2, #interfaceBack, #social, #count").fadeIn();
-            $("#interfaceInput, #interfaceNext1,#interfaceWorkflow, #redditSub, #sortOptions").hide();
+            $("#interfaceInput, #interfaceInputContainer, #interfaceNext1,#interfaceWorkflow, #redditSub, #sortOptions").hide();
             $("#mainHeader").text(header2);
             $("#smallerHeader").text(smHeader2);
         }
@@ -111,9 +225,8 @@ $(document).ready(function() {
         if(mediaArr.length !== 1) {
             alert("Please select one social media");
         }else {
-            console.log(setName);
             media = mediaArr[0];
-            if (media == "Reddit") {
+            if (media == "reddit") {
                 $("#redditSub").fadeIn();
             }
             $("#interfaceNext2").text("Next");
@@ -122,16 +235,17 @@ $(document).ready(function() {
             $("#smallerHeader").text(smHeader3);
             $("#social, #interfaceWorkflow, #count").hide();
             currentMedia = getMedia(media);
+            console.log('Got media', currentMedia);
             if (getSorting(currentMedia["sorting"])) {
                 $("#sortOptions").fadeIn();
             }
-            getCircleBtns("interfaceAnalysis", currentMedia["analysis"]);
+            getCircleBtns("interfaceAnalysis", currentMedia["analysis"], 'analysis');
         }
     }
     //Question 4: asks about analysis parameters specific to social media and analysis
     function q4(){
         subreddit = $("#subreddit").val();
-        if (analysisArr.length !== 1 || ((subreddit == "" || !subreddit) && media == "Reddit")) {
+        if (analysisArr.length !== 1 || ((subreddit == "" || !subreddit) && media == "reddit")) {
             if (analysisArr.length !== 1) {
                 alert("Please select one analysis.");
             }else {
@@ -139,7 +253,7 @@ $(document).ready(function() {
             }
         }else{
             analysis = analysisArr[0];
-            if (media == "Reddit"){
+            if (media == "reddit"){
                 subreddit = $("#subreddit").val();
             }
             sorting = $("#sorting").val();
@@ -180,7 +294,7 @@ $(document).ready(function() {
         $("#interfaceWorkflow, #interfaceExpOptions, #numSplits, #sortOptions, #interfaceExecute, #finalResult").hide();
         $("#interfaceNext2").text("Next");
         $("#smallerHeader").text("");
-        getCircleBtns("interfaceExp", myGraphs[0]);
+        getCircleBtns("interfaceExp", myGraphs[0], 'exploration');
         $("#interfaceNext2, #interfaceBack, #interfaceExp").fadeIn();
         $("#mainHeader").text(header6);
     }
@@ -220,111 +334,70 @@ $(document).ready(function() {
     //Takes care of color change when a circle button is selected/unselected and saves selected value
     function circleBtns() {
         var isOrange = false;
-        /* navigator.sayswho found on stackoverflow
-         http://stackoverflow.com/questions/10505966/determine-what-browser-being-used-using-javascript
-        */
-        navigator.sayswho= (function(){
-            var N= navigator.appName, ua= navigator.userAgent, tem,
-                M= ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*([\d\.]+)/i);
-            if(M && (tem= ua.match(/version\/([\.\d]+)/i))!= null) M[2]= tem[1];
-            M= M? [M[1], M[2]]:[N, navigator.appVersion, '-?'];
-            return M.join(' ');
-        })();
-        browser = navigator.sayswho;
-        var blue;
-        var orange;
-        //Opera fits under Chrome
-        if (browser.indexOf("Chrome") !== -1|| browser.indexOf("Safari") !== -1) {
-            blue = "-webkit-linear-gradient(top, #00BAFF, #112D38)";
-            orange = "-webkit-linear-gradient(top, #FF8400, #944D00)";
-        } else if (browser.indexOf("Firefox") !== -1) {
-            blue = "-moz-linear-gradient(top, #00BAFF, #112D38)";
-            orange = "-moz-linear-gradient(top, #FF8400, #944D00)";
-        //IE, not tested
-        } else if (browser.indexOf("Explorer") !== -1) {
-            blue = "-ms-linear-gradient(top, #00BAFF, #112D38)";
-            orange = "-ms-linear-gradient(top, #FF8400, #944D00)";
-        } else {
-            blue = "linear-gradient(top, #00BAFF, #112D38)";
-            orange = "linear-gradient(top, #FF8400, #944D00)";
-        }
-
-        if (this.getAttribute("background") == orange) {
-            $(this).css("background", blue);
-            this.setAttribute("background", blue);
-        } else {
-            isOrange = true;
-            $(this).css("background", orange);
-            this.setAttribute("background", orange);
-        }
-        var text = "";
-        if (browser.indexOf("Firefox") != -1) {
-            text = this.textContent;
-        }else {
-            text = this.innerText;
-        }
-
+        $(this).toggleClass('active');
+        isOrange = $(this).hasClass('active');
+        var key = $(this).attr('data-key');
+        console.log('Button key is ' , key);
         var index;
         if($("#social").is(":visible") && isOrange){
-            mediaArr.push(text);
+            mediaArr.push(key);
         }else if ($("#social").is(":visible") && !isOrange) {
-            index = mediaArr.indexOf(text);
+            index = mediaArr.indexOf(key);
             if (index !== -1) {
                 mediaArr.splice(index,1);
             }
         }else if ($("#interfaceAnalysis").is(":visible") && isOrange){
-            analysisArr.push(text);
+            analysisArr.push(key);
         }else if ($("#interfaceAnalysis").is(":visible") && !isOrange) {
-            index = analysisArr.indexOf(text);
+            index = analysisArr.indexOf(key);
             if (index !== -1) {
                 analysisArr.splice(index,1);
             }
         }else if ($("#interfaceExp").is(":visible") && isOrange){
-            expArr.push(text);
+            expArr.push(key);
         }else if ($("#interfaceExp").is(":visible") && !isOrange) {
-            index = expArr.indexOf(text);
+            index = expArr.indexOf(key);
             if (index !== -1) {
                 expArr.splice(index,1);
             }
         }
     }
     //Creates circle buttons with in id(html div) with content of arr
-    function getCircleBtns(id, arr){
+    function getCircleBtns(id, arr, moduleType){
         var ID = "#"+id;
         if ($(ID).html() == "") {
             var count = 0;
-            var temp;
-            while (true) {
-                temp = arr[count];
-                if (temp != null) {
-                    var btn = $("<div class='circle-btn'>" + temp + "</div>").click(circleBtns);
-                    $(ID).append(btn);
-                    count++;
-                } else {
-                    break;
-                }
+            for (var i = 0; i < arr.length; i++) {
+                console.log(arr[i], moduleType);
+                var key = arr[i];
+                var info = moduleInfo[moduleType][key];
+                var btn = $("<div class='circle-btn' data-key='" + info.key + "'>" + info.name + "</div>").click(circleBtns);
+                var container = $("<div class='circle-btn-container'></div>");
+                container.append(btn);
+                container.append("<div class='description'>" + info.description + "</div>");
+                $(ID).append(container);
             }
         }
     }
     function getMedia(myMedia){
         var arr = new Array();
         switch (myMedia) {
-            case "Twitter":
+            case "twitter":
                 arr = twitter;
                 break;
-            case "Youtube":
+            case "youtube":
                 arr = youtube;
                 break;
-            case "Reddit":
+            case "reddit":
                 arr = reddit;
                 break;
-            case "NY Times":
+            case "ny_times":
                 arr = nyt;
                 break;
-            case "Flickr":
+            case "flickr":
                 arr = flickr;
                 break;
-            case "Facebook":
+            case "facebook":
                 arr = fb;
                 break;
         }
@@ -341,17 +414,11 @@ $(document).ready(function() {
         }else {
             arr = currentMedia["analysisStat"];
         }
-        while(true) {
-            temp = arr[count];
-            var btn;
-            if (temp != null) {
-                btn = $("<button class='button'>"+temp+"</button>").click(analysisParamBtn);
-                $("#interfaceAnalysisOptions").append(btn);
-                count++;
-            } else {
-                break;
-            }
-        }
+        for(var i = 0; i < arr.length; i++) {
+            var param = arr[i];
+            var btn = $("<button class='button' data-key='" + param.key + "'>"+ param.name +"</button>").click(analysisParamBtn);
+            $("#interfaceAnalysisOptions").append(btn);
+        }       
     }
     function isTextAnalysis(param) {
         if (param == "sentiment" || param == "word_count") {
@@ -361,12 +428,7 @@ $(document).ready(function() {
         }
     }
     function analysisParamBtn() {
-        var text;
-        if (browser.indexOf("Firefox") != -1) {
-            text = this.textContent;
-        }else {
-            text = this.innerText;
-        }
+        var text = $(this).attr('data-key');
         if(analysisParam.indexOf(text) == -1 && !$(this).hasClass("red")) {
             analysisParam.push(text);
         }else if(($(this).hasClass("red"))){
@@ -391,7 +453,7 @@ $(document).ready(function() {
             temp = arr[count];
             var btn;
             if (temp != null) {
-                btn = $("<button class='button'>"+temp+"</button>").click(expParamBtn);
+                btn = $("<button class='button' data-key='" + temp.key + "'>"+temp.name+"</button>").click(expParamBtn);
                 $("#interfaceExpOptions").append(btn);
                 count++;
             } else {
@@ -407,12 +469,7 @@ $(document).ready(function() {
         }
     }
     function expParamBtn(){
-        var text;
-        if (browser.indexOf("Firefox") != -1) {
-            text = this.textContent;
-        }else {
-            text = this.innerText;
-        }
+        var text = $(this).attr('data-key');
         if(expParam.indexOf(text) == -1 && !$(this).hasClass("red")) {
             expParam.push(text);
         }else if(($(this).hasClass("red"))){
@@ -466,7 +523,7 @@ $(document).ready(function() {
                     $("#mainHeader").text("Exploration Results");
                     $("#smallerHeader").text("Showing dataset: "+ setName);
                     $("#interfaceExpResults").fadeIn();
-                    getDataParams();
+                    getDataParams(getVisualization);
                     break;
                 }
         }
@@ -483,7 +540,7 @@ $(document).ready(function() {
             $("#smallerHeader").text("");
             $("#mainHeader").text(header5);
             var interest;
-            if (media !== "Reddit") {
+            if (media !== "reddit") {
                 interest = query;
             }else{
                 interest = subreddit;
@@ -534,6 +591,7 @@ $(document).ready(function() {
         $("#smallerHeader").text("Showing dataset: "+ setName);
         $("#interfaceWorkflow").hide();
         $("#interfaceExecute, #interfaceReset").fadeIn();
+        $("#finalResult").show();
         getDataParams();
     });
     function getRenameInput(){
@@ -551,7 +609,7 @@ $(document).ready(function() {
         $("#DatasetRename").html("");
     }
     //Gets data before analysis/exploration
-    function getDataParams() {
+    function getDataParams(callback) {
         params = {
             "password": UI.getPassword(),
             "username": UI.getUsername(),
@@ -559,7 +617,7 @@ $(document).ready(function() {
             "type": "collection",
             "return_all_data": false
         }
-        if (media == "Twitter") {
+        if (media == "twitter") {
             params["function"] = "twitter_search";
             params["module"] = "twitter";
             params["input"] = {};
@@ -569,14 +627,14 @@ $(document).ready(function() {
             params["input"]["longitude"] = "";
             params["input"]["query"] = query;
             params["input"]["radius"] = "";
-        } else if (media == "Youtube") {
+        } else if (media == "youtube") {
             params["function"] = "search";
             params["module"] = "youtube";
             params["input"] = {};
             params["input"]["order"] = sorting;
             params["input"]["query"] = query;
         }
-        else if (media == "NY Times") {
+        else if (media == "ny_times") {
             params["function"] = "article_search";
             params["module"] = "nytimes";
             params["input"] = {};
@@ -584,14 +642,14 @@ $(document).ready(function() {
             params["input"]["end_date"] = "";
             params["input"]["query"] = query;
             params["input"]["sort"] = sorting;
-         } else if (media == "Facebook") {
+         } else if (media == "facebook") {
             params["function"] = "facebook_search";
             params["module"] = "facebook";
             params["input"] = {};
             params["input"]["count"] = count;
             params["input"]["query"] = query;
             params["input"]["type"] = "page";
-        } else if (media == "Reddit"){
+        } else if (media == "reddit"){
             params["function"] = "fetchPosts";
             params["module"] = "reddit";
             params["input"] = {};
@@ -623,6 +681,7 @@ $(document).ready(function() {
                 }
                 myData = data;
                 var myType = params["type"];
+                $("#finalResult").empty();
                 MainScreen.InterfaceShowResults(myData, myType, null);
                 //if this was a collection type, show output meta and move onto analysis stage
                 //if this was an analysis type, show output and additional analysis options
@@ -634,6 +693,9 @@ $(document).ready(function() {
                 isDataGotten = true;
                 var ws = UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), false);
                 //setName = ws["working_set_name"];
+                if (callback) {
+                    callback.call();
+                }
             }
         });
     }
@@ -695,6 +757,7 @@ $(document).ready(function() {
                     myData = data;
                     var myType = params["type"];
                     MainScreen.InterfaceShowResults(myData, myType, 0);
+                    $("#finalResult").fadeIn();
                     //if this was a collection type, show output meta and move onto analysis stage
                     //if this was an analysis type, show output and additional analysis options
                 },
