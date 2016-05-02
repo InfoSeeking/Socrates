@@ -62,7 +62,7 @@ def getWorkingSets():
 #returns the insert id
 def addWorkingSet(working_set):
     working_set['user_id'] = user_id
-    insert_id = mongodb.working_set.insert(working_set)
+    insert_id = mongodb.working_set.insert_one(working_set)
     del working_set['_id']
     return insert_id
 

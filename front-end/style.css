@@ -19,8 +19,19 @@ p{
 }
 aside#sidebar{
 	float: left;
-	width: 0px;
+	position: absolute;
+	display: none;
+	background: rgba(0,0,0,.9);
+	opacity: .9;
+	width: 400px;
+	min-height: 100%;
+	left: 0px;
 	/* margin-left: 100%; */
+}
+aside#sidebar .close-btn {
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 aside#sidebar .inner{
 	color: #FFF;

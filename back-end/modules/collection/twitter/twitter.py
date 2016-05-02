@@ -22,8 +22,8 @@ SPECS = {
                     },
                     'count': {
                         'type': 'numeric',
-                        'comment': 'Number of results',
-                        'default': 10
+                        'comment': 'Number of results (max 100)',
+                        'default': 50
                     },
                     'lang': {
                         'type': 'text',
@@ -100,13 +100,13 @@ def twitter_search(param=False):
     results = {}
     data = []
     maxTweets = cnt
-    cnt = 0
 
     if(not geo):
         tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang)
     else:
         tResults = tweepy.Cursor(api.search, q=query, count=cnt, lang=lang, geocode=geo)
 
+    i = 0
     for tweet in tResults.items():
         dTwt = {}
         dTwt['created'] = str(tweet.created_at)   #tweet created
@@ -123,6 +123,6 @@ def twitter_search(param=False):
         dTwt['geoenable'] = tweet.author.geo_enabled     #is author/user account geo enabled?
         dTwt['source']    = tweet.source                 #platform source for tweet
         data.append(dTwt)
-        cnt += 1
-        if cnt >= maxTweets: break
+        i += 1
+        if i >= maxTweets: break
     return data

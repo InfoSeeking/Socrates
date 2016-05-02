@@ -316,7 +316,8 @@ def parse_params(parameters, ip=False):
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
     parser.add_argument("--param", help="Reference to parameter file", default=False)
-    parser.add_argument("--log", help="Redirects all stderr and stdout to logs, only prints working_set", action="store_true")
+    parser.add_argument("--fileout", help="Reference to output file", default=False)
+    parser.add_argument("--log", help="Redirects all stderr and stdout to logs", action="store_true")
     parser.add_argument("--ip", help="Stores ip address", default=False)
     args = parser.parse_args()
 
@@ -340,8 +341,14 @@ def init():
         sys.stdout.write("--end--\n")
         sys.stderr.write("--end--\n")
         _restoreOutput()
+
+    if args.fileout:
+        out_file = open(args.fileout, 'w')
+        out_file.write(result)
+        out_file.close()
+        print "Results written to file %s" % args.fileout
+    else:
+        print result
     return result
 
-    
-str_result = init()
-print str_result
+init()
