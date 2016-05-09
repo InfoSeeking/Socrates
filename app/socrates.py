@@ -3,6 +3,7 @@
 Example run:
 python socrates_cli.py --param param.json
 '''
+from bson.json_util import dumps
 from bson import objectid
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -164,7 +165,7 @@ def parse_params(parameters, ip=False):
                             for p in a['entry_analysis']:
                                 a['entry_analysis'][p] = a['entry_analysis'][p][0:1]
 
-            return json.dumps(working_set)
+            return dumps(working_set)
 
         elif 'specs' in parameters:
             print "Fetching specs\n"
@@ -249,10 +250,10 @@ def index():
 
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
-    parser.add_argument("--param", help="Reference to parameter file", default=False)
-    parser.add_argument("--fileout", help="Reference to output file", default=False)
-    parser.add_argument("--ip", help="Stores IP address", default=False)
-    parser.add_argument("--serve", help="If included, start web server", action="store_true")
+    parser.add_argument("--param", help="use parameter file for input", default=False)
+    parser.add_argument("--fileout", help="put output in specified file", default=False)
+    parser.add_argument("--ip", help="stores IP address", default=False)
+    parser.add_argument("--serve", help="start web server", action="store_true")
     args = parser.parse_args()
 
     parameters = None

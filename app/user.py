@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from bson import objectid
 from bson.objectid import ObjectId
-import _mysql
 import config
 
 '''
@@ -15,35 +14,21 @@ run_id = -1
 client = MongoClient()
 mongodb = client.socrates
 
-db = _mysql.connect(host=config.CREDS["mysql"]["host"], user=config.CREDS["mysql"]["user"], passwd=config.CREDS["mysql"]["password"], db=config.CREDS["mysql"]["database"])
-
 def authenticate(u, p):
     global username, user_id
-    e_user = db.escape_string(u)
-    e_password = db.escape_string(p)
-    q = "SELECT * FROM user WHERE username='%s' and password=SHA1('%s')" % (e_user, e_password)
-    db.query(q)
-    r = db.store_result()
-    if r.num_rows() > 0:
-        row = r.fetch_row()[0]
-        user_id = row[2] #TODO fetch as a dictionary using a different mysql wrapper
-        username = e_user
+    result = mongodb.users.find_one({"username": u, "password": p})
+    if result:
+        user_id = result['_id']
         return True
     else:
         return False
 
 def register(u, p):
-    e_user = db.escape_string(u)
-    e_password = db.escape_string(p)
-    #check if user already exists
-    q = "SELECT * FROM user WHERE username='%s'" % e_user
-    db.query(q)
-    r = db.store_result()
-    if r.num_rows() > 0:
+    # Check if user already exists
+    result = mongodb.users.find_one({"username": u, "password": p})
+    if result:
         return False
-
-    q = "INSERT INTO user (username, password) VALUES ('%s', SHA1('%s'))" % (e_user, e_password)
-    db.query(q)
+    mongodb.users.insert_one({"username": u, "password": p})
     return True
 
 def getWorkingSet(working_set_id):
@@ -61,7 +46,7 @@ def getWorkingSets():
 
 #returns the insert id
 def addWorkingSet(working_set):
-    working_set['user_id'] = user_id
+    working_set['user_id'] = str(user_id)
     insert_id = mongodb.working_set.insert_one(working_set).inserted_id
     del working_set['_id']
     return insert_id
@@ -83,15 +68,24 @@ def renameWorkingSet(working_set_id, new_name):
 
 def log_run(typ,mod,fn):
     global user_id, run_id
-    q = "INSERT INTO run_log (`type`, `module`, `function`, `user_id`, `time`) VALUES ('%s', '%s', '%s', %d, NOW())" % (typ, mod, fn, int(user_id))
-    db.query(q)
-    run_id = db.insert_id()
+    run_id = mongodb.log.insert_one({
+        "namespace": "run",
+        "type": typ,
+        "module": mod,
+        "function": fn,
+        "user_id": user_id
+        }).inserted_id
 
 #log any general activity (login, logout, etc.)
 def log_activity(name, value):
     global user_id, run_id
-    q = "INSERT INTO activity_log (`name`, `value`, `time`, `user_id`, `run_id`) VALUES('%s', '%s', NOW(), %d, %d)" % (name, value, int(user_id), run_id)
-    db.query(q)
+    mongodb.log.insert_one({
+        "namespace": "activity",
+        "name": name,
+        "value": value,
+        "user_id": user_id,
+        "run_id": run_id
+        })
 
 ''' Sets to using default user '''
 def setDefault():
