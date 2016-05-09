@@ -176,15 +176,15 @@ def parse_params(parameters, ip=False):
         elif 'fetch' in parameters:
             working_set = user.getWorkingSet(working_set_id)
             working_set['working_set_id'] = str(working_set_id)
-            return json.dumps(working_set)
+            return dumps(working_set)
 
         elif 'remove' in parameters:
             user.removeWorkingSet(working_set_id)
-            return json.dumps({"status" : "success"})
+            return dumps({"status" : "success"})
 
         elif 'rename' in parameters:
             user.renameWorkingSet(working_set_id, parameters['new_name'])
-            return json.dumps({"status" : "success"})
+            return dumps({"status" : "success"})
 
         elif 'fetch_all_ids' in parameters:
             working_sets = user.getWorkingSets()
@@ -199,7 +199,7 @@ def parse_params(parameters, ip=False):
 
                 working_set_identifiers.append(wid)
 
-            return json.dumps({
+            return dumps({
                 "ids" : working_set_identifiers
                 })
             
@@ -223,7 +223,7 @@ def parse_params(parameters, ip=False):
                 if "working_set_name" not in working_set:
                     working_set["working_set_name"] = default_working_set_name
                 working_set_id = user.addWorkingSet(working_set)
-                return json.dumps({
+                return dumps({
                     "id" : str(working_set_id),
                     "name" : working_set["working_set_name"]
                     })

@@ -18,7 +18,7 @@ var API = {
             error: function() {
                 UI.toggleLoader(false);
                 if (args.error) args.error({error: true, message: "Server error"});
-                 UI.feedback("Server error", true);
+                UI.feedback("Server error", true);
             }
         });
     }
