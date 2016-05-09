@@ -52,4 +52,13 @@ Make sure MongoDB is running. On Ubuntu it runs automatically when installed, on
 
 Rename the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) file to config.py. Put in API keys for the services you need to work with. SOCRATES should run without them, but running the relevant functions will require them.
 
-Contact Kevin Albertson @kevinAlbs for questions.
+Running
+-------
+
+Once everything is set up, you can run the SOCRATES server with the following simple command
+
+`python socrates.py --serve`
+
+This should start the development server on port 5000. If you go to http://localhost:5000 in your web browser, you should see the SOCRATES website.
+
+<small>Contact Kevin Albertson @kevinAlbs for questions.</small>
