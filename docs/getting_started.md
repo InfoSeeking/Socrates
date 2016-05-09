@@ -30,9 +30,8 @@ We're using Git for version control, and the project is being hosted on GitHub. 
 
 Install the dependencies:
 
-- ["AMP" Apache - MySQL - PHP](https://www.apachefriends.org/index.html)
-- Python (we are using version 2.7.3)
-- MongoDB (we are using version 2.4.9)
+- Python (we are using version 2.7)
+- MongoDB
 - [PRAW](https://praw.readthedocs.org/en/latest/)
 This can be done with `pip install praw`
 - [TextBlob](http://textblob.readthedocs.org/en/latest/install.html)
@@ -40,22 +39,17 @@ This can be done with `pip install textblob`
 - [pymongo](http://api.mongodb.org/python/current/installation.html)
 - [Tweepy](https://github.com/tweepy/tweepy)
 This can be done with `pip install tweepy`
-- [MySQL driver for Python](http://sourceforge.net/projects/mysql-python/)
-This can be installed with `pip install MySQL-python`. If you are using MariaDB, you may need to install an additional package ('yum install mariadb-devel')
 - SimpleJSON
 This can be done with `pip install simplejson`
+- [Flask](http://flask.pocoo.org/)
+This can be done with `pip install Flask`
 
 Afterwards, download the source from GitHub at https://github.com/kevinAlbs/Socrates
 
-Make sure the directory is lowercase, e.g. socrates, not Socrates. Place it directly in your Apache web root (likely named htdocs). 
+Make sure the directory is lowercase, e.g. socrates, not Socrates.
 
-In MySQL, create an empty database to be used for storing users/log data. Then, import the database table schemas in [db.sql](https://github.com/InfoSeeking/Socrates/blob/master/back-end/db.sql). You can do this in phpMyAdmin or another GUI environment, or simpley run in command line the following:
+Make sure MongoDB is running. On Ubuntu it runs automatically when installed, on Mac OSX or Windows, you may have to run the command `mongod` to start the MongoDB server.
 
-`mysql -u=user -p=password socrates-db < db.sql`
-
-Rename the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) file to config.py and put in your MySQL credentials.
-
-
-If I wrote this getting started page correctly (which is nearly impossible) and all went well (which is nearly impossible) you can navigate to http://localhost/Socrates/front-end and see a your local copy running.
+Rename the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) file to config.py. Put in API keys for the services you need to work with. SOCRATES should run without them, but running the relevant functions will require them.
 
 Contact Kevin Albertson @kevinAlbs for questions.
