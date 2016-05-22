@@ -10,15 +10,15 @@ var LoginScreen = (function(){
 
   that.init = function(){
       $("#login-submit-btn").click(function(){
-          that.logIn();
+          var uinput = $('#login-name').val();
+          var pinput = $('#login-password').val();
+          that.logIn(uinput, pinput);
       })
       $("#login-register-btn").click(function(){
           UI.switchScreen("register");
       })
   }
-  that.logIn = function(){
-    var uinput = $('#login-name').val();
-    var pinput = $('#login-password').val();
+  that.logIn = function(uinput, pinput){
     if (uinput){
       API.sendRequest({
         data: {username: uinput, password: pinput},

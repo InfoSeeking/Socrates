@@ -8,6 +8,7 @@ from bson import objectid
 from bson.objectid import ObjectId
 from datetime import datetime
 from flask import Flask
+from flask import render_template
 from flask import request
 from pprint import pprint
 from pymongo import MongoClient
@@ -244,9 +245,20 @@ def endpoint():
         return _err("Cannot parse JSON request")
     return parse_params(params, False)
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=['GET', 'POST'])
 def index():
-    return app.send_static_file('index.html')
+    if request.method == 'POST':
+        # A key error generates an HTTP 400 bad request
+        # which is appropriate if username/password are missing
+        username = request.form['username']
+        password = request.form['password']
+        return render_template('index.html', username=username, password=password)
+    else:
+        return render_template('index.html')
+
+@app.route("/form", methods=['GET'])
+def form():
+    return app.send_static_file('test-form.html')
 
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
