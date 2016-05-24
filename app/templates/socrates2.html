@@ -114,7 +114,7 @@
                     	<a href="#" title="Your Datasets" id="data-btn" onclick="goToData()">Your Datasets</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="/" title="Go to the advanced mode" id="">Advanced</a>
+                        <a href="/one" title="Go to the advanced mode" id="">Advanced</a>
                     </li>
 					<li class="page-scroll">
                         <a href="http://peopleanalytics.org/socrates/index.html" title="Logout" id="logout-btn">Logout</a>
@@ -292,7 +292,10 @@
     {% if username and password %}
     if (!UI.isLoggedIn()) {
         // Attempt login.
-        LoginScreen.logIn('{{username}}', '{{password}}');
+        LoginScreen.logIn('{{username}}', '{{password}}', function(errMessage){
+            alert(errMessage);
+            window.location.href="http://peopleanalytics.org/socrates";
+        });
     }
     {% endif %}
 </script>

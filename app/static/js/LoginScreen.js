@@ -18,7 +18,7 @@ var LoginScreen = (function(){
           UI.switchScreen("register");
       })
   }
-  that.logIn = function(uinput, pinput){
+  that.logIn = function(uinput, pinput, onError){
     if (uinput){
       API.sendRequest({
         data: {username: uinput, password: pinput},
@@ -29,6 +29,7 @@ var LoginScreen = (function(){
         },
         error: function(data) {
           UI.feedback(data.message, true);
+          if (onError) onError(data.message);
         }
       });
     } else {

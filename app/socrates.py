@@ -245,7 +245,7 @@ def endpoint():
         return _err("Cannot parse JSON request")
     return parse_params(params, False)
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/one", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         # A key error generates an HTTP 400 bad request
@@ -256,9 +256,15 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route("/", methods=['GET', 'POST'])
 @app.route("/two", methods=['GET', 'POST'])
 def two():
-    return render_template('socrates2.html')
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        return render_template('socrates2.html', username=username, password=password)
+    else:
+        return render_template('socrates2.html')
 
 @app.route("/form", methods=['GET'])
 def form():
