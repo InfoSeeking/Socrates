@@ -97,24 +97,24 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-				<a class="navbar-brand logo" href="http://peopleanalytics.org/socrates/socrates2.html#"><img src="/static/socrates2_files/logo1.png" height="55" width="55"></a>
-                <a class="navbar-brand" href="http://peopleanalytics.org/socrates/socrates2.html#">SOCRATES 2.0</a>
+				<a class="navbar-brand logo" href="/two"><img src="/static/socrates2_files/logo1.png" height="55" width="55"></a>
+                <a class="navbar-brand" href="/two">SOCRATES 2.0</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="hidden">
-                        <a href="http://peopleanalytics.org/socrates/socrates2.html#page-top"></a>
+                        <a href="#page-top"></a>
                     </li>
                     <li class="page-scroll">
-                     	<a href="http://peopleanalytics.org/socrates/socrates2.html" title="Restart session" id="refresh-btn">Restart</a>
+                     	<a href="/two" title="Restart session" id="refresh-btn">Restart</a>
                 	</li>
                 	<li class="page-scroll">
-                    	<a href="http://peopleanalytics.org/socrates/socrates2.html#" title="Your Datasets" id="data-btn" onclick="goToData()">Your Datasets</a>
+                    	<a href="#" title="Your Datasets" id="data-btn" onclick="goToData()">Your Datasets</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="http://peopleanalytics.org/socrates/socrates.html" title="Go to the advanced mode" id="">Advanced</a>
+                        <a href="/" title="Go to the advanced mode" id="">Advanced</a>
                     </li>
 					<li class="page-scroll">
                         <a href="http://peopleanalytics.org/socrates/index.html" title="Logout" id="logout-btn">Logout</a>
@@ -130,7 +130,7 @@
 <div id="loader" style="display: none;"><div id="fill" style="width: 100%;"></div></div>
 <div id="overlay">
     <br><br><br>
-	<h2><span>Data View</span> <a href="http://peopleanalytics.org/socrates/socrates2.html#" class="close">Close</a></h2>
+	<h2><span>Data View</span> <a href="#" class="close">Close</a></h2>
     <div class="content">
         <table></table>
     </div>
@@ -206,9 +206,9 @@
     </div>
 </div><!--/#wrapper -->
 <aside id="sidebar">
-        <a href="http://peopleanalytics.org/socrates/socrates2.html#" class="close-btn">Close Sidebar</a>
+        <a href="#" class="close-btn">Close Sidebar</a>
         <div class="inner">
-            <div id="feedback" class="group err" style="display: block;">
+            <div id="feedback" class="group err" style="display: none;">
                 <div id="feedback-text"><p>Cannot fetch specs</p></div>
                 <button id="confirm-btn" class="button">Ok</button>
             </div>
@@ -288,6 +288,13 @@
         //"interface" : InterfaceScreen
     });
     UI.switchScreen("main");
+
+    {% if username and password %}
+    if (!UI.isLoggedIn()) {
+        // Attempt login.
+        LoginScreen.logIn('{{username}}', '{{password}}');
+    }
+    {% endif %}
 </script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
