@@ -24,7 +24,7 @@ def authenticate(u, p):
     sha1hash = hashlib.sha1()
     sha1hash.update(p)
     hashed = sha1hash.hexdigest()
-    result = db.users.find_one({"username": u, "password": hashed})
+    result = db.users.find_one({"username": u, "hashed_password": hashed})
     if result:
         user_id = result['_id']
         return True
@@ -36,10 +36,10 @@ def register(u, p):
     sha1hash = hashlib.sha1()
     sha1hash.update(p)
     hashed = sha1hash.hexdigest()
-    result = db.users.find_one({"username": u, "password": hashed})
+    result = db.users.find_one({"username": u, "hashed_password": hashed})
     if result:
         return False
-    db.users.insert_one({"username": u, "password": hashed})
+    db.users.insert_one({"username": u, "hashed_password": hashed})
     return True
 
 def getWorkingSet(working_set_id):
