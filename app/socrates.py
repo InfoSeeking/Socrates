@@ -256,6 +256,10 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route("/two", methods=['GET', 'POST'])
+def two():
+    return render_template('socrates2.html')
+
 @app.route("/form", methods=['GET'])
 def form():
     return app.send_static_file('test-form.html')
