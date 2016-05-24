@@ -3,3 +3,4 @@ config.py
 CM
 contextminer
 back-end/config.py
+migration/*

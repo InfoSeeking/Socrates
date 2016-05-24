@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from bson import objectid
 from bson.objectid import ObjectId
 import config
+import hashlib
 
 '''
 Defaults to using a test user
@@ -20,7 +21,10 @@ if ('mongo' in config.CREDS):
 
 def authenticate(u, p):
     global username, user_id
-    result = db.users.find_one({"username": u, "password": p})
+    sha1hash = hashlib.sha1()
+    sha1hash.update(p)
+    hashed = sha1hash.hexdigest()
+    result = db.users.find_one({"username": u, "password": hashed})
     if result:
         user_id = result['_id']
         return True
@@ -29,10 +33,13 @@ def authenticate(u, p):
 
 def register(u, p):
     # Check if user already exists
-    result = db.users.find_one({"username": u, "password": p})
+    sha1hash = hashlib.sha1()
+    sha1hash.update(p)
+    hashed = sha1hash.hexdigest()
+    result = db.users.find_one({"username": u, "password": hashed})
     if result:
         return False
-    db.users.insert_one({"username": u, "password": p})
+    db.users.insert_one({"username": u, "password": hashed})
     return True
 
 def getWorkingSet(working_set_id):

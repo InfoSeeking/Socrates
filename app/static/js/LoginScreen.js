@@ -26,6 +26,9 @@ var LoginScreen = (function(){
             UI.setLoggedIn(true, uinput, pinput);
             UI.feedback("Welcome back," + uinput + ".");
             UI.switchScreen("main");
+        },
+        error: function(data) {
+          UI.feedback(data.message, true);
         }
       });
     } else {
