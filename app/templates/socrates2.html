@@ -297,6 +297,9 @@
             window.location.href="http://peopleanalytics.org/socrates";
         });
     }
+    {% else %}
+        alert('You must be logged in');
+        window.location.href="http://peopleanalytics.org/socrates";
     {% endif %}
 </script>
 <script>
