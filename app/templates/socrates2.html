@@ -298,8 +298,10 @@
         });
     }
     {% else %}
+    if (!UI.isLoggedIn()) {
         alert('You must be logged in');
         window.location.href="http://peopleanalytics.org/socrates";
+    }
     {% endif %}
 </script>
 <script>
