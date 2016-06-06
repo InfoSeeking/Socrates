@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+
+<title>SOCRATES</title>
+
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<link href="css/960.css" rel="stylesheet" type="text/css">
+<link href="css/960_12_col.css" rel="stylesheet" type="text/css">
+<link href="css/text.css" rel="stylesheet" type="text/css">
+<link href="css/rest.css" rel="stylesheet" type="text/css">
+<link href="css/flexslider.css" rel="stylesheet" type="text/css">
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="js/jquery.flexslider.js"></script>
+<script src="js/jquery.flexslider-min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/Chart.js"></script>
+<script src="js/Chart.min.js"></script>
+
+<script type="text/javascript">
+window.onload = function(){ 
+	//Get submit button
+	var submitbutton = document.getElementById("tfq");
+	//Add listener to submit button
+	if(submitbutton.addEventListener){
+		submitbutton.addEventListener("click", function() {
+			if (submitbutton.value == 'Search our website'){//Customize this text string to whatever you want
+				submitbutton.value = '';
+			}
+		});
+	}
+}
+</script>
+<script type="text/javascript">
+	$(window).load(function() {
+  	$('.flexslider').flexslider({
+    animation: "slide"
+  });
+});
+</script>
+
+<script type="text/javascript">
+
+		var pieData = [
+				{
+					value: 30,
+					color:"#F38630"
+				},
+				{
+					value : 50,
+					color : "#E0E4CC"
+				},
+				{
+					value : 100,
+					color : "#69D2E7"
+				}
+			
+			];
+
+	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+	
+	</script>
+
+</head>
+<body>
+	<div class="container_12">
+		<div id="tfheader">
+			<form id="tfnewsearch" method="get" action="http://www.google.com">
+		        <input type="text" id="tfq" class="tftextinput3" name="q" size="21" maxlength="120" value="Search our website">
+			</form>
+			<div class="tfclear"></div>
+		</div>
+		<header>
+			<a href="index.html"><img src="images/socrates_head.png" alt="homepage"/></a>
+			<nav>
+				<ul>
+					<li><a href="index.html">Home</a></li>
+					<li><a href="intro.html">Introduction</a></li>
+					<li><a href="collect.html">Collect</a></li>
+					<li><a href="explore.html">Explore</a></li>
+					<li><a href="analyze.html">Analyze</a></li>
+					<li><a href="about.html">About Us</a></li>
+					<li><a href="joinus.html">Join Us</a></li>
+				</ul>
+			</nav>
+		</header>
+		<div id="top-region">
+			<div class="breadcrumb">
+				<a href="index.html">Home</a> > <a href="explore.html">Explore</a>
+			</div>
+		</div>
+		<div class="main">
+			<div class="grid_12">
+			<canvas id="canvas" height="450" width="450" style="position:relative; margin-left:250px;"></canvas>
+			</div>
+			<script>
+				var pieData = [
+				{
+					value: 30,
+					color:"#F38630"
+				},
+				{
+					value : 50,
+					color : "#E0E4CC"
+				},
+				{
+					value : 100,
+					color : "#69D2E7"
+				}
+			
+			];
+
+				var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData);
+	
+			</script>
+			<div class="grid_12">
+				<h3>Explore</h3>
+				<p>SOCRATES will help researchers explore data collected from socio-computational platforms, regardless of its scale, and develop effective and interesting research questions about these systems, their use, and their impact on human and social phenomena. In the initial interviews, a common workflow for researchers and scientists emerged where research question and hypothesis development was often performed long after the data collection commenced. The researchers begin the process with a general idea about the topic, and it is only when data are available that they can more carefully direct their examination. However, when collecting data at such scale, researchers find it hard to examine the data beyond individual content items. While targeted systems were created to visualize specific types of social media data (e.g., Diakopoulos and Shamma, 2010; Dubinko et al., 2007; Hsueh, Melville & Sindhwani, 2009; Shamma, Kennedy, & Churchill, 2009; Smith et al., 2009; Starbird et al., 2010; Wanner et al., 2009), there is a need for a generic, yet usable and effective system to perform such a task for different purposes.</p>
+				<p>The SOCRATES Explore component will offer visualizations of the data that enable targeted exploration, allowing researchers to “gain understanding and insight into the data” (Brodlie et al., 1992) independently, and with help from others via targeted crowdsourcing (Heer & Agrawala, 2007; Heer, Viégas, & Wattenberg 2007). The project will develop an interactive application that allows researchers to examine the collected material along multiple dimensions, in both “haystack” and “needle” modes (Viégas, Golder, & Donath, 2006; Ahern et al., 2007): being able to explore high-level aggregate trends, alongside individual content items (“overview first, details on demand” is a related idea in the visualization community). The researchers will be able to share the interactive visualization and data collected with others, to help “crowdsource” the exploration and hypothesis generation process. Users will be able to explore, comment, and provide insights in a way that enriches the data, and to provide new hypotheses about it to the researchers. SOCRATES will initially use the CommentSpace system (CommentSpace, 2010) to enable crowd interaction, with access control according to researchers’ needs.</p>
+			</div>
+			<footer>
+				<p>SOCRATES 2014</p>
+			</footer>
+		</div><!--main-->
+	</div><!--container_12-->
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link rel="shortcut icon" type="image/x-icon" href="/static/landing/img/icon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+    <title>SOCRATES</title>
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/landing/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/landing/css/landing-page.css" rel="stylesheet">
+	
+	<link href="/static/landing/css/full-slider.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/static/landing/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    
+	<script>
+        function logIn(){
+            var uinput = $('#login-name').val();
+            var pinput = $('#login-password').val();
+            LoginScreen.logIn();
+        	//window.location.href = "services.html";
+        }
+        function register(){
+            var uinput = $('#register-name').val();
+      		var pinput = $('#register-password').val();
+			RegisterScreen.register(uinput, pinput);       	
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<!--<a class="navbar-brand logo" href="#"><img src="img/logo.png"</a>  logo -->
+                <a class="navbar-brand logo" href="#"><img src="/static/landing/img/toplogo.png" height="40" width="40"></a>
+				<a class="navbar-brand topnav" href="#">SOCRATES</a>
+				
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+               
+                    <li>
+                        <a href="#Login">Login</a>
+                    </li>
+					<li>
+                        <a href="#about">What is SOCRATES?</a>
+                    </li>
+					<li>
+                        <a href="#demo">Demo</a>
+                    </li>
+                    <li>
+                        <a href="#aboutus">About Us</a>
+                    </li>
+					<li>
+                        <a href="https://github.com/InfoSeeking/Socrates">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+<!-- Full Page Image Background Carousel Header -->
+    
+	<header id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+			<li data-target="#myCarousel" data-slide-to="3"></li>
+        </ol>
+
+        <!-- Wrapper for Slides -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <!-- Set the first background image using inline CSS below. -->
+                <div class="fill" style="background-image:url('/static/landing/img/socrates_1.jpg')"></div>
+            </div>
+            <div class="item">
+                <!-- Set the second background image using inline CSS below. -->
+                <div class="fill" style="background-image:url('/static/landing/img/socrates_2.jpg')"></div>
+                
+            </div>
+            <div class="item">
+                <!-- Set the third background image using inline CSS below. -->
+                <div class="fill" style="background-image:url('/static/landing/img/socrates_3.jpg')"></div>
+            </div>
+			<div class="item">
+                <!-- Set the fourth background image using inline CSS below. -->
+                <div class="fill" style="background-image:url('/static/landing/img/socrates_4.jpg')"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="icon-prev"></span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="icon-next"></span>
+        </a>
+
+    </header>
+
+    <!-- Page Content -->
+
+	<a  name="Login"></a>
+    <div class="content-section-c">
+
+        <div class="container">
+			<div class="inner">
+                <div class="module form-module">
+					<div class="toggle"><i class="fa fa-times fa-pencil"></i>
+						<div class="alert alert-info">
+							<strong>Sign Up</strong>
+						</div>
+					</div>
+					
+					<div class="form">
+					<h2>Login to SOCRATES</h2>					
+					<form action="http://socrates.peopleanalytics.org" method="POST">
+						<input type="text" name="username" placeholder="Username" class="login-field" id="login-name"/>
+						<input type="password" name="password" placeholder="Password" class="login-field" id="login-password"/>
+						<button class="login-btns" type="submit" id="login-submit-btn"  >Login</button>
+					</form>
+					</div>
+								
+					<div class="form">
+					<h2>Create an account</h2>					
+						<input type="text" placeholder="Username" class="login-field" id="register-name"/>
+						<input type="password" placeholder="Password" class="login-field" id="register-password"/>
+						<button class="login-btns" id="register-btn" onclick="register()">Register</button>					
+					</div>																		
+					
+				</div>
+			</div><!--/.inner -->
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+	
+	<a  name="about"></a>
+	<div class="content-section-b">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">What is SOCRATES?</h2>
+                    <p class="lead">SOCRATES, is a social-computational system and platform for the study of social media using crowdsourcing. The project will develop a framework and a technical system through which researchers can collect content from one or more social media sources, explore the collected content to help generate hypotheses, and analyze the content the content to produce insights, findings, and research results in true social-computational scale.</p>
+                </div>
+                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="/static/landing/img/figure1.png" alt="" onmouseover="this.width=700;this.height=700;" onmouseout="this.width=500;this.height=500" />
+
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+	
+    <div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">The SOCRATES Architecture</h2>
+                    <p class="lead"><b>Collect</b><br><br>The SOCRATES Collect component will provide seamless support for collecting vast amounts of data from social media sites easily and effectively. This interactive component will let the researchers specify their needs quickly and intuitively (e.g., using keywords with source-selection), get them data from these disparate data sources, transform the data into standardized structured formats, and allow easy modification to initial setup and criteria for data collection. One of the important lessons learned from previous experiences, as well as preliminary investigations, is that such a component should be easily integrated into existing systems and practices. The project will therefore address the challenge of collecting large amounts of social media data with minimal effort on the researchers’ end, in terms of learning new environments or assuring proper workflow with their existing systems.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <p class="lead"><br><br><br><br><br><b>Explore</b><br><br>The SOCRATES Explore component will offer visualizations of the data that enable targeted exploration, allowing researchers to gain understanding and insight into the data independently. The project will develop an interactive application that allows researchers to examine the collected material along multiple dimensions: being able to explore high-level aggregate trends, alongside individual content items (“overview first, details on demand” is a related idea in the visualization community). The researchers will be able to share the interactive visualization and data collected with others, to help “crowdsource” the exploration and hypothesis generation process. Users will be able to explore, comment, and provide insights in a way that enriches the data, and to provide new hypotheses about it to the researchers.</p>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+	<div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <p class="lead"><b>Analyze</b><br><br>To analyze social media data at scale, SOCRATES will support efficient, accurate, and valid annotation of the collected content using a specialized crowdsourcing environment. The purpose of such annotation is multifaceted, including but not limited to categorization leading to evidentiary inferences or hypothesis testing by social scientists and algorithm development by information scientists.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/figure2.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+	<a  name="demo"></a>
+	<div class="content-section-b">
+		<div class="container">
+			<video class='center' controls>
+				<source src="/static/landing/SOCRATES_User_Study_Demo.mov" type="video/mp4">
+				<object data="/static/landing/SOCRATES_User_Study_Demo.mov" width="960" height="720">
+				<embed width="960" height="720">
+				</object>
+			</video>
+			<center><br>
+			Please note that there are known inconsistencies with certain browsers (Firefox) and .MOV files. If you are unable to see this video, please try with another browser (Chrome, Safari), or <a href="http://youtu.be/qQmew3ImYt0" target="_blank">see the video on YouTube.</a>
+			</center>
+		</div>
+	</div> <!-- /.content-section-b -->
+	
+	<a  name="aboutus"></a>
+    <div class="content-section-d">
+        <div class="container">
+		<div class="row">
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/chirag.jpg"  height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Dr. Chirag Shah</h3>
+					<p>PI Chirag Shah at Rutgers will direct the overall research and project management. Shah, with the help of the PhD student on this project, will coordinate all communications between the Rutgers and Stevens research teams and will be responsible for arranging regular meeting times.</p>
+					<p>Dr. Chirag Shah is an assistant professor of Information Science and an affiliate member of Computer Science at Rutgers University.</p>
+					<p>PhD in Information Science from UNC Chapel Hill</p>
+                </div>
+		</div>
+		</div>
+	</div>		
+				
+    <div class="content-section-d">
+        <div class="container">
+		<div class="row">
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/naaman.jpg" height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Dr. Mor Naaman</h3>
+					<p>PI Naaman will supervise the development of the Explore component of SOCRATES.</p>
+					<p>Dr. Mor Naaman is an associate professor at Cornell Tech, where he is one of the first faculty at the Jacobs Technion Cornell Innovation Institute.</p>
+					<p>Ph.D. in Computer Science from Stanford University</p>
+                </div>
+		</div>
+		</div>
+	</div>
+	
+	<div class="content-section-d">
+			<div class="container">
+			<div class="row">	
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/mason.jpg" height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Dr. Winter Mason</h3>
+					<p>PI Mason will focus on Analyze aspects by integrating the processes with existing crowdsourcing technologies.</p>
+					<p>Dr. Winter Mason is an assistant professor at Stevens Institute of Technology.</p>
+					<p>Ph.D. in Social Psychology from Indiana University Bloomington</p>
+                </div>
+		</div>
+		</div>
+	</div>	
+			
+	<div class="content-section-d">
+        <div class="container">
+		<div class="row">			
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/ziad.jpg" height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Ziad Matni</h3>
+					<p>Ziad Matni is a doctoral student at SC&I-Rutgers, doing research in Information Science. His over-arching goals include to better understand why and how we use ICTs (specifically, social media). He is interested in using social media tools in novel ways to help us understand new and interesting things about ourselves, our social networks, our communities, and our neighborhoods. Ziad has a masters of science in electrical engineering from the University of Southern California and worked in several engineering and management positions in the electronics communication industry for about 13 years before turning to academia. <a href="http://www.ziadmatni.com">Personal website</a>.</p>
+                </div>
+		</div>
+		</div>
+	</div>		
+				
+	<div class="content-section-d">
+        <div class="container">
+		<div class="row">			
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/choi.jpg" height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Dongho Choi</h3>
+					<p>Dongho Choi is a doctoral student in Library and Information Science at Rutgers University. He is interested in people's information behavior on social media, specifically in the context of business: product/service consumption, word of mouth, corporate strategy. He has educational background in Computer Science, Economics, and Business and worked at Samsung Electronics for 3 and half years as an engineer.</p>
+                </div>
+		</div>
+		</div>
+	</div>
+		
+	<div class="content-section-d">
+        <div class="container">
+		<div class="row">			
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<img class="img-responsive" src="/static/landing/img/kevin.jpg" height=200 width=200 />
+                </div>
+                <div class="col-lg-5 col-sm-6">
+					<h3>Kevin Albertson</h3>
+					<p>Kevin Albertson is currently an undergraduate student at Rutgers University majoring in Computer Science and Mathematics. He plans on pursuing research after his undergraduate studies. His main experience is in web and game development but he continues exploring a variety of interests.</p>
+                </div>
+        </div>
+		</div>
+	</div>
+	
+	<a  name="connect"></a>
+    <div class="banner">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Connect to People Analytics:</h2>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="http://peopleanalytics.org/" class="btn btn-default btn-lg"><span class="network-name">People Analytics</span></a>
+                        </li>
+						<li>
+                            <a href="https://www.facebook.com/pplanalytics" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
+                        </li>
+						<li>
+                            <a href="https://twitter.com/pplanalytics" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.banner -->
+	
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#Login">Login</a>
+                        </li>
+						<li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#about">What is SOCRATES?</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#demo">Demo</a>
+                        </li>
+						<li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#aboutus">About Us</a>
+                        </li>
+						<li class="footer-menu-divider">&sdot;</li>
+						<li>
+                        <a href="https://github.com/InfoSeeking/Socrates">GitHub</a>
+						</li>
+						
+                    </ul>
+                    
+					<table width=100%>
+					<td><image src="/static/landing/img/nsf.gif" height=50 width=50/></td><td class="copyright text-muted small">SOCRATES is supported with funding from the <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1244704">National Science Foundation (NSF)</a>.</br> Copyright &copy; SOCRATES 2015. All Rights Reserved</td>
+					</table>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/static/landing/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/static/landing/js/bootstrap.min.js"></script>
+	
+  <script src="/static/landing/js/d3.js"></script>
+  <script src="/static/landing/js/isotope.js"></script>
+  <script src="/static/landing/js/translation.js"></script>
+  <script src="/static/landing/js/visualization.js"></script>
+  <script src="/static/landing/js/UI.js"></script>
+  <script src="/static/landing/js/UTIL.js"></script>
+  <script src="/static/landing/js/Screen.js"></script>
+  <script src="/static/landing/js/MainScreen.js"></script>
+  <script src="/static/landing/js/RegisterScreen.js"></script>
+  <script src="/static/landing/js/LoginScreen.js"></script>
+  <script src="/static/landing/js/LogoutScreen.js"></script>
+  <script src="/static/landing/js/SettingsScreen.js"></script>
+  <script src="/static/landing/js/DataScreen.js"></script>
+  <script src="/static/landing/js/Interface.js"></script>
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42804042-11', 'peopleanalytics.org');
+  ga('send', 'pageview');
+  </script>
+
+	 <!-- Script to Activate the Carousel -->
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+	
+</body>
+
+</html>
