@@ -256,7 +256,7 @@ def index():
     else:
         return render_template('index.html')
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/app", methods=['GET', 'POST'])
 @app.route("/two", methods=['GET', 'POST'])
 def two():
     if request.method == 'POST':
@@ -269,6 +269,10 @@ def two():
 @app.route("/form", methods=['GET'])
 def form():
     return app.send_static_file('test-form.html')
+
+@app.route("/", methods=['GET'])
+def homepage():
+    return app.send_static_file('landing/index.html')
 
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
