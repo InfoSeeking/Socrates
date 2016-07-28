@@ -1,4 +1,4 @@
-import numeric_string_parser
+from numeric_string_parser import NumericStringParser
 
 SPECS = {
 	'description' : 'Provides functions for statistical analysis',
@@ -14,6 +14,9 @@ SPECS = {
 					'type': 'field_reference numeric',
 					'comment': 'x values',
 				}
+			},
+			'entry_result': {
+				'result' : 'numeric'
 			}
 		},
 	
@@ -103,10 +106,14 @@ def gen_math(working_set, param=False):
 			if expression[i] != 'x':
 				modified_formula += expression[i]
 			else:
-				modified_formula += xValue
+				modified_formula += str(xValue)
 		r=parser.eval(modified_formula)
 		results.append(r)
-	return results
+	return 	{
+		'entry_analysis' : {
+			'result' : results
+		}
+	}
 def basic(working_set, param=False):
 	fieldVals = param['field'] 
 	average = 0
