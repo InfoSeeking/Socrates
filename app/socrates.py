@@ -238,7 +238,7 @@ def parse_params(parameters, ip=False):
         sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
 
 app = Flask(__name__)
-@app.route("/socrates", methods=["POST"])
+@app.route("/socrates", methods=["GET", "POST"])
 def endpoint():
     params = request.get_json(silent=True)
     if not params:

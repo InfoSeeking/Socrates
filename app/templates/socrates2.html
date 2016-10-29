@@ -117,7 +117,7 @@
                         <a href="/one" title="Go to the advanced mode" id="">Advanced</a>
                     </li>
 					<li class="page-scroll">
-                        <a href="http://peopleanalytics.org/socrates/index.html" title="Logout" id="logout-btn">Logout</a>
+                        <a href="/" title="Logout" id="logout-btn">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -294,13 +294,13 @@
         // Attempt login.
         LoginScreen.logIn('{{username}}', '{{password}}', function(errMessage){
             alert(errMessage);
-            window.location.href="http://peopleanalytics.org/socrates";
+            window.location.href="http://socrates.peopleanalytics.org";
         });
     }
     {% else %}
     if (!UI.isLoggedIn()) {
         alert('You must be logged in');
-        window.location.href="http://peopleanalytics.org/socrates";
+        window.location.href="http://socrates.peopleanalytics.org";
     }
     {% endif %}
 </script>

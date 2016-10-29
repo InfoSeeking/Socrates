@@ -4,7 +4,7 @@ var UTIL = (function(){
 		working_set_id = null;
 
 	that.CFG = {
-		api_endpoint: "http://peopleanalytics.org/socrates/back-end/listener.php",
+		api_endpoint: "http://socrates.peopleanalytics.org/socrates",
 		//api_endpoint: "http://localhost/socrates/back-end/listener.php/",
 		debug : true
 	};
