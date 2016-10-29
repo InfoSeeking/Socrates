@@ -18,11 +18,12 @@ var RegisterScreen = (function(){
         $.ajax({
           url : UTIL.CFG.api_endpoint,
           type: "POST",
-          data : {
+          data : JSON.stringify({
             "register" : true,
             "username" : uinput,
             "password" : pinput
-          },
+          }),
+          contentType: "application/json",
           dataType: "json",
           success : function(data, status){
             if (data.attempted) {
@@ -34,7 +35,8 @@ var RegisterScreen = (function(){
                 //UI.feedback("Welcome to SOCRATES, " + uinput + ".");
                 //UI.switchScreen("main");
                 console.log("Registration successful");
-                window.location.href = "services.html";
+                alert("Registration successful! Page will refresh, please login after");
+                location.reload();
               }
             }
           }
