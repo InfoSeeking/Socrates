@@ -6,5 +6,5 @@ SOcial and CRowdsourced AcTivities Extraction System (SOCRATES) is a general web
 - <b>Exploration</b> SOCRATES allows you to view your data with different graphs and explore underlying patterns
 
 See a live demo of SOCRATES [here](http://peopleanalytics.org/socrates/).
-Test! 
+ 
 If you're interested in setting up SOCRATES on your machine, see the [getting started](docs/getting_started.md) documentation.
