@@ -4,3 +4,12 @@ CM
 contextminer
 back-end/config.py
 migration/*
+.idea/workspace.xml
+.idea/webServers.xml
+.idea/vcs.xml
+.idea/Socrates.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/encodings.xml
+.idea/deployment.xml

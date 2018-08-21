@@ -792,7 +792,7 @@ $(document).ready(function() {
                     var svg = '<svg>' + svg.html() + '</svg>';
                     var b64 = btoa(svg); // or use btoa if supported
                     // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
-                    b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n" + b64 + "' title='file.svg'>Download</a>"));
+                    b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n" + b64 + "' title='file.svg'>download</a>"));
                 });
             function createBox(type, index) {
                 //create a new empty box
