@@ -44,6 +44,10 @@ This can be done with `pip install tweepy`
 This can be done with `pip install simplejson`
 - [Flask](http://flask.pocoo.org/)
 This can be done with `pip install Flask`
+- [translation](https://pypi.org/project/translation/)
+This can be done with `pip install translation`
+- [modules](https://pypi.org/project/modules/)
+This can be done with `pip install modules`
 
 Afterwards, download the source from GitHub at https://github.com/kevinAlbs/Socrates
 
