@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 Example run:
-python socrates_cli.py --param param.json
+python socrates.py --param param.json
 '''
 from bson.json_util import dumps
 from bson import objectid
@@ -203,7 +203,7 @@ def parse_params(parameters, ip=False):
             return dumps({
                 "ids" : working_set_identifiers
                 })
-            
+
         elif 'upload' in parameters:
             working_set = None
             default_working_set_name = "Imported Dataset"
@@ -299,6 +299,6 @@ def init():
         app.run(debug=True)
         return
     else:
-        parser.print_help() 
+        parser.print_help()
 
 init()
