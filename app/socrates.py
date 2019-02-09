@@ -289,10 +289,6 @@ def two():
     else:
         return render_template('socrates2.html')
 
-@app.route("/form", methods=['GET'])
-def form():
-    return app.send_static_file('test-form.html')
-
 @app.route("/", methods=['GET'])
 def homepage():
     return app.send_static_file('landing/index.html')

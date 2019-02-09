@@ -5,7 +5,6 @@ var UTIL = (function(){
 
 	that.CFG = {
 		api_endpoint: "http://socrates.peopleanalytics.org/socrates",
-		//api_endpoint: "http://localhost/socrates/back-end/listener.php/",
 		debug : true
 	};
 
