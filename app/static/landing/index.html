@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-	<link rel="shortcut icon" type="image/x-icon" href="/static/landing/img/icon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="/static/img/icon.ico">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-	
+
     <title>SOCRATES</title>
-	
+
     <!-- Bootstrap Core CSS -->
-    <link href="/static/landing/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/static/landing/css/landing-page.css" rel="stylesheet">
-	
-	<link href="/static/landing/css/full-slider.css" rel="stylesheet">
+    <link href="/static/css/landing-page.css" rel="stylesheet">
+
+	<link href="/static/css/full-slider.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/static/landing/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -25,10 +25,10 @@
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    
+
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    
+
 	<script>
         function logIn(){
             var uinput = $('#login-name').val();
@@ -39,7 +39,7 @@
         function register(){
             var uinput = $('#register-name').val();
       		var pinput = $('#register-password').val();
-			RegisterScreen.register(uinput, pinput);       	
+			RegisterScreen.register(uinput, pinput);
         }
     </script>
 
@@ -59,14 +59,14 @@
                     <span class="icon-bar"></span>
                 </button>
 				<!--<a class="navbar-brand logo" href="#"><img src="img/logo.png"</a>  logo -->
-                <a class="navbar-brand logo" href="#"><img src="/static/landing/img/toplogo.png" height="40" width="40"></a>
+                <a class="navbar-brand logo" href="#"><img src="/static/img/toplogo.png" height="40" width="40"></a>
 				<a class="navbar-brand topnav" href="#">SOCRATES</a>
-				
+
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-               
+
                     <li>
                         <a href="#Login">Login</a>
                     </li>
@@ -90,7 +90,7 @@
     </nav>
 
 <!-- Full Page Image Background Carousel Header -->
-    
+
 	<header id="myCarousel" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
@@ -104,20 +104,20 @@
         <div class="carousel-inner">
             <div class="item active">
                 <!-- Set the first background image using inline CSS below. -->
-                <div class="fill" style="background-image:url('/static/landing/img/socrates_1.jpg')"></div>
+                <div class="fill" style="background-image:url('/static/img/socrates_1.jpg')"></div>
             </div>
             <div class="item">
                 <!-- Set the second background image using inline CSS below. -->
-                <div class="fill" style="background-image:url('/static/landing/img/socrates_2.jpg')"></div>
-                
+                <div class="fill" style="background-image:url('/static/img/socrates_2.jpg')"></div>
+
             </div>
             <div class="item">
                 <!-- Set the third background image using inline CSS below. -->
-                <div class="fill" style="background-image:url('/static/landing/img/socrates_3.jpg')"></div>
+                <div class="fill" style="background-image:url('/static/img/socrates_3.jpg')"></div>
             </div>
 			<div class="item">
                 <!-- Set the fourth background image using inline CSS below. -->
-                <div class="fill" style="background-image:url('/static/landing/img/socrates_4.jpg')"></div>
+                <div class="fill" style="background-image:url('/static/img/socrates_4.jpg')"></div>
             </div>
         </div>
 
@@ -144,23 +144,23 @@
 							<strong>Sign Up</strong>
 						</div>
 					</div>
-					
+
 					<div class="form">
-					<h2>Login to SOCRATES</h2>					
+					<h2>Login to SOCRATES</h2>
 					<form action="http://socrates.peopleanalytics.org/app" method="POST">
 						<input type="text" name="username" placeholder="Username" class="login-field" id="login-name"/>
 						<input type="password" name="password" placeholder="Password" class="login-field" id="login-password"/>
 						<button class="login-btns" type="submit" id="login-submit-btn"  >Login</button>
 					</form>
 					</div>
-								
+
 					<div class="form">
-					<h2>Create an account</h2>					
+					<h2>Create an account</h2>
 						<input type="text" placeholder="Username" class="login-field" id="register-name"/>
 						<input type="password" placeholder="Password" class="login-field" id="register-password"/>
-						<button class="login-btns" id="register-btn" onclick="register()">Register</button>					
-					</div>																		
-					
+						<button class="login-btns" id="register-btn" onclick="register()">Register</button>
+					</div>
+
 				</div>
 			</div><!--/.inner -->
 
@@ -169,7 +169,7 @@
 
     </div>
     <!-- /.content-section-a -->
-	
+
 	<a  name="about"></a>
 	<div class="content-section-b">
 
@@ -182,7 +182,7 @@
                     <p class="lead">SOCRATES, is a social-computational system and platform for the study of social media using crowdsourcing. The project will develop a framework and a technical system through which researchers can collect content from one or more social media sources, explore the collected content to help generate hypotheses, and analyze the content the content to produce insights, findings, and research results in true social-computational scale.</p>
                 </div>
                  <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="/static/landing/img/figure1.png" alt="" onmouseover="this.width=700;this.height=700;" onmouseout="this.width=500;this.height=500" />
+                    <img class="img-responsive" src="/static/img/figure1.png" alt="" onmouseover="this.width=700;this.height=700;" onmouseout="this.width=500;this.height=500" />
 
                 </div>
             </div>
@@ -192,7 +192,7 @@
 
     </div>
     <!-- /.content-section-a -->
-	
+
     <div class="content-section-a">
 
         <div class="container">
@@ -222,7 +222,7 @@
                     <p class="lead"><b>Analyze</b><br><br>To analyze social media data at scale, SOCRATES will support efficient, accurate, and valid annotation of the collected content using a specialized crowdsourcing environment. The purpose of such annotation is multifaceted, including but not limited to categorization leading to evidentiary inferences or hypothesis testing by social scientists and algorithm development by information scientists.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/figure2.png" alt="">
+					<img class="img-responsive" src="/static/img/figure2.png" alt="">
                 </div>
             </div>
 
@@ -246,13 +246,13 @@
 			</center>
 		</div>
 	</div> <!-- /.content-section-b -->
-	
+
 	<a  name="aboutus"></a>
     <div class="content-section-d">
         <div class="container">
 		<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/chirag.jpg"  height=200 width=200 />
+					<img class="img-responsive" src="/static/img/chirag.jpg"  height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Dr. Chirag Shah</h3>
@@ -262,13 +262,13 @@
                 </div>
 		</div>
 		</div>
-	</div>		
-				
+	</div>
+
     <div class="content-section-d">
         <div class="container">
 		<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/naaman.jpg" height=200 width=200 />
+					<img class="img-responsive" src="/static/img/naaman.jpg" height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Dr. Mor Naaman</h3>
@@ -279,12 +279,12 @@
 		</div>
 		</div>
 	</div>
-	
+
 	<div class="content-section-d">
 			<div class="container">
-			<div class="row">	
+			<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/mason.jpg" height=200 width=200 />
+					<img class="img-responsive" src="/static/img/mason.jpg" height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Dr. Winter Mason</h3>
@@ -294,13 +294,13 @@
                 </div>
 		</div>
 		</div>
-	</div>	
-			
+	</div>
+
 	<div class="content-section-d">
         <div class="container">
-		<div class="row">			
+		<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/ziad.jpg" height=200 width=200 />
+					<img class="img-responsive" src="/static/img/ziad.jpg" height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Ziad Matni</h3>
@@ -308,13 +308,13 @@
                 </div>
 		</div>
 		</div>
-	</div>		
-				
+	</div>
+
 	<div class="content-section-d">
         <div class="container">
-		<div class="row">			
+		<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/choi.jpg" height=200 width=200 />
+					<img class="img-responsive" src="/static/img/choi.jpg" height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Dongho Choi</h3>
@@ -323,12 +323,12 @@
 		</div>
 		</div>
 	</div>
-		
+
 	<div class="content-section-d">
         <div class="container">
-		<div class="row">			
+		<div class="row">
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<img class="img-responsive" src="/static/landing/img/kevin.jpg" height=200 width=200 />
+					<img class="img-responsive" src="/static/img/kevin.jpg" height=200 width=200 />
                 </div>
                 <div class="col-lg-5 col-sm-6">
 					<h3>Kevin Albertson</h3>
@@ -337,7 +337,7 @@
         </div>
 		</div>
 	</div>
-	
+
 	<a  name="connect"></a>
     <div class="banner">
 
@@ -367,7 +367,7 @@
 
     </div>
     <!-- /.banner -->
-	
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -393,11 +393,11 @@
 						<li>
                         <a href="https://github.com/InfoSeeking/Socrates">GitHub</a>
 						</li>
-						
+
                     </ul>
-                    
+
 					<table width=100%>
-					<td><image src="/static/landing/img/nsf.gif" height=50 width=50/></td><td class="copyright text-muted small">SOCRATES is supported with funding from the <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1244704">National Science Foundation (NSF)</a>.</br> Copyright &copy; SOCRATES 2015. All Rights Reserved</td>
+					<td><image src="/static/img/nsf.gif" height=50 width=50/></td><td class="copyright text-muted small">SOCRATES is supported with funding from the <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1244704">National Science Foundation (NSF)</a>.</br> Copyright &copy; SOCRATES 2015. All Rights Reserved</td>
 					</table>
                 </div>
             </div>
