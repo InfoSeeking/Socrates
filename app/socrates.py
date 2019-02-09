@@ -20,6 +20,7 @@ import sys
 import traceback
 import user
 
+
 def _err(msg):
     return json.dumps({
     'error' : 'true',
@@ -200,9 +201,7 @@ def parse_params(parameters, ip=False):
 
                 working_set_identifiers.append(wid)
 
-            return dumps({
-                "ids" : working_set_identifiers
-                })
+            return dumps({"ids" : working_set_identifiers})
 
         elif 'upload' in parameters:
             working_set = None
@@ -231,11 +230,35 @@ def parse_params(parameters, ip=False):
 
             else:
                 return _err("Could not upload")
-        return result
+        return result;
 
     except Exception as e:
         sys.stderr.write("Exception caught: %s\n" % e)
         sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
+
+
+'''
+save actions and insert into mongodb table
+INPUT: string of input that was logged and needs to be saved
+OUTPUT: if entered into table then prints "attempted: True"
+'''
+def save_action(input_params):
+    # Look at parse_params and user.py's authenticate function. make a function in actions.py and import actions
+    try:
+        client = MongoClient()
+        db = client.socrates
+
+        result = "{}" #string result from each run-type to print at the end
+        working_set = None
+        working_set_id = -1
+        working_set_name = "Untitled"
+
+        db.actions.insert_one({"input_params": input_params, "local_timestamp": input_params["localTimestamp"]})
+        return json.dumps({"attempted": True})
+    except Exception as e:
+        sys.stderr.write("Exception caught: %s\n" % e)
+        sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
+        return _err("Action Not Saved")
 
 app = Flask(__name__)
 @app.route("/socrates", methods=["GET", "POST"])
@@ -273,6 +296,14 @@ def form():
 @app.route("/", methods=['GET'])
 def homepage():
     return app.send_static_file('landing/index.html')
+
+@app.route("/socrates/action",methods=['POST'])
+def log_action():
+    params = request.get_json(silent=True)
+    if not params:
+        return _err("Cannot parse JSON request")
+    return save_action(params)
+
 
 def init():
     parser = argparse.ArgumentParser(description="SOCRATES Social media data collection, analysis, and exploration")
