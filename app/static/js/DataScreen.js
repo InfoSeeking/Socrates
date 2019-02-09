@@ -2,8 +2,11 @@ var DataScreen = (function(){
     var that = {};
     that.show = function(){
       $(".screen.data").show();
-      API.sendRequest({
-        data: {
+      $.ajax({
+        url: UTIL.CFG.api_endpoint,
+        type : "POST",
+        dataType: "json",
+        data : {
           "username" : UI.getUsername(),
           "password" : UI.getPassword(),
           "fetch_all_ids" : true
@@ -14,7 +17,7 @@ var DataScreen = (function(){
             addWorkingSet(data.ids[i]["id"], data.ids[i]["name"], data.ids[i]["function"]);
           }
         }
-      });
+      })
     };
 
     that.hide = function(){
@@ -49,14 +52,20 @@ var DataScreen = (function(){
           "format" : $(".screen.data .formatSelect [name=format]:checked").val()
         };
 
-        API.sendRequest({
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          dataType: "json",
           data: params,
+          type: "POST",
           success : function(response){
             if(response.error){
               UI.feedback(response.message, true);
             } else {
               addWorkingSet(response.id, response.name);
             }
+          },
+          error: function(){
+            UI.feedback("Error uploading data", true);
           }
         });
       }

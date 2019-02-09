@@ -1,42 +1,54 @@
 var LoginScreen = (function(){
-  var that = {};
-  that.show = function(){
-    $(".screen.login").show();
-  };
-  
-  that.hide = function(){
-    $(".screen.login").hide();
-  };
+    var that = {};
+    that.show = function(){
+      $(".screen.login").show();
+    };
+    
+    that.hide = function(){
+      $(".screen.login").hide();
+    };
 
-  that.init = function(){
-      $("#login-submit-btn").click(function(){
-          var uinput = $('#login-name').val();
-          var pinput = $('#login-password').val();
-          that.logIn(uinput, pinput);
-      })
-      $("#login-register-btn").click(function(){
-          UI.switchScreen("register");
-      })
-  }
-  that.logIn = function(uinput, pinput, onError){
-    if (uinput){
-      API.sendRequest({
-        data: {username: uinput, password: pinput},
-        success : function(data){
-            UI.setLoggedIn(true, uinput, pinput);
-            UI.feedback("Welcome back," + uinput + ".");
-            UI.switchScreen("main");
-        },
-        error: function(data) {
-          UI.feedback(data.message, true);
-          if (onError) onError(data.message);
-        }
-      });
-    } else {
-      UI.feedback("Please enter a username.", true);
+    that.init = function(){
+        $("#login-submit-btn").click(function(){
+            logIn();
+        })
+        $("#login-register-btn").click(function(){
+            UI.switchScreen("register");
+        })
     }
-  }
-  return that;
+	that.logIn = function(){
+      var uinput = $('#login-name').val();
+      var pinput = $('#login-password').val();
+      if (uinput){
+        console.log("Attempting to log in as: " + uinput);
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          type : "POST",
+          data : {
+            "username" : uinput,
+            "password" : pinput
+          },
+          dataType: "json",
+          success : function(data, status){
+            console.log(data);
+            if (data.error){
+              //UI.feedback(data.message, true);
+              alert("Wrong username or password.");
+            }
+            else {
+              UI.setLoggedIn(true, uinput, pinput);
+              //UI.feedback("Welcome back," + uinput + ".");
+              //UI.switchScreen("main");
+              window.location.href = "services.html";
+            }
+          }
+        });
+      }else{
+        console.log("No username")
+        UI.feedback("Please enter a username.", true);
+      }
+    }
+    return that;
 }());
 
 LoginScreen.prototype = Screen;

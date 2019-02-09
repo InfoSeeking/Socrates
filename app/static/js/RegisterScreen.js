@@ -15,26 +15,36 @@ var RegisterScreen = (function(){
     }
     that.register = function(uinput, pinput){
       if (uinput){
-        API.sendRequest({
-          data:{
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          type: "POST",
+          data : JSON.stringify({
             "register" : true,
             "username" : uinput,
             "password" : pinput
-          },
-          success: function() {
+          }),
+          contentType: "application/json",
+          dataType: "json",
+          success : function(data, status){
             if (data.attempted) {
               if (data.taken){
-                UI.feedback("Username is already taken.", true);
+                //UI.feedback("Username is already taken.", true);
+                alert("Username is already taken.");
               } else {
                 UI.setLoggedIn(true, uinput, pinput);
-                UI.feedback("Welcome to SOCRATES, " + uinput + ".");
-                UI.switchScreen("main");
+                //UI.feedback("Welcome to SOCRATES, " + uinput + ".");
+                //UI.switchScreen("main");
+                console.log("Registration successful");
+                alert("Registration successful! Page will refresh, please login after");
+                location.reload();
               }
             }
           }
-        })
-      } else{
-        UI.feedback("Please enter a username.", true);
+        });
+      }else{
+        //console.log("No username")
+        //UI.feedback("Please enter a username.", true);
+        alert("Please enter a username.");
       }
     }
     
@@ -44,12 +54,15 @@ var RegisterScreen = (function(){
       var uinput = $('#register-name').val();
       var pinput = $('#register-password').val();
       if (uinput){
-        API.sendRequest({
+        $.ajax({
+          url : UTIL.CFG.api_endpoint,
+          type: "POST",
           data : {
             "register" : true,
             "username" : uinput,
             "password" : pinput
           },
+          dataType: "json",
           success : function(data, status){
             if (data.attempted) {
               if (data.taken){
@@ -62,7 +75,8 @@ var RegisterScreen = (function(){
             }
           }
         });
-      } else {
+      }else{
+        console.log("No username")
         UI.feedback("Please enter a username.", true);
       }
     }

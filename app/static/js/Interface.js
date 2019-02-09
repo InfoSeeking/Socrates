@@ -187,6 +187,37 @@ $(document).ready(function() {
     $(".explorationBtn").click(q5);
     //$("#getExpBtn").click(getVisualization);
     $("#renameSet").click(getRenameInput);
+
+
+    /*
+    * logs action and prints success or error
+    * INPUT: input_data (json command that needs to be logged)
+    * OUTPUT: prints to console the action logged along with 'success' if log action is success or prints error
+     */
+    function log_action(input_data){
+        $.ajax({
+
+            url: UTIL.CFG.api_endpoint+"/action",
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify(input_data),
+            contentType: "application/json",
+
+            success: function (output_data, stat, jqXHR) {
+                console.log("Log action: ", input_data);
+                console.log("success");
+                console.log("output data:", output_data);
+                console.log("stat:", stat);
+            },
+            complete: function (jqXHR, stat) {
+
+            },
+            error: function(jqXHR, output_data, stat){
+                console.log("Error in :", input_data);
+            }
+        });
+    }
+
     //Question 1: asks about query
     function q1(){
         if (UI.isLoggedIn()) {
@@ -199,18 +230,32 @@ $(document).ready(function() {
             $("#smallerHeader").text(smHeader1);
             $("#interfaceInput, #interfaceInputContainer").fadeIn();
         }else{
+             q1_data = {
+                query:query,
+                action:'Logged in',
+                other_data:{},
+                localTimestamp:Date.now(),
+            }
+            log_action(q1_data);
             alert("Please log in");
         }
     }
+
     //Questions 2: asks about social media
     function q2(){
         $("#interfaceNext2").text("Next");
-        //query = document.getElementById("interfaceInput").value;
         query = $("#interfaceInput").val();
         if (query == "") {
             alert("Please enter keyword(s)");
         }else {
             $(this).hide();
+            q2_data = {
+                query:query,
+                action:'Next click after topic input',
+                other_data:{},
+                localTimestamp: Date.now(),
+            }
+            log_action(q2_data);
             getCircleBtns("social", myMedia[0], 'collection');
             $("#interfaceNext2, #interfaceBack, #social, #count").fadeIn();
             $("#interfaceInput, #interfaceInputContainer, #interfaceNext1,#interfaceWorkflow, #redditSub, #sortOptions").hide();
@@ -229,6 +274,14 @@ $(document).ready(function() {
             if (media == "reddit") {
                 $("#redditSub").fadeIn();
             }
+            $(this).hide();
+            q_3data={
+                query:query,
+                action:'Next click after social media select',
+                other_data:{count:count},
+                localTimestamp: Date.now(),
+            }
+            log_action(q_3data);
             $("#interfaceNext2").text("Next");
             $("#interfaceAnalysis, #interfaceNext2").fadeIn();
             $("#mainHeader").text(header3);
@@ -252,7 +305,14 @@ $(document).ready(function() {
                 alert("Please enter a subreddit.");
             }
         }else{
+            q_4data={
+                query:query,
+                action:'Next click analysis',
+                other_data:{subreddit:subreddit},
+                localTimestamp: Date.now(),
+            }
             analysis = analysisArr[0];
+            log_action(q_4data);
             if (media == "reddit"){
                 subreddit = $("#subreddit").val();
             }
@@ -280,17 +340,25 @@ $(document).ready(function() {
                 hasTwoFields = true;
                 $("#smallerHeader").text("Please select fields to perform the analysis:");
                 $("#interfaceAnalysisOptions").append($("<h4>field_1:</h4>"));
-                getAnalysisParams();
                 $("#interfaceAnalysisOptions").append($("<h4>field_2:</h4>"));
                 getAnalysisParams();
                 //$("#interfaceAnalysisOptions").append(image);
+
             }
         }
         var d = new Date();
         setName = String(media+"_"+analysis+"_"+d.toDateString());
     }
+
     //Question 5: which exploration
     function q5(){
+        q_5data={
+                query:query,
+                action:'Exploration',
+                other_data:{},
+                localTimestamp: Date.now(),
+            }
+            log_action(q_5data);
         $("#interfaceWorkflow, #interfaceExpOptions, #numSplits, #sortOptions, #interfaceExecute, #finalResult").hide();
         $("#interfaceNext2").text("Next");
         $("#smallerHeader").text("");
@@ -310,12 +378,20 @@ $(document).ready(function() {
             $("#interfaceNext2").text("Finish");
             $("#mainHeader").text(header7);
             $("#smallerHeader").text("");
+            q_6data={
+                query:query,
+                action:'',
+                other_data:{},
+                localTimestamp: Date.now(),
+            }
             if (exploration == "piechart") {
+                q_6data.action='Piechart';
                 hasTwoFields = false;
                 $("#smallerHeader").text("Please select a parameter for this field:");
                 $("#interfaceExpOptions").append($("<h4>field:</h4>"));
                 getExpParams(exploration);
-            } else if (exploration == "histogram"){
+            } else if (exploration == "Histogram"){
+                 q_6data.action='Histogram';
                 hasTwoFields = false;
                 $("#smallerHeader").text("Please select a parameter for this field:");
                 $("#interfaceExpOptions").append($("<h4>field:</h4>"));
@@ -329,6 +405,8 @@ $(document).ready(function() {
                 $("#interfaceExpOptions").append($("<h4>y_field:</h4>"));
                 getExpParams(exploration);
             }
+             log_action(q_6data);
+
         }
     }
     //Takes care of color change when a circle button is selected/unselected and saves selected value
@@ -337,7 +415,14 @@ $(document).ready(function() {
         $(this).toggleClass('active');
         isOrange = $(this).hasClass('active');
         var key = $(this).attr('data-key');
-        console.log('Button key is ' , key);
+        //console.log('Click button on ' , key);
+        q_circledata={
+                query:query,
+                action:'Button key is: ', key,
+                other_data:{},
+                localTimestamp: Date.now(),
+            }
+            log_action(q_circledata);
         var index;
         if($("#social").is(":visible") && isOrange){
             mediaArr.push(key);
@@ -557,25 +642,37 @@ $(document).ready(function() {
         }
     };
     $("#interfaceBack").click(function() {
+        q_backdata={
+                query:query,
+                action:'',
+                other_data:{},
+                localTimestamp: Date.now(),
+            }
+
        text = $("#mainHeader").text();
        if(text.indexOf("3") != -1) {
            $("#interfaceAnalysis, #interfaceInput").hide();
            mediaArr = new Array();
            $("#social").html("");
+           q_backdata.action='Click back button to social media select'
            q2();
        }else if(text.indexOf("2") != -1){
            $("#social, #interfaceNext2, #interfaceBack").hide();
+           q_backdata.action='Click back button to input'
            q1();
        } else if (text.indexOf("4") != -1){
            $("#interfaceAnalysisOptions").hide();
+           q_backdata.action='Click back button to analysis'
            q3();
        } else if (text.indexOf("5") != -1) {
            $("#interfaceExp").hide();
            $("#BeatsResults").fadeIn();
            showWorkflow(true);
        } else if (text.indexOf("6") != -1){
+           q_backdata.action='Click back button to exploration'
             q5();
        }
+       log_action(q_backdata)
     });
     function reset(){
         window.location.href = "socrates2.html";
@@ -661,18 +758,9 @@ $(document).ready(function() {
         UTIL.clearWorkingSetCache();
         UI.toggleLoader(true);
         console.log(params);
-        $.ajax({
-            url: UTIL.CFG.api_endpoint,
-            dataType: "json",
-            type: "POST",
+        API.sendRequest({
             data: params,
-            success: function (data, stat, jqXHR) {
-                console.log("Operator output:");
-                console.log(data);
-                if (data.hasOwnProperty("error")) {
-                    UI.feedback(data.message, true);
-                    return;
-                }
+            success: function (data) {
                 if (params['return_all_data']) {
                     //then this can be put in cache
                     UTIL.setCurrentWorkingSet(data, true);
@@ -686,8 +774,7 @@ $(document).ready(function() {
                 //if this was a collection type, show output meta and move onto analysis stage
                 //if this was an analysis type, show output and additional analysis options
             },
-            complete: function (jqXHR, stat) {
-                console.log("Complete: " + stat);
+            complete: function () {
                 UI.toggleLoader(false);
                 //interfaceShowAllData(myData.data, myData.meta, myData.analysis, "collection", 0);
                 isDataGotten = true;
@@ -697,7 +784,7 @@ $(document).ready(function() {
                     callback.call();
                 }
             }
-        });
+        })
     }
     $("#getAnalysisBtn").click(function() {
         if (isDataGotten) {
@@ -735,19 +822,11 @@ $(document).ready(function() {
             //clear cache, since now working set is modified
             UTIL.clearWorkingSetCache();
             console.log(params);
-            $.ajax({
-                url: UTIL.CFG.api_endpoint,
-                dataType: "json",
-                type: "POST",
+            API.sendRequest({
                 data: params,
-                success: function (data, stat, jqXHR) {
+                success: function (data) {
                     console.log("Operator output:");
                     console.log(data);
-                    if (data.hasOwnProperty("error")) {
-                        UI.feedback(data.message, true);
-                        return;
-                    }
-
                     if (params['return_all_data']) {
                         //then this can be put in cache
                         UTIL.setCurrentWorkingSet(data, true);
@@ -761,9 +840,8 @@ $(document).ready(function() {
                     //if this was a collection type, show output meta and move onto analysis stage
                     //if this was an analysis type, show output and additional analysis options
                 },
-                complete: function (jqXHR, stat) {
+                complete: function () {
                     console.log(UTIL.CFG.api_endpoint);
-                    console.log("Complete: " + stat);
                     UI.toggleLoader(false);
                     //MainScreen.interfaceShowAllData(myData["data"], myData["meta"], myData["analysis"], "analysis", 0);
                 }
@@ -811,7 +889,7 @@ $(document).ready(function() {
                     var svg = '<svg>' + svg.html() + '</svg>';
                     var b64 = btoa(svg); // or use btoa if supported
                     // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
-                    b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n" + b64 + "' title='file.svg'>Download</a>"));
+                    b.append($("<a target='_blank' href-lang='image/svg+xml' class='button' href='data:image/svg+xml;base64,\n" + b64 + "' title='file.svg'>download</a>"));
                 });
             function createBox(type, index) {
                 //create a new empty box
