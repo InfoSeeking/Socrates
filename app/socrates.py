@@ -275,9 +275,9 @@ def index():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('index.html', username=username, password=password)
+        return render_template('socrates1.html', username=username, password=password)
     else:
-        return render_template('index.html')
+        return render_template('socrates1.html')
 
 @app.route("/app", methods=['GET', 'POST'])
 @app.route("/two", methods=['GET', 'POST'])
