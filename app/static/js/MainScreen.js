@@ -24,9 +24,10 @@ var MainScreen = (function(){
       $.ajax({
         url: UTIL.CFG.api_endpoint,
         dataType: "json",
-        data : {
+        data : JSON.stringify({
             "specs" : true
-        },
+        }),
+        contentType: "application/json",
         type: "POST",
         error: function(){
           UI.feedback("Cannot fetch specs", true);
@@ -38,14 +39,20 @@ var MainScreen = (function(){
             UI.switchScreen("login");
           }
           UI.toggleLoader(false);
+          console.log(UTIL.CFG.api_endpoint)
           console.log(data);
           //Add Visualization specs
+          // data = VIS.specs;
           data.visualization = VIS.specs;
           //generate all forms
           var types = ["analysis", "collection", "visualization"];
           for(var i = 0; i < types.length; i++){
             var type = types[i];
+            console.log("TYPE");
+            console.log(type);
             for(var mod in data[type]){
+              console.log("MOD");
+              console.log(mod);
               if(!data[type].hasOwnProperty(mod)){
                 continue;
               }
@@ -138,7 +145,8 @@ var MainScreen = (function(){
                   url: UTIL.CFG.api_endpoint,
                   dataType: "json",
                   type: "POST",
-                  data: params,
+                  data: JSON.stringify(params),
+                  contentType: "application/json",
                   success : function(data, stat, jqXHR){
                     console.log("Operator output:");
                     console.log(data);
@@ -268,6 +276,7 @@ var MainScreen = (function(){
       $.ajax({
         url : "https://api.github.com/repos/InfoSeeking/Socrates",
         dataType: "json",
+        contentType: "application/json",
         success : function(json){
           console.log(json);
           var dateStr = json.pushed_at + "";

@@ -28,12 +28,9 @@ var RegisterScreen = (function(){
           success : function(data, status){
             if (data.attempted) {
               if (data.taken){
-                //UI.feedback("Username is already taken.", true);
                 alert("Username is already taken.");
               } else {
                 UI.setLoggedIn(true, uinput, pinput);
-                //UI.feedback("Welcome to SOCRATES, " + uinput + ".");
-                //UI.switchScreen("main");
                 console.log("Registration successful");
                 alert("Registration successful! Page will refresh, please login after");
                 location.reload();
@@ -42,8 +39,6 @@ var RegisterScreen = (function(){
           }
         });
       }else{
-        //console.log("No username")
-        //UI.feedback("Please enter a username.", true);
         alert("Please enter a username.");
       }
     }

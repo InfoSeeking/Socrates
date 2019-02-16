@@ -28,19 +28,10 @@
 
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        
+        <!-- jQuery -->
+        <script src="/static/js/jquery.js"></script>
 
-	<script>
-        function logIn(){
-            var uinput = $('#login-name').val();
-            var pinput = $('#login-password').val();
-            LoginScreen.logIn();
-        }
-        function register(){
-            var uinput = $('#register-name').val();
-      		var pinput = $('#register-password').val();
-			RegisterScreen.register(uinput, pinput);
-        }
-    </script>
 
 </head>
 
@@ -146,7 +137,7 @@
 
 					<div class="form">
 					<h2>Login to SOCRATES</h2>
-					<form action="http://socrates.peopleanalytics.org/app" method="POST">
+					<form id="login_form" method="POST">
 						<input type="text" name="username" placeholder="Username" class="login-field" id="login-name"/>
 						<input type="password" name="password" placeholder="Password" class="login-field" id="login-password"/>
 						<button class="login-btns" type="submit" id="login-submit-btn"  >Login</button>
@@ -400,8 +391,7 @@
         </div>
     </footer>
 
-    <!-- jQuery -->
-    <script src="/static/js/jquery.js"></script>
+    
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>
@@ -437,9 +427,24 @@
 
 	 <!-- Script to Activate the Carousel -->
     <script>
-    $('.carousel').carousel({
-        interval: 5000 //changes the speed
-    })
+        function logIn(){
+            var uinput = $('#login-name').val();
+            var pinput = $('#login-password').val();
+            LoginScreen.logIn();
+        }
+        function register(){
+            var uinput = $('#register-name').val();
+            var pinput = $('#register-password').val();
+            RegisterScreen.register(uinput, pinput);
+        }
+        $(document).ready(function(){
+            $("#login_form").attr('action',UTIL.CFG.login_endpoint);
+            $('.carousel').carousel({
+                interval: 5000 //changes the speed
+            })
+        });
+
+    
     </script>
 	
 </body>

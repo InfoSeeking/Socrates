@@ -294,13 +294,13 @@
         // Attempt login.
         LoginScreen.logIn('{{username}}', '{{password}}', function(errMessage){
             alert(errMessage);
-            window.location.href="http://socrates.peopleanalytics.org";
+            window.location.href=UTIL.CFG.api_endpoint;
         });
     }
     {% else %}
     if (!UI.isLoggedIn()) {
         alert('You must be logged in');
-        window.location.href="http://socrates.peopleanalytics.org";
+        window.location.href=UTIL.CFG.api_endpoint;
     }
     {% endif %}
 </script>

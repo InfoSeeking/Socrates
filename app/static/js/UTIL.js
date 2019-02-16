@@ -4,7 +4,8 @@ var UTIL = (function(){
 		working_set_id = null;
 
 	that.CFG = {
-		api_endpoint: "http://socrates.peopleanalytics.org/socrates",
+		api_endpoint: "http://localhost:5000/socrates",
+		login_endpoint: "http://localhost:5000/app",
 		debug : true
 	};
 
@@ -31,11 +32,12 @@ var UTIL = (function(){
 				url: that.CFG.api_endpoint,
 				dataType: "json",
 				type: "POST",
-				data: {
+				data: JSON.stringify({
 					'fetch' : true,
 					'returnAllData': true, 
 					'working_set_id': refID
-				},
+				}),
+				contentType:"application/json",
 				success : function(data, stat, jqXHR){
 					working_set_cache = data;
 					if(callback){
@@ -55,10 +57,11 @@ var UTIL = (function(){
 			url: that.CFG.api_endpoint,
 			dataType: "json",
 			type: "POST",
-			data: {
+			data: JSON.stringify({
 				'remove' : true,
 				'working_set_id': working_set_id
-			},
+			}),
+			contentType:"application/json",
 			success : function(data, stat, jqXHR){
 				working_set_cache = data;
 				if(callback){
@@ -79,11 +82,12 @@ var UTIL = (function(){
 			url: that.CFG.api_endpoint,
 			dataType: "json",
 			type: "POST",
-			data: {
+			data: JSON.stringify({
 				'rename' : true,
 				'new_name' : new_name,
 				'working_set_id': working_set_id
-			},
+			}),
+			contentType:"application/json",
 			success : function(data, stat, jqXHR){
 				if(callback){
 					callback.call(window);

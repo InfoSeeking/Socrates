@@ -265,7 +265,7 @@ app = Flask(__name__)
 def endpoint():
     params = request.get_json(silent=True)
     if not params:
-        return _err("Cannot parse JSON request")
+        return _err("Cannot parse JSON request"+str(request.is_json))
     return parse_params(params, False)
 
 @app.route("/one", methods=['GET', 'POST'])
@@ -275,9 +275,9 @@ def index():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('socrates1.html', username=username, password=password)
+        return render_template('index.html', username=username, password=password)
     else:
-        return render_template('socrates1.html')
+        return render_template('index.html')
 
 @app.route("/app", methods=['GET', 'POST'])
 @app.route("/two", methods=['GET', 'POST'])

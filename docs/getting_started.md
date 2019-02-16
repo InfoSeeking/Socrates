@@ -12,7 +12,7 @@ The specific portion of SOCRATES written in Python can be seen here: https://git
 
 MongoDB
 -------
-MongoDB is used for storing user data (i.e. what data they collect, the results of their analysis, etc.). It isn't being used for anything fancy. It's just simply storing and retrieving "documents" of the user data. There's plenty of online tutorials/documentation on MongoDB usage. Their getting started page (http://docs.mongodb.org/manual/tutorial/getting-started/) may be helpful.
+MongoDB is used for storing user data (i.e. what data they collect, the results of their analysis, etc.). It isn't being used for anything fancy. It's just simply storing and retrieving "documents" of the user data. There's plenty of online tutorials/documentation on MongoDB usage. Their getting started page (http://docs.mongodb.org/manual/tutorial/getting-started/) may be helpful. Also,if you want to run MongoDB automatically on startup when setting up locally and have a Mac, you may refer here: http://juanroy.es/how-to-run-mongodb-as-a-service-on-mac-osx/ to figure out how to run `loadctl` and create a `plist` in `/Library/LaunchDaemons/`.
 
 
 JavaScript/jQuery

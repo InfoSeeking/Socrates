@@ -1,0 +1,4 @@
+{
+	"api_endpoint": "http://socrates.peopleanalytics.org/socrates",
+	"debug" : true
+};
