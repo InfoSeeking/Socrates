@@ -55,6 +55,8 @@ Make sure MongoDB is running. On Ubuntu it runs automatically when installed, on
 
 Rename the [config.py.example](https://github.com/InfoSeeking/Socrates/blob/master/back-end/config.py.example) file to config.py. Put in API keys for the services you need to work with. SOCRATES should run without them, but running the relevant functions will require them.
 
+You will also need to edit the api_endpoint and login_endpoint in `app/static/js/UTIL.js`.  These are defaulted to `http://localhost:5000/socrates` and `http://localhost:5000/app`, respectively but should point to the URL of your own website (e.g. `http://socrates.peopleanalytics.org/socrates`)
+
 Running
 -------
 
