@@ -6,11 +6,12 @@ var DataScreen = (function(){
         url: UTIL.CFG.api_endpoint,
         type : "POST",
         dataType: "json",
-        data : {
+        contentType:"application/json",
+        data : JSON.stringify({
           "username" : UI.getUsername(),
           "password" : UI.getPassword(),
           "fetch_all_ids" : true
-        },
+        }),
         success: function(data, jqxhr){
           clearList();
           for(var i = 0; i < data.ids.length; i++){
@@ -55,8 +56,9 @@ var DataScreen = (function(){
         $.ajax({
           url : UTIL.CFG.api_endpoint,
           dataType: "json",
-          data: params,
+          data: JSON.stringify(params),
           type: "POST",
+          contentType:"application/json",
           success : function(response){
             if(response.error){
               UI.feedback(response.message, true);

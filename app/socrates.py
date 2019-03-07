@@ -263,9 +263,12 @@ def save_action(input_params):
 app = Flask(__name__)
 @app.route("/socrates", methods=["GET", "POST"])
 def endpoint():
-    params = request.get_json(silent=True)
+    if request.method == 'POST':
+        params = request.get_json(silent=True)
+    else:
+        params = request.args
     if not params:
-        return _err("Cannot parse JSON request"+str(request.is_json))
+        return _err("Cannot parse JSON request")
     return parse_params(params, False)
 
 @app.route("/one", methods=['GET', 'POST'])
