@@ -107,7 +107,25 @@ var UTIL = (function(){
       		//var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
 
 		})
-		var win = window.open(that.CFG.api_endpoint + "?force_download=true&fetch=true&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id);
+		// download("hello world", "dlText.txt", "text/plain");
+		var url = that.CFG.api_endpoint + "?force_download=true&fetch=true&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "json",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(JSON.stringify(data,undefined,2), "working_set_"+ toString(working_set_id) +".json", "text/plain");
+			},
+			error: function(){
+				UI.feedback("Error in downloadWorkingSet", true);
+				UI.toggleLoader(false);
+			}
+		});
+
+		
+
+		//var win = window.open();
 	}
 
 	that.supports_html5_storage = function(){
