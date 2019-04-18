@@ -3,7 +3,7 @@ var LoginScreen = (function(){
     that.show = function(){
       $(".screen.login").show();
     };
-    
+
     that.hide = function(){
       $(".screen.login").hide();
     };
@@ -24,11 +24,12 @@ var LoginScreen = (function(){
         $.ajax({
           url : UTIL.CFG.api_endpoint,
           type : "POST",
-          data : {
+          data : JSON.stringify({
             "username" : uinput,
             "password" : pinput
-          },
+          }),
           dataType: "json",
+            contentType: "application/json",
           success : function(data, status){
             console.log(data);
             if (data.error){
@@ -39,7 +40,8 @@ var LoginScreen = (function(){
               UI.setLoggedIn(true, uinput, pinput);
               //UI.feedback("Welcome back," + uinput + ".");
               //UI.switchScreen("main");
-              window.location.href = "services.html";
+              // window.location.href = "services.html";
+              window.location.href = "one";
             }
           }
         });

@@ -268,7 +268,7 @@ def endpoint():
     else:
         params = request.args
     if not params:
-        return _err("Cannot parse JSON request")
+        return _err("Cannot parse JSON request"+json.dumps({k: v for k, v in request.headers.iteritems()}))
     return parse_params(params, False)
 
 @app.route("/one", methods=['GET', 'POST'])
