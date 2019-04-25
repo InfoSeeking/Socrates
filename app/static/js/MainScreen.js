@@ -4,7 +4,7 @@ var MainScreen = (function(){
     that.show = function(){
       $(".screen.main").show();
     };
-    
+
     that.hide = function(){
       $(".screen.main").hide();
     };
@@ -72,6 +72,12 @@ var MainScreen = (function(){
               }
             }
           }
+
+          // Add functions to download buttons
+          $("#entireworkflow").click(onDownloadWorkflowButtonClicked);
+          $("#datasetjson").click(onDownloadDatasetJSONButtonClicked);
+          $("#datasetcsv").click(onDownloadDatasetCSVButtonClicked);
+
 
           //add listeners on submission
           $(".function form").on("submit", function(e){
@@ -170,7 +176,7 @@ var MainScreen = (function(){
                   }
                 });
             }
-           
+
           });
           //add listeners for buttons (selects #collection a, #analysis a, etc.)
           $(".type-instructions .modules .button").on("click", function(e){
@@ -210,7 +216,7 @@ var MainScreen = (function(){
               var finalStr = $(this).html();
               curChooser.html(finalStr);
               if(type == "analysis"){
-                finalStr = "analysis[" + $(this).attr("data-index") + "]." + finalStr; 
+                finalStr = "analysis[" + $(this).attr("data-index") + "]." + finalStr;
               }
               curChooser.siblings("input").val(finalStr);
               showFields(null);
@@ -293,12 +299,12 @@ var MainScreen = (function(){
       $("#import-btn").click(function(){
         $("#fileupload").click();
       });
-     
+
 
       $("#showAllData").on("click", handleDataButton);
 
 
-    } 
+    }
     /*
     Shows the overlay with a table of your data. (can be collection only, collection + single analysis, or collection + every analysis)
     index only necessary if it is an analysis type
@@ -308,7 +314,7 @@ var MainScreen = (function(){
       var aData = null;
       var ws = working_set;//easier
       if(typ == "analysis"){
-        //show the entry data alongside collection data 
+        //show the entry data alongside collection data
         if(index !== null){
           //show only one
           aData = new Array(ws["analysis"][index]);
@@ -372,7 +378,7 @@ var MainScreen = (function(){
             index = parseInt(index);
           }
           showAllData(ws, typ, index);
-          
+
           UI.toggleLoader(false);
       })
 
@@ -437,7 +443,7 @@ var MainScreen = (function(){
             var row = $("<tr><td>" + field + "</td><td>" + type + "</td><td>" + sample + "</td></tr>");
             table.find("tbody").append(row);
           }
-          
+
           a_section.append(table);
         }
 
@@ -470,8 +476,7 @@ var MainScreen = (function(){
       return $("<div class='results " + type + "'><div class='bar group'><h2></h2></div></div>");
     }
 
-
-    function onDownloadButtonClicked(){
+    function downloadButtonFunction(downloadFunction){
       var btn = $(this);
       UI.toggleLoader(true);
       UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), function(ws){
@@ -480,43 +485,79 @@ var MainScreen = (function(){
         if(index){
           index = parseInt(index);
         }
-        UTIL.downloadWorkingSet(UTIL.getCurrentWorkingSetID());
+        downloadFunction(UTIL.getCurrentWorkingSetID());
         UI.toggleLoader(false);
       });
     }
+
+//activated when download dataset as json button is clicked
+    function onDownloadDatasetJSONButtonClicked(){
+      downloadButtonFunction(UTIL.downloadDatasetJSON);
+    }
+
+//activated when download dataset as csv button is clicked
+    function onDownloadDatasetCSVButtonClicked(){
+      downloadButtonFunction(UTIL.downloadDatasetCSV);
+    }
+
+//activated when download workflow button is clicked
+    function onDownloadWorkflowButtonClicked(){
+      downloadButtonFunction(UTIL.downloadWorkingSet);
+
+    }
+
 
     function removeData(){
       $("#data-list").toggleClass("remove");
     }
 
-
     function closeBoxButton(){
       return $("<a class='button close'>X</a>").click(closeBox);
     }
 
-    function closeBox(){
-      $(this).parent().parent().detach();
+    function manageDownloadButtons(){
+      var count = $('.results.analysis').length //counts how many analyses there are
+      if (count!=0){
+        //shows download workflow button
+        $("#entireworkflow").css("display", "block");
+      }else{
+        $("#entireworkflow").css("display", "none");
+      }
+      var ct = $('.results.collection').length //counts how many collections there are
+      if (ct!=0){
+        //show download dataset buttons
+        $("#datasetjson").css("display", "block");
+        $("#datasetcsv").css("display", "block");
+      }else{
+        $("#datasetjson").css("display", "none");
+        $("#datasetcsv").css("display", "none");
+      }
     }
 
-    function getDownloadButton(){
-        return $("<a class='button'>Download</a>").click(onDownloadButtonClicked);
+    function closeBox(){
+      $(this).parent().parent().detach();
+      manageDownloadButtons(); //check whether to show or hide buttons
     }
+/*
+    function getDownloadButton(){
+        return $("<a class='button'>Download</a>").click(onDownloadWorkflowButtonClicked);
+    }*/
 
     function csvesc(txt){
         return ("" + txt).replace(/,|\n/g, "");
     }
 
     function downloadBoxXML(working_set){
-      var xml = "<XML>";  
+      var xml = "<XML>";
       xml += json2xml(working_set);
       xml += "</XML>"
-      
+
       var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(xml), "_blank");
     }
 
     function downloadBoxjson(working_set){
       var json = JSON.stringify(working_set);
-      
+
       var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
     }
 
@@ -525,7 +566,7 @@ var MainScreen = (function(){
       var ws = working_set;//easier
       var tsv = "";
       if(typ == "analysis"){
-        //show the entry data alongside collection data 
+        //show the entry data alongside collection data
         if(index !== null){
           //show only one
           aData = new Array(ws["analysis"][index]);
@@ -594,7 +635,7 @@ var MainScreen = (function(){
     var ws = working_set;//easier
     var csv = "";
     if(typ == "analysis"){
-    //show the entry data alongside collection data 
+    //show the entry data alongside collection data
     if(index !== null){
       //show only one
       aData = new Array(ws["analysis"][index]);
@@ -671,7 +712,7 @@ var MainScreen = (function(){
         for(var i = 0; i < working_set.analysis.length; i++){
           showResults(working_set, "analysis", i);
         }
-      } 
+      }
       passCollectionPhase();
     }
     /*
@@ -695,7 +736,7 @@ var MainScreen = (function(){
         var table = createTable(type, working_set);//this is the HTML created table
         box.append(table);
         box.append(showAllDataBtn().attr("data-type", "collection"));
-        box.append(getDownloadButton().attr("data-type", "collection"));
+        // box.append(getDownloadButton().attr("data-type", "collection"));
       }
       else if(type == "analysis"){
         h2.html("Analysis");
@@ -707,9 +748,8 @@ var MainScreen = (function(){
         }
         console.log("Showing " + curIndex);
         if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
-          //show all data button
           box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
-          box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
+          // box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
         }
       }
       else if(type == "upload"){
@@ -719,9 +759,10 @@ var MainScreen = (function(){
         var table = createTable(type, working_set);//this is the HTML created table
         box.append(table);
         box.append(showAllDataBtn().attr("data-type", "collection"));
-        box.append(getDownloadButton().attr("data-type", "collection"));
+        // box.append(getDownloadButton().attr("data-type", "collection"));
       }
       $("#workspace").append(box);
+      manageDownloadButtons();
       box.hide().fadeIn();
     }
     showResults.first = true;
@@ -840,7 +881,7 @@ var MainScreen = (function(){
       License: http://creativecommons.org/licenses/LGPL/2.1/
        Version: 0.9
       Author:  Stefan Goessner/2006
-      Web:     http://goessner.net/ 
+      Web:     http://goessner.net/
     */
        var toXml = function(v, name, ind) {
           var xml = "";

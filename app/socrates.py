@@ -15,6 +15,7 @@ from pymongo import MongoClient
 from translation import *
 import argparse
 import json
+import pandas as pd
 import modules
 import sys
 import traceback
@@ -178,7 +179,14 @@ def parse_params(parameters, ip=False):
         elif 'fetch' in parameters:
             working_set = user.getWorkingSet(working_set_id)
             working_set['working_set_id'] = str(working_set_id)
-            return dumps(working_set)
+            #add if statement here to check for datasetonly parameter
+            if 'datasetonly' in parameters and parameters['datasetonly']=='true':
+                working_set.pop("analysis",None)
+            #check format parameter
+            if 'format' in parameters and parameters['format']=='csv':
+                return pd.io.json.json_normalize(working_set['data']).to_csv(encoding='utf-8')
+            elif 'format' in parameters and parameters['format']=='json':
+                return dumps(working_set)
 
         elif 'remove' in parameters:
             user.removeWorkingSet(working_set_id)

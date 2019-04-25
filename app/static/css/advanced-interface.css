@@ -61,3 +61,39 @@ aside#sidebar {
 #two:hover{
     background: #5ecff9;
 }
+/*need to fix this styling for button group*/
+.btn-group button {
+  background-color: #00aeef;
+  border: none;
+  color: #FFF;
+  padding: 4px 8px;
+  float: right;
+  cursor: pointer;
+  width: 50%;
+  border-radius: 4px;
+  display: none;
+}
+
+.btn-group button:not(:last-child) {
+  border-bottom: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: #5ecff9;
+}
+
+#three {
+    background: #00aeef;
+    display: inline-block;
+    padding: 5px 10px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    border-radius: 3px;
+    color: #FFF;
+    text-decoration: none;
+}
+#three:hover{
+    background: #5ecff9;
+}

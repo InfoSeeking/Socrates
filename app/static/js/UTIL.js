@@ -34,7 +34,7 @@ var UTIL = (function(){
 				type: "POST",
 				data: JSON.stringify({
 					'fetch' : true,
-					'returnAllData': true, 
+					'returnAllData': true,
 					'working_set_id': refID
 				}),
 				contentType:"application/json",
@@ -101,14 +101,37 @@ var UTIL = (function(){
 		});
 	}
 
-	that.downloadWorkingSet = function(working_set_id){
+//downloads just dataset as CSV
+	that.downloadDatasetCSV = function(working_set_id){
 		that.getWorkingSet(working_set_id, function(working_set){
-      		var json = JSON.stringify(working_set);
-      		//var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
-
+					var json = JSON.stringify(working_set);
 		})
-		// download("hello world", "dlText.txt", "text/plain");
-		var url = that.CFG.api_endpoint + "?force_download=true&fetch=true&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		var url = that.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=csv&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "text",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(data, "working_set_"+ toString(working_set_id) +".csv", "text/plain");
+
+			},
+			error: function(){
+				UI.feedback("Error in downloadDatasetCSV", true);
+				UI.toggleLoader(false);
+			}
+		});
+
+		//var win = window.open();
+		}
+
+
+//downloads just dataset as JSON
+	that.downloadDatasetJSON = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+					var json = JSON.stringify(working_set);
+		})
+		var url = that.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
 		$.ajax({
 			url: url,
 			dataType: "json",
@@ -116,16 +139,41 @@ var UTIL = (function(){
 			contentType:"application/json",
 			success : function(data, stat, jqXHR){
 				download(JSON.stringify(data,undefined,2), "working_set_"+ toString(working_set_id) +".json", "text/plain");
+
+			},
+			error: function(){
+				UI.feedback("Error in downloadDatasetJSON", true);
+				UI.toggleLoader(false);
+			}
+		});
+
+		//var win = window.open();
+		}
+
+
+//downloads entire workflow as JSON
+	that.downloadWorkingSet = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+      		var json = JSON.stringify(working_set);
+      		//var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
+
+		})
+		// download("hello world", "dlText.txt", "text/plain");
+		var url = that.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=false&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "json",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(JSON.stringify(data,undefined,2), "working_set_"+ toString(working_set_id) +".json", "text/plain");
+
 			},
 			error: function(){
 				UI.feedback("Error in downloadWorkingSet", true);
 				UI.toggleLoader(false);
 			}
 		});
-
-		
-
-		//var win = window.open();
 	}
 
 	that.supports_html5_storage = function(){
