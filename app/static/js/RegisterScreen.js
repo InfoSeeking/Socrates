@@ -9,10 +9,7 @@ var RegisterScreen = (function(){
       $(".screen.register").hide();
     };
 
-    that.init = function(){
-      $("#register-btn").click(register);
-      $("#register-back-btn").click(function(){UI.switchScreen("login")});
-    }
+
     that.register = function(uinput, pinput){
       if (uinput){
         $.ajax({
@@ -41,6 +38,11 @@ var RegisterScreen = (function(){
       }else{
         alert("Please enter a username.");
       }
+    }
+
+    that.init = function(){
+      // $("#register-btn").click(register);
+      $("#register-back-btn").click(function(){UI.switchScreen("login")});
     }
 
 
