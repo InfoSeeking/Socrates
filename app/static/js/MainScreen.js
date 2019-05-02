@@ -332,6 +332,7 @@ var MainScreen = (function(){
           thead.append("<th>" + f + "</th>");
         }
       }
+
       //add heading for every analysis
       if(aData){
         console.log(aData);
@@ -343,6 +344,7 @@ var MainScreen = (function(){
           }
         }
       }
+
       var tbody = $("<tbody></tbody>");
       for(var i = 0; i < cData.length; i++){
         var row = $("<tr><td> " + i + "</td></tr>");
@@ -534,14 +536,16 @@ var MainScreen = (function(){
       }
     }
 
+
     function closeBox(){
-      $(this).parent().parent().detach();
+      //add confirmation check whether to continue or not
+      if(confirm("Are you sure to want to delete this?")){
+        $(this).parent().parent().detach();
+      }
+
       manageDownloadButtons(); //check whether to show or hide buttons
     }
-/*
-    function getDownloadButton(){
-        return $("<a class='button'>Download</a>").click(onDownloadWorkflowButtonClicked);
-    }*/
+
 
     function csvesc(txt){
         return ("" + txt).replace(/,|\n/g, "");

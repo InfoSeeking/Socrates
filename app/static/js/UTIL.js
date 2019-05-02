@@ -113,7 +113,7 @@ var UTIL = (function(){
 			type: "GET",
 			contentType:"application/json",
 			success : function(data, stat, jqXHR){
-				download(data, "working_set_"+ toString(working_set_id) +".csv", "text/plain");
+				download(data, "dataset.csv", "text/plain");
 
 			},
 			error: function(){
@@ -138,7 +138,7 @@ var UTIL = (function(){
 			type: "GET",
 			contentType:"application/json",
 			success : function(data, stat, jqXHR){
-				download(JSON.stringify(data,undefined,2), "working_set_"+ toString(working_set_id) +".json", "text/plain");
+				download(JSON.stringify(data,undefined,2), "dataset.json", "text/plain");
 
 			},
 			error: function(){
@@ -166,7 +166,7 @@ var UTIL = (function(){
 			type: "GET",
 			contentType:"application/json",
 			success : function(data, stat, jqXHR){
-				download(JSON.stringify(data,undefined,2), "working_set_"+ toString(working_set_id) +".json", "text/plain");
+				download(JSON.stringify(data,undefined,2), "workflow.json", "text/plain");
 
 			},
 			error: function(){
