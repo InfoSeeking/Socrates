@@ -10,7 +10,7 @@ var LoginScreen = (function(){
 
     that.init = function(){
         $("#login-submit-btn").click(function(){
-            logIn();
+            that.logIn();
         })
         $("#login-register-btn").click(function(){
             UI.switchScreen("register");
