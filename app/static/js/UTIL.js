@@ -35,7 +35,8 @@ var UTIL = (function(){
 				data: JSON.stringify({
 					'fetch' : true,
 					'returnAllData': true,
-					'working_set_id': refID
+					'working_set_id': refID,
+					'format':'json'
 				}),
 				contentType:"application/json",
 				success : function(data, stat, jqXHR){
