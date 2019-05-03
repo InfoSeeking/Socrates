@@ -3,7 +3,7 @@ var LogoutScreen = (function(){
     that.show = function(){
       $(".screen.logout").show().find(".username").html(UI.getUsername());
     };
-    
+
     that.hide = function(){
       $(".screen.logout").hide();
     };
@@ -18,6 +18,19 @@ var LogoutScreen = (function(){
       UI.setLoggedIn(false);
       UI.feedback("Logged out");
       UI.switchScreen("login");
+      //clear workspace, get rid of buttons, and show intro message
+      var count = $('.results.analysis').length //counts how many analyses there are
+      if (count!=0){
+        $('.results.analysis').remove();
+        $("#entireworkflow").css("display", "none");
+      }
+      var ct = $('.results.collection').length //counts how many collections there are
+      if (ct!=0){
+        $('.results.collection').remove();
+        $("#datasetjson").css("display", "none");
+        $("#datasetcsv").css("display", "none");
+      }
+      $("#workspace #intro").show();
     }
     return that;
 }());

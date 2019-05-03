@@ -726,7 +726,7 @@ var MainScreen = (function(){
       var setName = working_set["working_set_name"];
       if(showResults.first){
         showResults.first = false;
-        $("#workspace #intro").detach();
+        $("#workspace #intro").hide(); //.detach()
       }
       //if type is collection, add collection data
       //if type is analysis, add most recent analysis
