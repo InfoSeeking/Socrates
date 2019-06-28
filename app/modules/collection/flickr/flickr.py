@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #coding: utf8
 
-import urllib, urllib2
+import urllib, urllib2, config
 import simplejson as json
+
 
 SPECS = {
 	'description' : 'Fetching comments from Flickr',
@@ -31,11 +32,10 @@ SPECS = {
 def photo_comments(param):
 	cosearch = "https://api.flickr.com/services/rest/?method=flickr.photos.comments.getList&"
 	cosearch2 = "&format=json&nojsoncallback=1"
-	key = "30af076dd1c2691beaa93c1f3c52df5b"
+	key = config.CREDS["flickr_key"]
 	pID = param['photo_id']
 	q = {"api_key": key, "photo_id": pID}
 	url = cosearch + urllib.urlencode(q) + cosearch2
-	print url
 
 	def call_the_comments():
 		result = urllib2.urlopen(url).read()
@@ -49,7 +49,7 @@ def photo_comments(param):
 			'author': comments['author'],
 			'authorname': comments['authorname'],
 			'realname': comments['realname'],
-			'content:': comments['_content'],
+			'content': comments['_content'],
 			'datecreate': comments['datecreate'],
 			'permalink': comments['permalink'],
 			'path_alias': comments['path_alias']
