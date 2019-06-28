@@ -14,19 +14,19 @@ except ImportError:
 
 SPECS = {
     "functions": {
-        "search" : {
-            "param_order" : ["query", "order"],
-            "param" : {
-                "query" : {
-                    "type" : "text",
-                    "comment" : "The query for the YouTube search"
+        "searchVideos": {
+            "param_order": ["query", "order"],
+            "param": {
+                "query": {
+                    "type": "text",
+                    "comment": "The query for the YouTube search"
                 },
-                "order" : {
-                    "type" : "text",
-                    "constraints":{
-                        "choices" : ["date", "rating", "relevance", "title", "videoCount", "viewCount"]
+                "order": {
+                    "type": "text",
+                    "constraints": {
+                        "choices": ["date", "rating", "relevance", "title", "videoCount", "viewCount"]
+                    }
                 }
-        }
             },
             "returns" : {
                 "title" : "text",
@@ -35,12 +35,50 @@ SPECS = {
                 "viewCount" : "numeric",
                 "likeCount" : "numeric",
                 "dislikeCount" : "numeric",
-                "favoriteCount" : "numeric",
+               # "favoriteCount" : "numeric",
                 "commentCount" : "numeric",
                 "caption" : "boolean",
-                'category': 'text',
+             #   'category': 'text',
                 "channelTitle" : "text",
                 "description": "text"
+            }
+        },
+
+        "searchComments": {
+            "param": {
+                "video_ID": {
+                    "type": "text",
+                    "comment": "Youtube video ID"
+                },
+                "query": {
+                    "type": "text",
+                    "comment": "Search term"
+                },
+                "max_results": {
+                    "type": "numeric",
+                    "comment": "max number of results",
+                    #"optional": True
+                },
+                "order": {
+                    "type": "text",
+                    "constraints": {
+                        "choices": ["time", "relevance"]
+                    }
+                },
+                "moderation_status": {
+                    "type": "text",
+                    "constraints": {
+                        "choices": ["heldForReview", "likelySpam", "published"]
+                    }
+                }
+            },
+            "returns": {
+                "content": "text",
+                "id": "text",
+                "author": "text",
+                "like_count": "numeric",
+                "time": "text" #???
+
             }
         }
     }
@@ -82,6 +120,7 @@ def _request(url, data=None):
         """
     res = urllib2.urlopen(url, data)
     return json.loads(res.read())
+
 def getAllData(url):
     """
         Gets 2 pages of results
@@ -98,7 +137,36 @@ def getAllData(url):
         except:
             break
     return result
-def search(param=False):
+
+
+def searchComments(param):
+    key = config.CREDS["YouTube_key"]
+    urlparam = {
+        "part": "snippet, replies",
+        "maxResults": param["max_results"],
+        "moderationStatus": param["moderation_status"],
+        "order": param["order"],
+        "searchTerms": param["query"],
+        "key": key,
+        "videoId": param["video_ID"],
+        "textFormat": "plainText"
+    }
+    q_url = "https://www.googleapis.com/youtube/v3/commentThreads?%s" % (urllib.urlencode(urlparam))
+    result = _request(q_url)
+    comments = []
+    for c in result["items"]:
+        cObj = {
+            "content": c["snippet"]["topLevelComment"]["snippet"]["textDisplay"],
+            "id": c["snippet"]["topLevelComment"]["id"],
+            "author": c["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"],
+            "like_count": c["snippet"]["topLevelComment"]["snippet"]["likeCount"],
+            "time": c["snippet"]["topLevelComment"]["snippet"]["publishedAt"]
+        }
+        comments.append(cObj)
+    return comments
+
+
+def searchVideos(param=False):
     """
         Queries the search endpoint with given params.
         """
@@ -106,11 +174,11 @@ def search(param=False):
     data = []
     key = config.CREDS["YouTube_key"]
     urlparam = {
-        "q" : param["query"],
-        "key" : key,
+        "q": param["query"],
+        "key": key,
         "order": param["order"],
-        "maxResults" : 20,
-        "type" : "video"
+        "maxResults": 20,
+        "type": "video",
     }
     #search url
     q_url = "https://www.googleapis.com/youtube/v3/search?%s" % (urllib.urlencode(urlparam))
@@ -142,7 +210,7 @@ def search(param=False):
         result_map[vidId]['viewCount'] = getOrDefault(res['statistics'], 'viewCount', 0)
         result_map[vidId]['likeCount'] = getOrDefault(res['statistics'], 'likeCount', 0)
         result_map[vidId]['dislikeCount'] = getOrDefault(res['statistics'], 'dislikeCount', 0)
-        result_map[vidId]['favoriteCount'] = getOrDefault(res['statistics'], 'favoriteCount', 0)
+        #result_map[vidId]['favoriteCount'] = getOrDefault(res['statistics'], 'favoriteCount', 0)
         result_map[vidId]['commentCount'] = getOrDefault(res['statistics'], 'commentCount', 0)
         result_map[vidId]['caption'] = getOrDefault(res['contentDetails'], 'caption', '')
 
@@ -159,6 +227,7 @@ def search(param=False):
         finalResults.append(result_map[key])
 
     return finalResults
+
     '''
     stats = stat_result['items']
     row['viewCount'] = stats[0]['statistics']['viewCount']
