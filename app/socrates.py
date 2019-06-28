@@ -279,6 +279,7 @@ def endpoint():
         return _err("Cannot parse JSON request"+json.dumps({k: v for k, v in request.headers.iteritems()}))
     return parse_params(params, False)
 
+@app.route("/app", methods=['GET', 'POST'])
 @app.route("/one", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -289,16 +290,6 @@ def index():
         return render_template('index.html', username=username, password=password)
     else:
         return render_template('index.html')
-
-@app.route("/app", methods=['GET', 'POST'])
-@app.route("/two", methods=['GET', 'POST'])
-def two():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        return render_template('socrates2.html', username=username, password=password)
-    else:
-        return render_template('socrates2.html')
 
 @app.route("/", methods=['GET'])
 def homepage():
