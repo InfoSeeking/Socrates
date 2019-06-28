@@ -291,6 +291,18 @@ def index():
     else:
         return render_template('index.html')
 
+
+@app.route("/dev", methods=['GET', 'POST'])
+def dev():
+    if request.method == 'POST':
+        # A key error generates an HTTP 400 bad request
+        # which is appropriate if username/password are missing
+        username = request.form['username']
+        password = request.form['password']
+        return render_template('index.html', username=username, password=password)
+    else:
+        return render_template('index.html')
+
 @app.route("/", methods=['GET'])
 def homepage():
     return app.send_static_file('landing/index.html')
