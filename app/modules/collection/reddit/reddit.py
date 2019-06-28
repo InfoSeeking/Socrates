@@ -65,14 +65,74 @@ SPECS = {
                     'parent_id': "text",
                     'content': "text"
                     }
+                },
+            'searchPosts': {
+                'param': {
+                    'query': {
+                        'type': 'text',
+                        'comment': 'query'
+                    },
+                    'sub': {
+                        'type': 'text',
+                        'comment': 'Subreddit'
+                    },
+                    'reddit_sorting': {
+                        'type': 'text',
+                        'comment': 'Reddit sorting method',
+                        'constraints': {
+                            'choices': ["relevance", "new", "hot", "top", "comments"]
+                        }
+                    },
+                    'time_filter': {
+                        'type': 'text',
+                        'comment': 'Time filter',
+                        'constraints': {
+                            'choices': ['all', 'day', 'hour', 'month', 'week', 'year']
+                        }
+
+                    }
+
+                },
+                'returns': {
+                    'title': 'text',
+                    'content': 'text',
+                    'permalink': 'text',
+                    'id': 'text',
+                    'upvotes': 'numeric'
                 }
             }
         }
+    }
+
 
 def _getPraw():
-    r = praw.Reddit(user_agent="SOCRATES data collection bot by /u/kevinAlbs")
-    r.login(config.CREDS["reddit"]["uname"], config.CREDS["reddit"]["pass"])
+    r = praw.Reddit(client_id=config.CREDS['reddit']['client_id'],
+                    client_secret=config.CREDS['reddit']['client_secret'],
+                    password=config.CREDS['reddit']['passwd'],
+                    user_agent=config.CREDS['reddit']['user_agent'],
+                    username=config.CREDS['reddit']['username'])
     return r
+
+
+def searchPosts(param):
+    r = _getPraw()
+    sub = param['sub']
+    query = param['query']
+    reddit_sorting = param['reddit_sorting']
+    time_filter = param['time_filter']
+    subreddit = r.subreddit(sub)
+    posts = []
+    for post in subreddit.search(query, sort=reddit_sorting, time_filter=time_filter):
+        pObj = {
+            'content': post.selftext,
+            'permalink': post.permalink,
+            'title': post.title,
+            'id': post.id,
+            'upvotes': post.score
+        }
+        posts.append(pObj)
+    return posts
+
 
 def fetchComments(param):
     r = _getPraw()
@@ -91,12 +151,12 @@ def fetchComments(param):
         if onlyTop == "true" or onlyTop == "True":
             onlyTop = True
         else:
-            onlyTop = False 
-    post = r.get_submission(submission_id=submission_id)
-    comments = post.comments
+            onlyTop = False
+    submission = r.submission(id=submission_id)
+    comments = submission.comments
     if not onlyTop:
         #flatten
-        comments = praw.helpers.flatten_tree(comments)
+        comments = comments.list()
     commentList = []
     for c in comments:
         if not hasattr(c, "body"):
@@ -119,17 +179,18 @@ def fetchPosts(param):
     count = int(param['count'])
     reddit_sorting = param['reddit_sorting']
     r = _getPraw()
+    subreddit = r.subreddit(sub)
     posts = []
-    if reddit_sorting == "top" : 
-        posts = r.get_subreddit(sub).get_top(limit=count)
+    if reddit_sorting == "top" :
+        posts = subreddit.top(limit=count)
     elif reddit_sorting == "hot" :
-        posts = r.get_subreddit(sub).get_hot(limit=count)
+        posts = subreddit.hot(limit=count)
     elif reddit_sorting == "new" :
-        posts = r.get_subreddit(sub).get_new(limit=count)
+        posts = subreddit.new(limit=count)
     elif reddit_sorting == "rising" :
-        posts = r.get_subreddit(sub).get_rising(limit=count)
+        posts = subreddit.rising(limit=count)
     elif reddit_sorting == "controversial":
-        posts = r.get_subreddit(sub).get_controversial(limit=count)
+        posts = subreddit.controversial(limit=count)
 
     pList = []
     for p in posts:
@@ -159,17 +220,18 @@ def fetchManyPosts(param, campaign):
     count = min(desired_count, campaign.getSpec("max_count"))
     reddit_sorting = param['reddit_sorting']
     r = _getPraw()
+    subreddit = r.subreddit(sub)
     posts = []
-    if reddit_sorting == "top" : 
-        posts = r.get_subreddit(sub).get_top(limit=count)
+    if reddit_sorting == "top" :
+        posts = subreddit.top(limit=count)
     elif reddit_sorting == "hot" :
-        posts = r.get_subreddit(sub).get_hot(limit=count)
+        posts = subreddit.hot(limit=count)
     elif reddit_sorting == "new" :
-        posts = r.get_subreddit(sub).get_new(limit=count)
+        posts = subreddit.new(limit=count)
     elif reddit_sorting == "rising" :
-        posts = r.get_subreddit(sub).get_rising(limit=count)
+        posts = subreddit.rising(limit=count)
     elif reddit_sorting == "controversial":
-        posts = r.get_subreddit(sub).get_controversial(limit=count)
+        posts = subreddit.controversial(limit=count)
 
     pList = []
     for p in posts:
