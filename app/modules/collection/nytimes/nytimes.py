@@ -15,69 +15,71 @@ SPECS = {
             'comments_by_URL':{
                 'param': {
                     "submission_url" : {
-                        "type" : "text",
-                            "comment" : "URL of post (ends with .html)"
-                                },
-                                "sort" : {
-                                    "type" : "text",
-                                        "constraints" : {
-                                            "choices" : ["newest", "oldest", "recommended", "replied", "editors-selection"]
-                                        },
-                                        "default" : "newest"
-                            }
+                        "type": "text",
+                        "comment": "URL of post (ends with .html)"
                     },
-                        'returns': {
-                            'approveDate': "text",
-                                'commentBody': "text",
-                                'commentSequence': "numeric",
-                                #'commentTitle': "text", #usually empty
-                                'display_name': "text",
-                                'editorsSelection': "boolean",
-                                #'email_status': "text", #usually 0
-                                'location': "text",
-                                'recommendations': "numeric",
-                                #'replies': "array", #usually undefined
-                                'sharing': "numeric",
-                                #'status': "text", #usually approved
-                                'times_people': "numeric",
-                                'userComments': "text",
-                        #'userTitle': "text", #usually undefined
-                        #'userURL': "text" #usually undefined
-                            }
+                    #"sort" : {
+                        #"type" : "text",
+                        #"constraints" : {
+                        #"choices" : ["newest", "oldest", "recommended", "replied", "editors-selection"]
+                    #},
+                    #"default" : "newest"
+                },
+                'returns': {
+                    'approveDate': "text",
+                    'commentBody': "text",
+                    'commentSequence': "numeric",
+                    #'commentTitle': "text", #usually empty
+                    'display_name': "text",
+                    'editorsSelection': "boolean",
+                    #'email_status': "text", #usually 0
+                    'location': "text",
+                    'recommendations': "numeric",
+                    #'replies': "array", #usually undefined
+                    #'sharing': "numeric",
+                    #'status': "text", #usually approved
+                    #'times_people': "numeric",
+                    #'userComments': "text",
+                    #'userTitle': "text", #usually undefined
+                    #'userURL': "text" #usually undefined
+                }
             },
-                'article_search' : {
-                    'param' : {
-                        'query' : {
-                            "type" : "text",
-                                "comment" : "Search query"
-                                },
-                                "sort" : {
-                                    "type" : "text",
-                                        "constraints" : {
-                                            "choices" : ["newest", "oldest"]
-                                        },
-                                        "default" : "newest"
-                                },
-                                "begin_date" : {
-                                    "type" : "text",
-                                        "comment" : "format YYYYMMDD",
-                                        "optional" : True
-                                },
-                                "end_date" : {
-                                    "type" : "text",
-                                        "comment" : "format YYYYMMDD",
-                                        "optional" : True
-                                        }
+            'article_search' : {
+                'param' : {
+                    'query' : {
+                        "type" : "text",
+                        "comment" : "Search query"
                     },
-                        'returns' : {
-                            "web_url" : "text",
-                                "headline" : "text",
-                                "abstract" : "text",
-                                "word_count" : "numeric",
-                                "lead_paragraph" : "text",
-                                "snippet" : "text"
+                    "sort" : {
+                        "type" : "text",
+                        "constraints" : {
+                            "choices" : ["newest", "oldest"]
+                        },
+                        "default" : "newest"
+                    },
+                    "begin_date" : {
+                        "type" : "text",
+                            "comment" : "format YYYYMMDD",
+                            "optional" : True
+                    },
+                    "end_date" : {
+                        "type" : "text",
+                            "comment" : "format YYYYMMDD",
+                            "optional" : True
                     }
-            }#,
+                },
+                'returns' : {
+                    "web_url" : "text",
+                    "headline" : "text",
+                    "abstract" : "text",
+                    "word_count" : "numeric",
+                    "lead_paragraph" : "text",
+                    "snippet" : "text"
+                }
+            }
+        }
+}
+            #},
     #'comments_by_Date':{
     #	'param': {
     #		"date" : {
@@ -103,16 +105,15 @@ SPECS = {
     #		#'userURL': "text" #usually undefined
     #	}
     #}
-    }
-}
+
 
 def comments_by_URL(param):
     matchtype = "exact-match"
-    cosearch = "http://api.nytimes.com/svc/community/v2/comments/url/"+matchtype+".json?"
+    cosearch = "https://api.nytimes.com/svc/community/v3/user-content/url.json?"
     url = param['submission_url'].strip()
-    sort = param['sort']
+    #sort = param['sort']
     
-    q = {"url":url, "sort":sort, "api-key":config.CREDS["nyt_comment"]}
+    q = {"url": url, "api-key": config.CREDS["nyt_comment"]}
     url = cosearch+urllib.urlencode(q)
     
     def call_the_articles():
@@ -126,16 +127,16 @@ def comments_by_URL(param):
             'approveDate': comments['approveDate'],
                 'commentBody': comments['commentBody'],
                     'commentSequence': comments['commentSequence'],
-                    'commentTitle': comments['commentTitle'],
-                    'display_name': comments['display_name'],
+                    #'commentTitle': comments['commentTitle'],
+                    'display_name': comments['userDisplayName'],
                     'editorsSelection': comments['editorsSelection'],
-                    'email_status': comments['email_status'],
-                    'location': comments['location'],
+                    #'email_status': comments['email_status'],
+                    'location': comments['userLocation'],
                     'recommendations': comments['recommendations'],
-                    'sharing': comments['sharing'],
+                    #'sharing': comments['sharing'],
                     'status': comments['status'],
-                    'times_people': comments['times_people'],
-                    'userComments': comments['userComments'],
+                    #'times_people': comments['times_people'],
+                    #'userComments': comments['userComments'],
             }
         commentList.append(cObj)
     return commentList
