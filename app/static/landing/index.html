@@ -143,24 +143,25 @@
                 <div class="module form-module">
 					<div class="toggle"><i class="fa fa-times fa-pencil"></i>
 						<div class="alert alert-info">
-							<strong>Sign Up</strong>
+							<strong id="register_pen_text">Sign Up</strong>
 						</div>
 					</div>
 
-					<div class="form">
-					<h2>Login to SOCRATES</h2>
-					<form id="login_form" method="POST">
+					<div class="form" id="login_form">
+					<form method="POST" style="display:block">
+                        <h2>Login to SOCRATES</h2>
 						<input type="text" name="username" placeholder="Username" class="login-field" id="login-name"/>
 						<input type="password" name="password" placeholder="Password" class="login-field" id="login-password"/>
 						<button class="login-btns" type="submit" id="login-submit-btn"  onclick="logIn()">Login</button>
 					</form>
 					</div>
 
-					<div class="form">
-					<h2>Create an account</h2>
-						<input type="text" placeholder="Username" class="login-field" id="register-name"/>
-						<input type="password" placeholder="Password" class="login-field" id="register-password"/>
-						<button class="login-btns" id="register-btn" onclick="register()">Register</button>
+					<div class="form" id="register_form">
+					    <h2>Create an account</h2>
+                            <input type="text" placeholder="Username" class="login-field" id="register-name"/>
+                            <input type="password" placeholder="Password" class="login-field" id="register-password"/>
+                            <button class="login-btns" id="register-btn" onclick="register()">Register</button>
+
 					</div>
 
 				</div>
@@ -236,6 +237,7 @@
 
 	<a  name="demo"></a>
 	<div class="content-section-b">
+
 		<div class="container">
             <iframe width="960" height="720" src="https://www.youtube.com/embed/qQmew3ImYt0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -431,6 +433,21 @@
             $('.carousel').carousel({
                 interval: 5000 //changes the speed
             })
+
+            $(".toggle").click(function(){
+                var register_text = $('#register_pen_text').html();
+                if(register_text == 'Sign Up'){
+                    $('#login_form').hide();
+                    $('#register_form').show();
+                    $('#register_pen_text').html('Log In');
+                }else if(register_text == 'Log In'){
+                    $('#login_form').show();
+                    $('#register_form').hide();
+                    $('#register_pen_text').html('Sign Up');
+                }
+            });
+
+
         });
 
     
