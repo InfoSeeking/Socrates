@@ -16,6 +16,185 @@ var MainScreen = (function(){
       //show next steps
       $("#next-buttons").fadeIn()
     }
+
+
+    /*
+	BEGIN FUNCTIONS FOR WORKING SETS
+	 */
+	that.setCurrentWorkingSet = function(ws, cache){
+		working_set_id = ws["working_set_id"];
+		if(cache){
+			working_set_cache = ws;
+		}
+	}
+	that.getCurrentWorkingSetID = function(){
+		return working_set_id;
+	}
+	that.clearWorkingSetCache = function(){
+		working_set_cache = null;
+	}
+	that.getWorkingSet = function(refID, callback){
+		//check if cached
+		if(working_set_cache != null && working_set_id == refID){
+			callback.call(window, working_set_cache);
+		}
+		else{
+			//download fresh data
+			$.ajax({
+				url: UTIL.CFG.api_endpoint,
+				dataType: "json",
+				type: "POST",
+				data: JSON.stringify({
+					'fetch' : true,
+					'returnAllData': true,
+					'working_set_id': refID,
+					'format':'json'
+				}),
+				contentType:"application/json",
+				success : function(data, stat, jqXHR){
+					working_set_cache = data;
+					if(callback){
+						callback.call(window, data);
+					}
+				},
+				error: function(){
+					UI.feedback("Error fetching dataset", true);
+				}
+			});
+		}
+	}
+
+	that.removeWorkingSet = function(working_set_id, callback){
+		UI.toggleLoader(true);
+		$.ajax({
+			url: UTIL.CFG.api_endpoint,
+			dataType: "json",
+			type: "POST",
+			data: JSON.stringify({
+				'remove' : true,
+				'working_set_id': working_set_id
+			}),
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				working_set_cache = data;
+				if(callback){
+					callback.call(window, data);
+				}
+				UI.toggleLoader(false);
+			},
+			error: function(){
+				UI.feedback("Error removing dataset", true);
+				UI.toggleLoader(false);
+			}
+		});
+	}
+
+	that.renameWorkingSet = function(working_set_id, new_name, callback){
+		UI.toggleLoader(true);
+		$.ajax({
+			url: UTIL.CFG.api_endpoint,
+			dataType: "json",
+			type: "POST",
+			data: JSON.stringify({
+				'rename' : true,
+				'new_name' : new_name,
+				'working_set_id': working_set_id
+			}),
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				if(callback){
+					callback.call(window);
+				}
+				UI.toggleLoader(false);
+			},
+			error: function(){
+				UI.feedback("Error renaming dataset", true);
+				UI.toggleLoader(false);
+			}
+		});
+	}
+
+	//downloads just dataset as CSV
+	that.downloadDatasetCSV = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+					var json = JSON.stringify(working_set);
+		})
+		var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=csv&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "text",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(data, "dataset.csv", "text/plain");
+
+			},
+			error: function(){
+				UI.feedback("Error in downloadDatasetCSV", true);
+				UI.toggleLoader(false);
+			}
+		});
+
+		//var win = window.open();
+		}
+
+
+//downloads just dataset as JSON
+	that.downloadDatasetJSON = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+					var json = JSON.stringify(working_set);
+		})
+		var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "json",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(JSON.stringify(data,undefined,2), "dataset.json", "text/plain");
+
+			},
+			error: function(){
+				UI.feedback("Error in downloadDatasetJSON", true);
+				UI.toggleLoader(false);
+			}
+		});
+
+		//var win = window.open();
+		}
+
+
+//downloads entire workflow as JSON
+	that.downloadWorkingSet = function(working_set_id){
+		that.getWorkingSet(working_set_id, function(working_set){
+      		var json = JSON.stringify(working_set);
+      		//var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
+
+		})
+		// download("hello world", "dlText.txt", "text/plain");
+		var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=false&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
+		$.ajax({
+			url: url,
+			dataType: "json",
+			type: "GET",
+			contentType:"application/json",
+			success : function(data, stat, jqXHR){
+				download(JSON.stringify(data,undefined,2), "workflow.json", "text/plain");
+
+			},
+			error: function(){
+				UI.feedback("Error in downloadWorkingSet", true);
+				UI.toggleLoader(false);
+			}
+		});
+	}
+
+	/*
+	END FUCNTIONS FOR WORKING SETS
+	 */
+
+
+
     /*
     Get all specs, build forms, set up event listeners
     */
@@ -106,9 +285,9 @@ var MainScreen = (function(){
             //show analysis/visualization buttons
             params["input"] = {};
             params['return_all_data'] = $("#allData").prop("checked") ? true : false;
-            if((type == "analysis" || type == "visualization") && UTIL.getCurrentWorkingSetID() != null){
+            if((type == "analysis" || type == "visualization") && that.getCurrentWorkingSetID() != null){
               //add current reference id
-              params["working_set_id"] = UTIL.getCurrentWorkingSetID();
+              params["working_set_id"] = that.getCurrentWorkingSetID();
             }
             for(var i = 0; i < inputs.size(); i++){
               var inp = $(inputs.get(i));
@@ -145,7 +324,7 @@ var MainScreen = (function(){
             else{
               UI.toggleLoader(true);
               //clear cache, since now working set is modified
-              UTIL.clearWorkingSetCache();
+              that.clearWorkingSetCache();
               console.log(params)
                $.ajax({
                   url: UTIL.CFG.api_endpoint,
@@ -163,9 +342,9 @@ var MainScreen = (function(){
                     showResults(data, type);
                     if(params['return_all_data']){
                       //then this can be put in cache
-                      UTIL.setCurrentWorkingSet(data, true);
+                      that.setCurrentWorkingSet(data, true);
                     } else {
-                      UTIL.setCurrentWorkingSet(data, false);
+                      that.setCurrentWorkingSet(data, false);
                     }
                     //if this was a collection type, show output meta and move onto analysis stage
                     //if this was an analysis type, show output and additional analysis options
@@ -235,7 +414,7 @@ var MainScreen = (function(){
                 type: "GET",
                 data: {'working_set_id': $("#view #refID").val(), 'returnAllData': "true"},
                 success : function(data, stat, jqXHR){
-                  UTIL.setCurrentWorkingSet(data);
+                  that.setCurrentWorkingSet(data);
                   $("#view textarea").html(JSON.stringify(data));
                 },
             });
@@ -373,7 +552,7 @@ var MainScreen = (function(){
     function handleDataButton(e){
       UI.toggleLoader(true);
       var btn = $(this);
-      UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), function(ws){
+      that.getWorkingSet(that.getCurrentWorkingSetID(), function(ws){
           var typ = btn.attr("data-type");
           var index = btn.attr("data-index");
           if(index){
@@ -481,30 +660,30 @@ var MainScreen = (function(){
     function downloadButtonFunction(downloadFunction){
       var btn = $(this);
       UI.toggleLoader(true);
-      UTIL.getWorkingSet(UTIL.getCurrentWorkingSetID(), function(ws){
+      that.getWorkingSet(that.getCurrentWorkingSetID(), function(ws){
         var typ = btn.attr("data-type");
         var index = btn.attr("data-index");
         if(index){
           index = parseInt(index);
         }
-        downloadFunction(UTIL.getCurrentWorkingSetID());
+        downloadFunction(that.getCurrentWorkingSetID());
         UI.toggleLoader(false);
       });
     }
 
 //activated when download dataset as json button is clicked
     function onDownloadDatasetJSONButtonClicked(){
-      downloadButtonFunction(UTIL.downloadDatasetJSON);
+      downloadButtonFunction(that.downloadDatasetJSON);
     }
 
 //activated when download dataset as csv button is clicked
     function onDownloadDatasetCSVButtonClicked(){
-      downloadButtonFunction(UTIL.downloadDatasetCSV);
+      downloadButtonFunction(that.downloadDatasetCSV);
     }
 
 //activated when download workflow button is clicked
     function onDownloadWorkflowButtonClicked(){
-      downloadButtonFunction(UTIL.downloadWorkingSet);
+      downloadButtonFunction(that.downloadWorkingSet);
 
     }
 
@@ -704,7 +883,7 @@ var MainScreen = (function(){
     }
 
     that.showWorkingSet = function(working_set, name){
-      UTIL.setCurrentWorkingSet(working_set);
+      that.setCurrentWorkingSet(working_set);
       //clear current working set area
       $("#workspace").empty();
       console.log(working_set);
@@ -733,7 +912,7 @@ var MainScreen = (function(){
       var box = createBox(type);
       var h2 = box.find("h2");
       if(type == "collection"){
-        UTIL.setCurrentWorkingSet(working_set);
+        that.setCurrentWorkingSet(working_set);
         //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
         h2.html("Collection");
         h2.append(" (" + setName + ")");
