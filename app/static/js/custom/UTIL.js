@@ -1,5 +1,5 @@
 /*
- * Class for general utility functions
+ * Class for general utility functions. Contains configuration
  */
 var UTIL = (function(){
 	var that = {};

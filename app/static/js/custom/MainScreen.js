@@ -1,6 +1,8 @@
 var MainScreen = (function(){
     var curChooser = null;//current field chooser
     var that = {};
+    var working_set_cache = null,
+		working_set_id = null;
     that.show = function(){
       $(".screen.main").show();
     };

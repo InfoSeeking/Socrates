@@ -1,14 +1,16 @@
 /*
  *
- * Screen for handling data-related things
+ * Screen for handling data-related things on main user UI:
+ * - Your Datasets
+ * - Import Data/Select File
+ * - Load, Rename, Export, Remove
  *
  */
 
 var DataScreen = (function(){
     var that = {};
-    var working_set_cache = null,
-		working_set_id = null;
-    
+
+
     that.show = function(){
       $(".screen.data").show();
       $.ajax({
@@ -34,7 +36,7 @@ var DataScreen = (function(){
       $(".screen.data").hide();
     };
 
-    
+
     function clearList(){
       $(".screen.data #data-list").empty();
     }
@@ -47,7 +49,7 @@ var DataScreen = (function(){
     }
 
 
-    //File selection
+    // "Select File" functionality.  Reads a file, uploads it to the server, then updates the list of available files in the "Your Datasets" interface
     function handleFileSelect(evt) {
       var file = evt.target.files[0];
       var reader = new FileReader();
@@ -85,35 +87,38 @@ var DataScreen = (function(){
 
     }
 
-    
 
-	
+
+
+
     that.init = function(){
       $(".screen.data #fileupload").on("change", handleFileSelect);
       $(".screen.data #data-list").delegate("li", "click", function(){
         $(".screen.data #data-list li").removeClass("selected");
         $(this).addClass("selected");
         showButtons();
-      })
+      });
+
       $(".screen.data [data-action=load]").on("click", function(){
         var item = $(".screen.data #data-list .selected");
         if(item.size() == 0){return;}
         //get working set
-        UTIL.getWorkingSet(item.attr("data-id"), function(working_set){
+        MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
           MainScreen.showWorkingSet(working_set, item.html());
         });
       });
+
       $(".screen.data [data-action=remove]").on("click", function(){
         var item = $(".screen.data #data-list .selected");
         if(item.size() == 0){return;}
-        UTIL.removeWorkingSet(item.attr("data-id"), function(){
+        MainScreen.removeWorkingSet(item.attr("data-id"), function(){
           item.detach();
         });
       })
       $(".screen.data [data-action=export]").on("click", function(){
         var item = $(".screen.data #data-list .selected");
         if(item.size() == 0){return;}
-        UTIL.downloadWorkingSet(item.attr("data-id"));
+        MainScreen.downloadWorkingSet(item.attr("data-id"));
       })
       $(".screen.data [data-action=rename]").on("click", function(){
         var new_name = window.prompt("New Dataset Name");
@@ -122,7 +127,7 @@ var DataScreen = (function(){
         }
         var item = $(".screen.data #data-list .selected");
         if(item.size() == 0){return;}
-        UTIL.renameWorkingSet(item.attr("data-id"), new_name, function(){
+        MainScreen.renameWorkingSet(item.attr("data-id"), new_name, function(){
           item.html(new_name);
         });
       })
