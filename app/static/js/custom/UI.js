@@ -20,7 +20,8 @@ var UI = (function(){
                 screens[i].init();
             }
         }
-        //screen independant initialization
+
+        //screen independent initialization
         $("#overlay .close").on("click", function(){
             $("#overlay").hide();
         });

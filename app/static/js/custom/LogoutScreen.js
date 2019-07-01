@@ -1,3 +1,7 @@
+/*
+ * Controls the og out functionality of the landing page (static/landing/index.html)
+ */
+
 var LogoutScreen = (function(){
     var that = {};
     that.show = function(){
@@ -14,6 +18,7 @@ var LogoutScreen = (function(){
         })
     }
 
+    // Logs out (see UI.js for more implementation details). Toggles parts of user interface CSS accordingly
     function logOut(){
       UI.setLoggedIn(false);
       UI.feedback("Logged out");

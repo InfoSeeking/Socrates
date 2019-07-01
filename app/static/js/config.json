@@ -1,4 +1,5 @@
 {
-	"api_endpoint": "http://socrates.peopleanalytics.org/socrates",
+	"api_endpoint": "http://localhost:5000/socrates",
+	"ui_endpoint": "http://localhost:5000/app",
 	"debug" : true
 };

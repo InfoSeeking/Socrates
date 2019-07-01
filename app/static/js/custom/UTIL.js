@@ -6,6 +6,7 @@ var UTIL = (function(){
 	that.CFG = {
 		api_endpoint: "http://localhost:5000/socrates",
 		login_endpoint: "http://localhost:5000/app",
+		ui_endpoint: "http://localhost:5000/app",
 		debug : true
 	};
 

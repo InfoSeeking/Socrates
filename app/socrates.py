@@ -280,7 +280,6 @@ def endpoint():
     return parse_params(params, False)
 
 @app.route("/app", methods=['GET', 'POST'])
-@app.route("/one", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         # A key error generates an HTTP 400 bad request
@@ -299,9 +298,9 @@ def dev():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('index.html', username=username, password=password)
+        return render_template('index_dev.html', username=username, password=password)
     else:
-        return render_template('index.html')
+        return render_template('index_dev.html')
 
 @app.route("/", methods=['GET'])
 def homepage():
