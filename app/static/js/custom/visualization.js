@@ -1,3 +1,9 @@
+/*
+*
+* Governs visualization in main UI
+*
+ */
+
 var VIS = (function(){
 	var that = {};
 	that.specs = {};//module list
