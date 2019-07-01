@@ -286,9 +286,9 @@ def index():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('index.html', username=username, password=password)
+        return render_template('app.html', username=username, password=password)
     else:
-        return render_template('index.html')
+        return render_template('app.html')
 
 
 @app.route("/dev", methods=['GET', 'POST'])
@@ -298,9 +298,9 @@ def dev():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('index_dev.html', username=username, password=password)
+        return render_template('app_dev.html', username=username, password=password)
     else:
-        return render_template('index_dev.html')
+        return render_template('app_dev.html')
 
 @app.route("/", methods=['GET'])
 def homepage():

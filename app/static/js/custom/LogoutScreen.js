@@ -1,5 +1,5 @@
 /*
- * Controls the log out functionality of the landing page (static/landing/index.html)
+ * Controls the log out functionality of the landing page (static/landing/app.html)
  */
 
 var LogoutScreen = (function(){

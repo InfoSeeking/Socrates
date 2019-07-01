@@ -1,5 +1,5 @@
 /*
- * Controls the log in functionality of the landing page (static/landing/index.html)
+ * Controls the log in functionality of the landing page (static/landing/app.html)
  */
 
 var LoginScreen = (function(){
