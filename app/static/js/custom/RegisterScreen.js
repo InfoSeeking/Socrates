@@ -1,3 +1,6 @@
+/*
+ * Screen for handling Registration
+ */
 var RegisterScreen = (function(){
     var that = {};
 

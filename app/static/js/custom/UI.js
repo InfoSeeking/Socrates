@@ -4,7 +4,6 @@ var UI = (function(){
     var screens = {};
     var current_screen = null;
     var fbTimer = null;
-    var curRefId = null;
     var loggedIn = false;
     var username = "";
     var password = "";
@@ -88,6 +87,8 @@ var UI = (function(){
       $("#overlay").fadeIn();
     }
 
+
+    //Toggles a loading bar when content is being loaded from the server
     that.toggleLoader = function(val){
         function animate(){
             $("#loader #fill").width(0).animate({
@@ -128,12 +129,15 @@ var UI = (function(){
         }
     }
 
+
+    // Flashes an error to the screen for 10 seconds
     that.showError = function(message){
         window.clearTimeout(fbTimer);
         fbTimer = window.setTimeout(function(){$("#feedback").fadeOut()}, 10000);
         $("#feedback").fadeIn().html(message).removeClass("suc").addClass("err");
     }
 
+    //Inserts feedback message into the #feedback-text element of the screen
     that.feedback = function(msg, err){
       if (err){
         $("#feedback-text").html("<p>" + msg + "</p>");
@@ -146,6 +150,9 @@ var UI = (function(){
       }
     }
 
+
+
+    // Toggle some interface bits (and set local storage of window) when logged in
     that.setLoggedIn = function(val, u, p){
         loggedIn = val;
         if (val && u && p) {
