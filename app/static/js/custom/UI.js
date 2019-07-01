@@ -65,10 +65,7 @@ var UI = (function(){
         }
     };
 
-    function updateNav(){
-
-    };
-
+    // Toggle between different screens. Val function depends on context in which it is used (see LoginScreen.js/LogoutScreen.js)
     that.switchScreen = function(val){
         if(screens.hasOwnProperty(val)){
             var new_screen = screens[val];
@@ -83,7 +80,7 @@ var UI = (function(){
     };
     
     /*
-    show overlay with html and center
+    show overlay with html and center. Overlaid on top of current screen (see example usage in MainScreen.js)
     */
     that.overlay = function(html, classname, title){
       $("#overlay span").html(title).removeClass().addClass(classname);
