@@ -30,7 +30,7 @@ SPECS = {
                 },
                 'returns': {
                     'id': 'numeric',
-                    'category': 'text',
+                    #'category': 'text',
                     'name': 'text'
             }
     }
@@ -68,7 +68,7 @@ def facebook_search(param=False):
         row = {}
         row['id'] = item['id']
         row['name'] = item['name']
-        row['category'] = item['category']
+        #row['category'] = item['category']
         data.append(row)
         count = count + 1
         if count >= max:
