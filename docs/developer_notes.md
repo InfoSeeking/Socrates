@@ -5,7 +5,7 @@ TBD
 
 # Folder Structure # 
 
-- **app/example_params**:
+- **app/example_params**: 
 - **app/logs**: Can be used to log Flask errors (as .log files). Not used in dev
 - **app/modules**:
 - **app/parameters**: Make sure this directory is write-accessible from apache on Socrates' server.
@@ -22,5 +22,9 @@ TBD
 # Analysis Modules #
 
 TBD 
+
+# API References and Notes #
+
+TBD: Insert links to external API references here. Also insert other notes (e.g., required permissions)
 
 <small>Contact Kevin Albertson @kevinAlbs for questions.</small>
