@@ -23,6 +23,10 @@ TBD
 
 TBD 
 
+# Database Schema #
+
+TBD
+
 # API References and Notes #
 
 TBD: Insert links to external API references here. Also insert other notes (e.g., required permissions)
