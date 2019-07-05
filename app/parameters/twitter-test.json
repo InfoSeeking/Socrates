@@ -1,1 +1,16 @@
-{"type":"collection","module":"twitter","function":"twitter_search","working_set_name":"Untitled","input":{"query":"","count":"50","latitude":"","longitude":"","radius":"","lang":"en"},"return_all_data":"false","username":"test","password":"test"}
+{
+  "type":"collection",
+  "module":"twitter",
+  "function":"twitter_search",
+  "working_set_name":"Untitled",
+  "input":{
+    "query":"",
+    "count":"50",
+    "latitude":"",
+    "longitude":"",
+    "radius":"",
+    "lang":"en",
+  },
+  "return_all_data":"false",
+  "username":"test","password":"test",
+}
