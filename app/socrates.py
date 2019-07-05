@@ -291,6 +291,13 @@ def index():
         return render_template('app.html')
 
 
+# Returns config file for UTIL.js
+@app.route("/config", methods=['GET'])
+def config():
+    with open('static/js/custom/config.json') as f:
+        return json.dumps(json.load(f))
+
+
 @app.route("/dev", methods=['GET', 'POST'])
 def dev():
     if request.method == 'POST':
