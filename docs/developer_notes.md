@@ -76,25 +76,20 @@ These modules rely on the configuration specified in `config.py`. If you require
 
 The following is an overview of each table in the MongoDB database, including
 
-- **actions**: 
-- **log**: 
-- **users**: 
-- **working_set**: 
-
-
-# Analysis Modules #
-
+- **log**: A log of workspace-related actions.  Keys are: `namespace` (current value is `'run'`), `type` (`'collection'` or `'analysis''`), `module` (the name of the module - e.g. `'twitter'`), `function` (the name of the function - e.g. `'twitter_search''`), and `user_id` (the user's ID)
+- **users**: The users.  Keys are:`_id` (the user's ID, which is unique), `username` (the username), `hashed_password` (The SHA1-encrypted version of the password.) 
+- **working_set**: Each working set that has been run.  Used to store, retrieve, and share working sets. Keys are: `_id` (the working set's ID), `user_id` (the user ID of the creator), `analysis` (if an analysis was done, contains the results of the analysis), `meta` (contains column names for the data), `input` (contains the inputs that generated the data), `working_set_id` (same as `_id`), and `data` (the data, with columns corresponding to `meta`)
 
 
 # External API References #
 
-The following are external JS libraries used here, and external:
+The following are external JS libraries used here (found in `app/static/js/external`):
 
-- [a]()
-- [a]()
-- [a]()
-- [a]()
-- [a]()
-- [a]()
+- [Bootstrap](https://getbootstrap.com/) - To create a flexible, extensible UI.
+- [Chart.js](https://www.chartjs.org/) - To support visualizations of analyses and explorations. 
+- [d3.js](https://d3js.org/) - To support visualizations of analyses and explorations.
+- [download.js](http://danml.com/download.html) - To support the download of workflows as files.
+- [jQuery](https://jquery.com/) - To simplify JS code
+
 
 <small>Contact Kevin Albertson @kevinAlbs for questions.</small>
