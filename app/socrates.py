@@ -244,30 +244,6 @@ def parse_params(parameters, ip=False):
         sys.stderr.write("Exception caught: %s\n" % e)
         sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
 
-
-'''
-save actions and insert into mongodb table
-INPUT: string of input that was logged and needs to be saved
-OUTPUT: if entered into table then prints "attempted: True"
-'''
-def save_action(input_params):
-    # Look at parse_params and user.py's authenticate function. make a function in actions.py and import actions
-    try:
-        client = MongoClient()
-        db = client.socrates
-
-        result = "{}" #string result from each run-type to print at the end
-        working_set = None
-        working_set_id = -1
-        working_set_name = "Untitled"
-
-        db.actions.insert_one({"input_params": input_params, "local_timestamp": input_params["localTimestamp"]})
-        return json.dumps({"attempted": True})
-    except Exception as e:
-        sys.stderr.write("Exception caught: %s\n" % e)
-        sys.stderr.write("Stack trace:\n%s\n" % traceback.format_exc())
-        return _err("Action Not Saved")
-
 app = Flask(__name__)
 @app.route("/socrates", methods=["GET", "POST"])
 def endpoint():
@@ -291,6 +267,13 @@ def index():
         return render_template('app.html')
 
 
+# Returns config file for UTIL.js
+@app.route("/config", methods=['GET'])
+def config():
+    with open('static/js/custom/config.json') as f:
+        return json.dumps(json.load(f))
+
+
 @app.route("/dev", methods=['GET', 'POST'])
 def dev():
     if request.method == 'POST':
@@ -305,13 +288,6 @@ def dev():
 @app.route("/", methods=['GET'])
 def homepage():
     return app.send_static_file('landing/index.html')
-
-@app.route("/socrates/action",methods=['POST'])
-def log_action():
-    params = request.get_json(silent=True)
-    if not params:
-        return _err("Cannot parse JSON request")
-    return save_action(params)
 
 
 def init():

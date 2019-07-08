@@ -1,0 +1,6 @@
+{
+	"api_endpoint": "http://myhostname:myhostip/socrates",
+	"login_endpoint": "http://myhostname:myhostip/app",
+	"ui_endpoint": "http://myhostname:myhostip/app",
+	"debug": true
+}

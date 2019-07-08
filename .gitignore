@@ -13,3 +13,4 @@ migration/*
 .idea/inspectionProfiles/Project_Default.xml
 .idea/encodings.xml
 .idea/deployment.xml
+app/static/js/custom/config.json

@@ -6,10 +6,10 @@ var UTIL = (function(){
 
 
 	that.CFG = {
-		api_endpoint: "http://localhost:5000/socrates",
-		login_endpoint: "http://localhost:5000/app",
-		ui_endpoint: "http://localhost:5000/app",
-		debug : true
+		api_endpoint: "",
+		login_endpoint: "",
+		ui_endpoint: "",
+		debug : false
 	};
 
 
@@ -21,5 +21,23 @@ var UTIL = (function(){
         return false;
       }
     }
+
+    $.ajax({
+		url:"/config",
+		async:false,
+		success:function(json) {
+			json = JSON.parse(json);
+			console.log(json);
+			console.log("obtained");
+			that.CFG.api_endpoint = json.api_endpoint;
+			that.CFG.login_endpoint = json.login_endpoint;
+			that.CFG.ui_endpoint = json.ui_endpoint;
+			that.CFG.debug = json.debug;
+			console.log(that);
+
+		}
+	});
+
 	return that;
-}());
+
+})();

@@ -42,6 +42,44 @@ def register(u, p):
     db.users.insert_one({"username": u, "hashed_password": hashed})
     return True
 
+
+# TODO: Temp code by Niranjana. May not be necessary
+# def putWorkflow(workflowData):
+#     now = datetime.datetime.now()
+#     timestamp = str(now)
+#
+#     data = [{"author": username}, {"date": timestamp}, {"collaborators": "Jack, Jill"}]
+#     for x in range(0, len(workflowData)):
+#         data.append(workflowData[x])
+#
+#         # print "checking contents of data: " + json.dumps(data)
+#
+#     result = {}
+#     for d in data:
+#         result.update(d)
+#
+#     print
+#     "checking contents of result: " + json.dumps(result)
+#
+#     # db.workflows.insert_many(data)
+#     db.workflows.insert_one(result)
+#     return True
+#
+#
+# def getWorkflow():
+#     # pdb.set_trace()
+#     print
+#     "inside user getWorkflow"
+#     print
+#     "username: " + username
+#     # print "contents: " + dumps(list(db.workflows.find({"author": username})))
+#
+#     for workflow in db.workflows.find({"author": username}):
+#         pprint.pprint(workflow)
+#
+#     return "hi"
+#     # return dumps(list(db.workflows.find({"author": username})))
+
 def getWorkingSet(working_set_id):
     working_set = db.working_set.find_one({"_id" : ObjectId(working_set_id)})
     del working_set['_id']

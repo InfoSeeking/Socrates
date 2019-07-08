@@ -201,6 +201,7 @@ var MainScreen = (function(){
     Get all specs, build forms, set up event listeners
     */
     that.init = function(){
+        console.log("hello");
       UI.toggleLoader(true);
       $.ajax({
         url: UTIL.CFG.api_endpoint,
