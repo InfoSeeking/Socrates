@@ -44,8 +44,8 @@ var DataScreen = (function(){
       $(".screen.data .data-buttons").fadeIn();
     }
     function addWorkingSet(id, name){
-      var item = $("<li data-id='" + id + "'><span class='name'>" + name + "</span></li>");
-      $(".screen.data #data-list").append(item);
+      var item = $("<li data-id='" + id + "'><a href='#' class='name'>" + name + "</a></li>");
+      $("#data-list, #dataset-list").append(item);
     }
 
 
@@ -91,47 +91,64 @@ var DataScreen = (function(){
 
 
 
-    that.init = function(){
-      $(".screen.data #fileupload").on("change", handleFileSelect);
-      $(".screen.data #data-list").delegate("li", "click", function(){
-        $(".screen.data #data-list li").removeClass("selected");
-        $(this).addClass("selected");
-        showButtons();
-      });
+  that.init = function(){
+    $(".screen.data #fileupload").on("change", handleFileSelect);
 
-      $(".screen.data [data-action=load]").on("click", function(){
-        var item = $(".screen.data #data-list .selected");
-        if(item.size() == 0){return;}
-        //get working set
-        MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
-          MainScreen.showWorkingSet(working_set, item.html());
-        });
+    $(".screen.data #data-list").delegate("li", "click", function(){
+      $(".screen.data #data-list li").removeClass("selected");
+      $(this).addClass("selected");
+      var item = $(".screen.data #data-list .selected");
+      if(item.size() == 0){return;}
+      //get working set
+      MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
+        MainScreen.showWorkingSet(working_set, item.html());
       });
+    });
 
-      $(".screen.data [data-action=remove]").on("click", function(){
-        var item = $(".screen.data #data-list .selected");
-        if(item.size() == 0){return;}
-        MainScreen.removeWorkingSet(item.attr("data-id"), function(){
-          item.detach();
-        });
-      })
-      $(".screen.data [data-action=export]").on("click", function(){
-        var item = $(".screen.data #data-list .selected");
-        if(item.size() == 0){return;}
-        MainScreen.downloadWorkingSet(item.attr("data-id"));
-      })
-      $(".screen.data [data-action=rename]").on("click", function(){
-        var new_name = window.prompt("New Dataset Name");
-        if(new_name.trim() == ""){
-          return;
-        }
-        var item = $(".screen.data #data-list .selected");
-        if(item.size() == 0){return;}
-        MainScreen.renameWorkingSet(item.attr("data-id"), new_name, function(){
-          item.html(new_name);
-        });
-      })
-    }
+    $(".screen.data #dataset-list").delegate("li", "click", function(){
+      $(".screen.data #dataset-list li").removeClass("selected");
+      $(this).addClass("selected");
+      var item = $(".screen.data #dataset-list .selected");
+      if(item.size() == 0){return;}
+      //get working set
+      MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
+        MainScreen.showDataset(working_set);
+      });
+    });
+
+    $(".screen.data [data-action=load]").on("click", function(){
+      var item = $(".screen.data #data-list .selected");
+      if(item.size() == 0){return;}
+      //get working set
+      MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
+        MainScreen.showWorkingSet(working_set, item.html());
+      });
+    });
+
+    $(".screen.data [data-action=remove]").on("click", function(){
+      var item = $(".screen.data #data-list .selected");
+      if(item.size() == 0){return;}
+      MainScreen.removeWorkingSet(item.attr("data-id"), function(){
+        item.detach();
+      });
+    })
+    $(".screen.data [data-action=export]").on("click", function(){
+      var item = $(".screen.data #data-list .selected");
+      if(item.size() == 0){return;}
+      MainScreen.downloadWorkingSet(item.attr("data-id"));
+    })
+    $(".screen.data [data-action=rename]").on("click", function(){
+      var new_name = window.prompt("New Dataset Name");
+      if(new_name.trim() == ""){
+        return;
+      }
+      var item = $(".screen.data #data-list .selected");
+      if(item.size() == 0){return;}
+      MainScreen.renameWorkingSet(item.attr("data-id"), new_name, function(){
+        item.html(new_name);
+      });
+    })
+  }
 
     return that;
 }());

@@ -44,7 +44,7 @@ var RegisterScreen = (function(){
     }
 
     that.init = function(){
-      // $("#register-btn").click(register);
+      //$("#register-btn").click(that.register);
       $("#register-back-btn").click(function(){UI.switchScreen("login")});
     }
 

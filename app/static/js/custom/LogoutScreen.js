@@ -14,6 +14,7 @@ var LogoutScreen = (function(){
 
     that.init = function(){
         $("#logout-btn").click(function(){
+            $(".screen.logout").hide();
             logOut();
         })
     }

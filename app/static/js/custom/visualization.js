@@ -20,7 +20,7 @@ var VIS = (function(){
 	};
 	that.callFunction = function(display, mod, fnName, param, callback){
 		//get working_set
-		UTIL.getWorkingSet(param['working_set_id'], function(ws){
+		MainScreen.getWorkingSet(param['working_set_id'], function(ws){
 			try{
 				//set data-vis class to <mod>-<fn>
 				d3.select(display).attr("data-vis", mod + "-" +fnName);
@@ -41,6 +41,7 @@ var VIS = (function(){
 	var specs = {
 		"functions": {
 			"histogram": {
+				'name': 'Histogram',
 				"param" : {
 					"field" : {
 						'type' : 'field_reference numeric',
@@ -53,6 +54,7 @@ var VIS = (function(){
 				}
 			},
 			"scatterplot" : {
+				'name': 'Scatterplot',
 				"param" : {
 					"x-field" : {
 						"type" : "field_reference numeric",
@@ -65,6 +67,7 @@ var VIS = (function(){
 				}
 			},
 			"piechart" : {
+				'name': 'Piechart',
 				"param" : {
 					"field" : {
 						"type" : "field_reference text",
@@ -73,6 +76,7 @@ var VIS = (function(){
 				}
 			},
 			"regression" : {
+				'name': 'Regression',
 				"param" : {
 					"x-field" : {
 						"type" : "field_reference numeric",
@@ -89,6 +93,7 @@ var VIS = (function(){
 	VIS.addModule("graph", specs);
 
 	var fn = function(display, working_set, param){
+		console.log(working_set);
 		var data = working_set.data;
 		var out = "";
 		var values = param['field'];

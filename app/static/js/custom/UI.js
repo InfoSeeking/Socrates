@@ -47,7 +47,7 @@ var UI = (function(){
             }
         })
 
-        $("#data-btn").click(function(){
+        $("#data-btn, #dataset-btn").click(function(){
             if (UI.isLoggedIn()){
                 UI.switchScreen("data");
             }
@@ -68,16 +68,19 @@ var UI = (function(){
     that.switchScreen = function(val){
         if(screens.hasOwnProperty(val)){
             var new_screen = screens[val];
-            new_screen.show();
-            if(current_screen && current_screen != new_screen){
-                current_screen.hide();
+            if(val == "login"){
+                $(".screen.main, .screen.data, .screen.logout, .screen.register").hide();
             }
+            /*else if(val == "register") {
+                $(".screen.main, .screen.data, .screen.logout, .screen.login").hide();
+            }*/
+            new_screen.show();
             current_screen = new_screen;
         } else {
             throw "Screen " + val + " does not exist";
         }
     };
-    
+
     /*
     show overlay with html and center. Overlaid on top of current screen (see example usage in MainScreen.js)
     */
@@ -156,8 +159,9 @@ var UI = (function(){
     that.setLoggedIn = function(val, u, p){
         loggedIn = val;
         if (val && u && p) {
-            $("#data-btn").removeClass("inactive");
-            $("#home-btn").removeClass("inactive");
+            $(".screen.main .type-instructions.collection").show();
+            //$("#data-btn").removeClass("inactive");
+            //$("#home-btn").removeClass("inactive");
             username = u;
             password = p;
             if(UTIL.supports_html5_storage()){

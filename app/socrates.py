@@ -53,12 +53,34 @@ It will store/retrieve stored collection data
 '''
 def run(typ, mod, fn, param, working_set=None):
     is_new = False
+    if typ == 'visualization':
+        print('visualization loading')
+        print('param: ', param)
+        is_new = False
+        vis_data = {
+            'function': fn,
+            'input': param
+        }
+        print('input: ', vis_data['input'])
+        if working_set is None:
+            return _err("Data not provided")
+        if 'visualization' in working_set:
+            working_set['visualization'].append(vis_data)
+        else:
+            working_set['visualization'] = [vis_data]
+
+        return (working_set, is_new)
+
     if typ in MODULE_LIST and mod in MODULE_LIST[typ]:
         #get module/function references
         callingTyp = getattr(modules, typ)
         callingMod = getattr(callingTyp, mod)
         callingFn = getattr(callingMod, fn)
+        print('callingFn: ', callingFn)
+        print('\n')
         fn_specs = callingMod.SPECS['functions']
+        print('fn_specs: ', fn_specs)
+        print('\n')
         #validate parameters from constraints
         if enforceAndConvert(param, fn_specs[fn]['param'], working_set) is False:
             return _err("Parameters are not valid") #get better error from constraint function
@@ -71,6 +93,7 @@ def run(typ, mod, fn, param, working_set=None):
                 return _err("Data not provided")
             is_new = False
             results = callingFn(working_set, param)
+            print('results: ', results)
             if 'aggregate_result' in fn_specs[fn]:
                 results['aggregate_meta'] = fn_specs[fn]['aggregate_result']
             if 'entry_result' in fn_specs[fn]:
@@ -83,10 +106,26 @@ def run(typ, mod, fn, param, working_set=None):
             is_new = True
             data = callingFn(param)
             working_set = {
-                'data' : data, #only if specified
-                'meta' : fn_specs[fn]['returns'],
-                'input' : param
+                'data': data, #only if specified
+                'meta': fn_specs[fn]['returns'],
+                'input': param
                 }
+        '''if typ == 'visualization':
+            print('visualization loading')
+            print('param: ', param)
+            is_new = False
+            vis_data = {
+                'function': fn,
+                'input': param
+            }
+            print('input: ', vis_data['input'])
+            if working_set is None:
+                return _err("Data not provided")
+            if 'visualization' in working_set:
+                working_set['visualization'].append(vis_data)
+            else:
+                working_set['visualization'] = [vis_data]'''
+
         return (working_set, is_new)
     return (None, False)
 
