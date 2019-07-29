@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+body {
+    font-family: 'Lato', sans-serif;
+    background: #fafafa;
+}
+#logo {
+    max-width: 110px;
+    max-height: 100px;
+    position: relative;
+    top: 50px;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+/*p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}*/
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #00aeef;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #00aeef;
+}
+
+#sidebar ul.components {
+    padding: 0 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #099ce8;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #099ce8;
+}
+.screen.login, .screen.register {
+    padding: 10px;
+}
+
+.screen.login .btn, .screen.register .btn {
+    margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: calc(100% - 250px);
+    padding: 40px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#content.active {
+    width: 100%;
+}
+
+.settingbtn{
+    margin-bottom: 30px;
+    background-color: blue;
+}
+
+#forms-c .function, #forms-a .function, #forms-v .function{
+	display: none;
+    margin: 15px;
+}
+
+.btn {
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+
+#overlay {
+    display:none;
+}
+.table {
+    width:inherit;
+    max-height: 50vh;
+}
+
+.type-instructions.analysis, .type-instructions.visualization{
+    display:none;
+}
+
+#next-buttons {
+    display:none;
+}
+
+.selected {
+    background-color: yellow;
+    cursor: pointer;
+
+}
+
+form input[type=text], form input[type=number], form .fieldChooser{
+	border-radius: 4px;
+	border: none;
+	background: #908f8f;
+	outline: none;
+	padding: 3px 6px;
+}
+form .fieldChooser{
+	cursor: pointer;
+}
+form .fieldChooser:hover{
+	background: #B3B3B3;
+}
+
+#intro {
+    margin: 20px;
+}
+
+#clearDashboard {
+    position: fixed;
+    right: 20px;
+    top: 10px;
+}
+
+#sidebarCollapse {
+    position: fixed;
+    top: 10px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - 250px);
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+    #clearDashboard {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------
+    MAIN CONTENT
+----------------------------------------------------- */
+
+.type-instructions.analysis .card, .type-instructions.visualization .card {
+    display:none;
+}
+
+.type-instructions.analysis i, .type-instructions.visualization i {
+    margin: 15px;
+    color: green;
+}
+
+.mod i {
+    margin-right: 10px;
+}
+
+
+.table-fixed-head {
+    overflow-y: auto; height: 100px;
+}
+
+.table-fixed-head thead th {
+    position: sticky; top: 0;
+}
