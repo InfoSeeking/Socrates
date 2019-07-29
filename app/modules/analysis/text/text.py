@@ -6,6 +6,7 @@ SPECS = {
 	'description' : 'Provides functions for textual analysis',
 	'functions' : {
 		'word_count' : {
+            'name': 'Word Count',
 			'param': {
 				'field': {
 					'type' : 'field_reference text',
@@ -27,6 +28,7 @@ SPECS = {
 			}
 		},
 		'sentiment' : {
+            'name': 'Sentiment',
 			'param' : {
 				'field': {
 					'type' : 'field_reference text',

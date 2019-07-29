@@ -9,6 +9,7 @@ SPECS = {
 	'description' : 'Fetching comments from Flickr',
 	'functions': {
 		'photo_comments':{
+			'name': 'Photo Comments',
 			'param': {
 				"photo_id" : {
 					"type" : "text",

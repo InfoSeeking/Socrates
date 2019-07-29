@@ -15,6 +15,7 @@ except ImportError:
 SPECS = {
     "functions": {
         "searchVideos": {
+            'name': 'Search Videos',
             "param_order": ["query", "order"],
             "param": {
                 "query": {
@@ -45,6 +46,7 @@ SPECS = {
         },
 
         "searchComments": {
+            'name': 'Search Comments',
             "param": {
                 "video_ID": {
                     "type": "text",

@@ -13,6 +13,7 @@ import os
 SPECS = {
     'functions': {
             'twitter_search' : {
+                'name': 'Twitter Search',
                 #as a workaround for Python's reordering of dictionary keys (instead of making things even more verbose) I think the best option is to specify ordering
                 'param_order': ['query', 'count', 'lang', 'latitude', 'longitude', 'radius'],
                 'param' : {

@@ -4,6 +4,7 @@ SPECS = {
 	'description' : 'Provides functions for statistical analysis',
 	'functions' : {
 		"gen_math" :{
+			'name': 'General Math',
 			'param_order': ['formula', 'xParam'],
 			'param': {
 				'formula': {
@@ -22,6 +23,7 @@ SPECS = {
 	
 				
 		'basic' : {
+			'name': 'Basic',
 			'param': {
 				'field': {
 					'type' : 'field_reference numeric',
@@ -38,6 +40,7 @@ SPECS = {
 			}
 		},
 		"binary_operation" : {
+			'name': 'Binary Operation',
 			'param_order': ['field_1', 'operation', 'field_2'],
 			'param': {
 				'field_1': {
@@ -60,6 +63,7 @@ SPECS = {
 			}
 		},
 		"correlation" : {
+			'name': 'Correlation',
 			'param': {
 				'field_1': {
 					'type' : 'field_reference numeric',
@@ -75,6 +79,7 @@ SPECS = {
 			}
 		},
 		"regression": {
+			'name': 'Regression',
 			'param': {
 				'field_1': {
 					'type': 'field_reference numeric',

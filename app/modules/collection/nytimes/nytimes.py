@@ -13,6 +13,7 @@ SPECS = {
     'description' : 'Fetching comments from NY Times',
         'functions': {
             'comments_by_URL':{
+                'name': 'Comments By URL',
                 'param': {
                     "submission_url" : {
                         "type": "text",
@@ -45,6 +46,7 @@ SPECS = {
                 }
             },
             'article_search' : {
+                'name': 'Search Articles',
                 'param' : {
                     'query' : {
                         "type" : "text",

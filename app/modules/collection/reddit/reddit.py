@@ -8,6 +8,7 @@ SPECS = {
         'description' : 'Scraping data from Reddit',
         'functions': {
             'fetchPosts' : {
+                'name': 'Fetch Posts',
                 'param': {
                     'sub' : {
                         'type' : 'text',
@@ -41,6 +42,7 @@ SPECS = {
                     },
                 },
             'fetchComments':{
+                'name': 'Fetch Comments',
                 'param': {
                     "submission_id" : {
                         "type" : "text",
@@ -67,6 +69,7 @@ SPECS = {
                     }
                 },
             'searchPosts': {
+                'name': 'Search Posts',
                 'param': {
                     'query': {
                         'type': 'text',
