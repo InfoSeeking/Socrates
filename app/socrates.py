@@ -207,6 +207,7 @@ def parse_params(parameters, ip=False):
             #add if statement here to check for datasetonly parameter
             if 'datasetonly' in parameters and parameters['datasetonly']=='true':
                 working_set.pop("analysis",None)
+                working_set.pop("visualization", None)
             #check format parameter
             if 'format' in parameters and parameters['format']=='csv':
                 return pd.io.json.json_normalize(working_set['data']).to_csv(encoding='utf-8')
