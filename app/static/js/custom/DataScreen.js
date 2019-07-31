@@ -34,9 +34,13 @@ var DataScreen = (function(){
         }),
         success: function(data){
           clearList();
+
+
           for(var i = 0; i < data.ids.length; i++){
             addWorkingSet(data.ids[i]["id"], data.ids[i]["name"], data.ids[i]["function"]);
           }
+
+
         }
       })
     };

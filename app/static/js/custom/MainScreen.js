@@ -601,6 +601,7 @@ var MainScreen = (function(){
     };
 
      function showDataset(working_set){
+         console.log('showDataset');
         $("#intro").hide();
         var ws = working_set;//easier
         var aData = ws['analysis'];
@@ -652,6 +653,7 @@ var MainScreen = (function(){
         //now add rows
         var html = $("<table class='table table-hover table-responsive'></table>").empty().append(thead).append(tbody);
         UI.overlay(html, "data", "Your Data");
+        console.log("UI.overlay showDataset");
     }
 
 
@@ -1880,7 +1882,7 @@ var MainScreen = (function(){
         //form.append("<input type='submit' class='button' />");
         if (type == "collection"){
             //injection of dataset name field (ehh...)
-            form.prepend("<div class='form-group row'><label for='setName' class='col-sm-4 col-form-label'>Dataset Name</label><div class='col-sm-8'><input type='text' class='form-control' id='setName' value='Untitled' aria-describedby='optional'><small id='optional' class='text-muted'>optional</small></div></div>")
+            form.prepend("<div class='form-group row'><label for='setName' class='col-sm-4 col-form-label'>Dataset Name</label><div class='col-sm-8'><input type='text' class='form-control' id='setName' value='Untitled' aria-describedby='optional'></div></div>")
         }
         return form;
     }

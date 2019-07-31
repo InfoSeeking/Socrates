@@ -38,7 +38,6 @@ var LoginScreen = (function(){
             dataType: "json",
             contentType: "application/json",
             success : function(data, status){
-                console.log(data);
                 if (data.error){
                     alert("Wrong username or password.");
                 }
