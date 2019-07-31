@@ -20,6 +20,7 @@ import modules
 import sys
 import traceback
 import user
+import os
 
 
 def _err(msg):
@@ -110,21 +111,6 @@ def run(typ, mod, fn, param, working_set=None):
                 'meta': fn_specs[fn]['returns'],
                 'input': param
                 }
-        '''if typ == 'visualization':
-            print('visualization loading')
-            print('param: ', param)
-            is_new = False
-            vis_data = {
-                'function': fn,
-                'input': param
-            }
-            print('input: ', vis_data['input'])
-            if working_set is None:
-                return _err("Data not provided")
-            if 'visualization' in working_set:
-                working_set['visualization'].append(vis_data)
-            else:
-                working_set['visualization'] = [vis_data]'''
 
         return (working_set, is_new)
     return (None, False)
@@ -309,7 +295,9 @@ def index():
 # Returns config file for UTIL.js
 @app.route("/config", methods=['GET'])
 def config():
-    with open('static/js/custom/config.json') as f:
+    filename = os.path.join(app.root_path, 'static/js/custom/config.json')
+    return filename
+    with open(filename) as f:
         return json.dumps(json.load(f))
 
 
@@ -324,7 +312,7 @@ def dev():
     else:
         return render_template('app_dev.html')
 
-@app.route("/", methods=['GET'])
+@app.route("/", methods=['GET', 'POST'])
 def homepage():
     return app.send_static_file('landing/index.html')
 
