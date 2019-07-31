@@ -139,6 +139,10 @@ ul ul a {
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
+.alert {
+    z-index: 9999;
+    opacity: 0.9;
+}
 
 #content {
     width: calc(100% - 250px);
@@ -164,7 +168,7 @@ ul ul a {
     margin: 15px;
 }
 
-.btn {
+button.options {
     margin-right: 10px;
     margin-bottom: 20px;
 }

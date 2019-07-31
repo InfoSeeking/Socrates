@@ -45,8 +45,9 @@ var LoginScreen = (function(){
                 }
                 else {
                     UI.setLoggedIn(true, uinput, pinput);
-                    $(".screen.logout").show();
                     window.location.href = UTIL.CFG.ui_endpoint;
+                    $(".screen.logout").show();
+
                 }
             }
         });
