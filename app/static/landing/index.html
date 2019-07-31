@@ -148,7 +148,7 @@
 					</div>
 
 					<div class="form" id="login_form">
-					<form method="POST" style="display:block">
+					<form style="display:block">
                         <h2>Login to SOCRATES</h2>
 						<input type="text" name="username" placeholder="Username" class="login-field" id="login-name"/>
 						<input type="password" name="password" placeholder="Password" class="login-field" id="login-password"/>
@@ -429,10 +429,10 @@
             RegisterScreen.register(uinput, pinput);
         }
         $(document).ready(function(){
-            $("#login_form").attr('action',UTIL.CFG.login_endpoint);
+            /*$("#login_form").attr('action',UTIL.CFG.login_endpoint);
             $('.carousel').carousel({
                 interval: 5000 //changes the speed
-            })
+            })*/
 
             $(".toggle").click(function(){
                 var register_text = $('#register_pen_text').html();

@@ -5,10 +5,17 @@ var UTIL = (function(){
 	var that = {};
 
 
+	/*that.CFG = {
+		api_endpoint: "http://socrates.peopleanalytics.org/socrates",
+		login_endpoint: "http://socrates.peopleanalytics.org/dev",
+		ui_endpoint: "http://socrates.peopleanalytics.org/dev",
+		debug : false
+	};*/
+
 	that.CFG = {
-		api_endpoint: "",
-		login_endpoint: "",
-		ui_endpoint: "",
+		api_endpoint: "http://localhost:5000/socrates",
+		login_endpoint: "http://localhost:5000/dev",
+		ui_endpoint: "http://localhost:5000/dev",
 		debug : false
 	};
 
@@ -22,7 +29,7 @@ var UTIL = (function(){
       }
     }
 
-    $.ajax({
+    /*$.ajax({
 		url:"/config",
 		async:false,
 		success:function(json) {
@@ -36,7 +43,7 @@ var UTIL = (function(){
 			console.log(that);
 
 		}
-	});
+	});*/
 
 	return that;
 

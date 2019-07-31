@@ -23,7 +23,7 @@ var DataScreen = (function(){
           "password" : UI.getPassword(),
           "fetch_all_ids" : true
         }),
-        success: function(data, jqxhr){
+        success: function(data){
           clearList();
           for(var i = 0; i < data.ids.length; i++){
             addWorkingSet(data.ids[i]["id"], data.ids[i]["name"], data.ids[i]["function"]);
@@ -38,7 +38,7 @@ var DataScreen = (function(){
 
 
     function clearList(){
-      $(".screen.data #data-list").empty();
+      $(".screen.data #data-list, #dataset-list").empty();
     }
     function showButtons(){
       $(".screen.data .data-buttons").fadeIn();
@@ -101,18 +101,18 @@ var DataScreen = (function(){
       if(item.size() == 0){return;}
       //get working set
       MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
-        MainScreen.showWorkingSet(working_set, item.html());
+        MainScreen.showSavedWorkFlow(working_set);
       });
     });
 
     $(".screen.data #dataset-list").delegate("li", "click", function(){
       $(".screen.data #dataset-list li").removeClass("selected");
       $(this).addClass("selected");
-      var item = $(".screen.data #dataset-list .selected");
+      var item = $("#dataset-list .selected");
       if(item.size() == 0){return;}
       //get working set
       MainScreen.getWorkingSet(item.attr("data-id"), function(working_set){
-        MainScreen.showDataset(working_set);
+        MainScreen.showSavedDataset(working_set);
       });
     });
 
