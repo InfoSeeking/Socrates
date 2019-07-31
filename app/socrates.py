@@ -309,9 +309,9 @@ def dev():
         # which is appropriate if username/password are missing
         username = request.form['username']
         password = request.form['password']
-        return render_template('app_dev.html', username=username, password=password)
+        return render_template('app.html', username=username, password=password)
     else:
-        return render_template('app_dev.html')
+        return render_template('app.html')
 
 @app.route("/", methods=['GET', 'POST'])
 def homepage():

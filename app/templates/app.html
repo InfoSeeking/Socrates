@@ -2,36 +2,162 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>SOCRATES</title>
     <meta name="description" content="">
     <meta name="author" content="Kevin Albertson">
-    <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link href="/static/css/base-style.css" type="text/css" rel="stylesheet" />
-    <link href="/static/css/advanced-interface.css" type="text/css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:400,700' rel='stylesheet'  type='text/css'>
+
+    <!--<link href="/static/css/base-style.css" type="text/css" rel="stylesheet" />
+    <link href="/static/css/advanced-interface.css" type="text/css" rel="stylesheet" />-->
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- css -->
+    <link href="/static/css/base-style.css" type="text/css" rel="stylesheet">
+    <!-- Font Awesome JS -->
+    <script src="https://kit.fontawesome.com/11bd105b53.js"></script>
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <!--Chart.js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
 <body>
-
-<div id="loader"><div id="fill"></div></div>
-<div id="overlay">
-    <h2><span>Data View</span> <a href="#" class="close">Close</a></h2>
-    <div class="content">
-        <table></table>
-    </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>SOCRATES has been updated!</strong> Please enjoy the new version of this software.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
-<div id="container">
-    <div id="wrapper">
-        <!--<a id="two" href="/app">Try out SOCRATES 2.0 &raquo;</a>-->
-        <div class="btn-group">
-            <button id="datasetjson" class="button">Download Dataset as JSON &#8681;</button>
-            <button id="datasetcsv" class="button">Download Dataset as CSV &#8681;</button>
-            <button id="entireworkflow" class="button">Download Workflow &#8681;</button>
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <img id="logo" src="/static/img/logo1.png">
         </div>
-        <p id="last-modified"></p>
-        <div id="workspace">
+        <div class="screen login" style="display:none;">
+            <form>
+                <div class="form-group row">
+                    <label for="login-name" class="col-sm-4 col-form-label">Username</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="login-name" placeholder="Username">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="login-password" class="col-sm-4 col-form-label">Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="login-password" placeholder="Password">
+                    </div>
+                </div>
+                <button type="submit" class="login-btns btn btn-primary" id="login-submit-btn">Log in</button>
+                <!--<button type="submit" class="sub-link btn btn-warning" id="login-register-btn">Register</button>-->
+
+            </form>
+
+
+        </div>
+
+        <!--<div class="screen register" style="display:none;">
+            <h4>Register</h4>
+            <form>
+                <div class="form-group row">
+                    <label for="register-name" class="col-sm-4 col-form-label">Username</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="register-name" placeholder="Username">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="register-password" class="col-sm-4 col-form-label">Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="register-password" placeholder="Password">
+                    </div>
+                </div>
+                <button type="submit" class="login-btns btn btn-primary" id="register-btn">Sign Up</button>
+            </form>
+        </div>-->
+
+        <ul class="list-unstyled components">
+            <!--Home Button-->
+            <li class="active">
+                <a id="home" href="#">Home</a>
+            </li>
+            <!--Collect Data-->
+            <div class="screen main">
+                <li class="type-instructions collection">
+                    <a href="#collectData" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Collect Data</a>
+                    <ul class="modules collapse list-unstyled" id="collectData"></ul>
+                </li>
+            </div>
+            <!--Saved Workflow-->
+            <div class="screen data">
+                <li class="">
+                    <a href="#data-list" id="data-btn" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Saved Workflows</a>
+                    <ul class="collapse list-unstyled" id="data-list"></ul>
+                </li>
+                <li class="">
+                    <a href="#dataset-list" id="dataset-btn" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Saved Datasets</a>
+                    <ul class="collapse list-unstyled" id="dataset-list"></ul>
+                </li>
+            </div>
+
+            <!--Saved Workflow-->
+        </ul>
+
+        <div class="screen logout" style="margin: 10px;">
+            <!--<h5>Logged in as <span class='username'></span></h5>-->
+            <button class="btn btn-primary" id="logout-btn">Log out</button>
+        </div>
+    </nav>
+
+    <!-- Main Page  -->
+    <div id="content">
+        <!--Close Sidebar | Clear Dashboard BTN-->
+        <div class="settingbtn sticky-top">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+
+            <button type="button" id="clearDashboard" class="btn btn-danger">Clear Dashboard</button>
+        </div>
+        <div id="loadingspinner" class="spinner-border" role="status" style="display:none">
+                <span class="sr-only">Loading...</span>
+            </div>
+        <!--Social Media Modal-Forms-->
+        <div class="screen main">
+            <div class="type-instructions collection">
+                <div id="modal-collection" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="fn-collection">Collect Data</h6>
+                                <!--Close Modal Button-->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <!--Social Media Data Collection Function Buttons-->
+                                <div class="functions"></div>
+                                <!--Data Collection Forms-->
+                                <div id="forms-c"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="submit-c" type="submit" class="btn btn-primary" style="display:none">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Show Dataset-->
+        <div class="row" id="workspace">
             <div id="intro">
                 <h2>Getting Started</h2>
                 <p>If this is your first time using SOCRATES explore the features by first collecting data.</p>
@@ -39,159 +165,83 @@
                 <p>If you are interested in modifying SOCRATES for your own purposes, <a href="https://github.com/kevinAlbs/Socrates" target="_blank" title="View on GitHub">download it on GitHub</a> and see our <a href="http://peopleanalytics.org/socrates/docs/" target="_blank" title="View documentation">documentation</a>.</p>
                 <p><b>Note:</b> If you would like to download your data from SOCRATES, you need to have pop-ups enabled</p>
             </div>
+            <div class="col-lg-12" id="overlay">
+                <!--<h2><span>Data View</span> <a href="#" class="close">Close</a></h2>-->
+                <div class="row">
+                    <div class="col-md-5">
+                        <h2><span id="table-title"></span></h2>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="float-right">
+                            <button id="datasetjson" class="button btn btn-sm btn-success">Download Dataset as JSON &#8681;</button>
+                            <button id="datasetcsv" class="button btn btn-sm btn-success">Download Dataset as CSV &#8681;</button>
+                            <button id="entireworkflow" class="button btn btn-sm btn-success">Download Workflow &#8681;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <table class="table table-hover table-responsive table-fixed-head"></table>
+                </div>
+            </div>
         </div>
-    </div><!--/#wrapper -->
-    <aside id="sidebar">
-        <h1>Socrates</h1>
-        <div class="inner">
-            <div id="feedback" class="group err">
-                <div id="feedback-text"></div>
-                <button id="confirm-btn" class="button">Ok</button>
-            </div>
-            <nav>
-                <a href="#" title="Home" id="home-btn" class="button">Home</a>
-                <a href="#" title="Data" id="data-btn" class="inactive button">Your Datasets</a>
-                <a href="#" title="Log out" id="account-btn" class="button">Log out</a>
-                <a href="#" title="Refresh" id="refresh-btn" class="button">Reset</a>
-                <!--<a href="#" title="Settings" id="settings-btn" class="button">Settings</a>-->
-            </nav>
-            <div class="ruler"></div>
 
-            <div class="screen settings">
-                <!--
-                <div>
-                  <h2>Export/Import Format</h2>
-                  <ul class="formatSelect">
-                    <li><input id="JSON"type="radio" name="format" value="JSON" checked="checked"> <label for="JSON">JSON</label></li>
-                    <li><input id="XML" type="radio" name="format" value="XML"> <label for="XML">XML</label></li>
-                    <li><input id="CSV" type="radio" name="format" value="CSV"> <label for="CSV">CSV</label></li>
-                    <li><input id="TSV" type="radio" name="format" value="TSV"> <label for="TSV">TSV</label></li>
-                  </ul>
-                </div>
-                -->
-            </div>
-
-            <div class="screen login">
-                <h2>Log in</h2>
-                <div class="form_grid">
-                    <div class="row"><label>Username</label><input type="text" class="login-field" id="login-name"></div>
-                    <div class="row"><label>Password</label><input type="password" class="login-field" id="login-password"></div>
-                </div>
-                <button class="login-btns" id="login-submit-btn">Log in</button> <br>
-                <a href="#" class="sub-link" id="login-register-btn">Register</a>
-            </div>
-
-            <div class="screen logout">
-                <h2>Logged in as <span class='username'></span></h2>
-                <br/>
-                <button class="button" id="logout-btn">Log out</button>
-            </div>
-
-            <div class="screen register">
-                <h2>Register</h2>
-                <div class="form_grid">
-                    <div class="row"><label>Username</label><input type="text" class="login-field" id="register-name"></div>
-                    <div class="row"><label>Password</label><input type="password" class="login-field" id="register-password"></div>
-                </div>
-                <button class="login-btns" id="register-btn">Sign up</button> <br>
-                <a href="#" class="sub-link" id="register-back-btn">Back</a>
-            </div>
-
-            <div class="screen data">
-                <h2>Saved Workflows</h2>
-                <!-- <button id="remove-btn" class="button" onclick="removeData()">Delete</button> -->
-                <!--//Taking out accounts for now, focusing on multiple data sets in one continuous session
-                <button id="log-in" class="button" onclick="logScreen()">My Account</button>-->
-                <ul id="data-list"></ul>
-                <div class="data-buttons">
-                    <button class="button" data-action="load">Load</button>
-                    <button class="button" data-action="rename">Rename</button>
-                    <button class="button" data-action="export">Export</button>&nbsp;&nbsp;
-                    <button class="button red" data-action="remove">Remove</button>
-                </div>
-                <input id="fileupload" type="file" name="upfile">
-
-                <div class="ruler"></div>
-                <h3>Import Data</h3>
-                <h4>Format</h4>
-                <ul>
-                    <form class="formatSelect">
-                        <li><input id="json" type="radio" name="format" value="json"  checked="checked"> <label for="json">SOCRATES JSON</label></li>
-                        <li><input id="csv" type="radio" name="format" value="csv"> <label for="csv">CSV</label></li>
-                        <!--
-                        <li><input id="xml" type="radio" name="format" value="xml"> <label for="xml">XML</label></li>
-                        <li><input id="tsv" type="radio" name="format" value="tsv"> <label for="tsv">TSV</label></li>
-                        -->
-                    </form>
-                </ul>
-                <p><i>CSV</i> format should have the first line of all labels.<br/>
-                    <i>SOCRATES JSON</i> format is the same format as what SOCRATES exports.</p>
-                <button id="import-btn" class="button">Select File</button>
-            </div>
-
-            <div class="screen main">
-                <div id="topbar">
-                    <div class="active item c">
-                        <div class="circle"></div>
-                        <span>Collection</span>
-                    </div>
-                    <div class="item a">
-                        <div class="circle"></div>
-                        <span>Analysis</span>
-                    </div>
-                    <div class="item v">
-                        <div class="circle"></div>
-                        <span>Exploration</span>
-                    </div>
-                </div>
-                <div id="next-buttons">
-                    <p>Continue to work on</p>
-                    <a href="#" class="button" data-type="a">Analysis</a> or <a href="#" class="button" data-type="v">Exploration</a>
-                </div>
-                <div class="type-instructions visualization">
-                    <h2>Exploration</h2>
-                    <div data-type="visualization" class="sub mod">
-                        Choose a module <span class="chosen"></span>
-                        <div class="sub fn">
-                            Choose a function <span class="chosen"></span>
-                        </div>
-                    </div>
-                    <div class="modules"></div><div class="functions"></div>
-                </div>
+        <!--Workflow | Analysis/Visualization-->
+        <div class="screen main row">
+            <div class="col-lg-6" style="text-align: center;">
                 <div class="type-instructions analysis">
-                    <h2>Analysis</h2>
-                    <div data-type="analysis" class="sub mod">
-                        Choose a module <span class="chosen"></span>
-                        <div class="sub fn">
-                            Choose a function <span class="chosen"></span>
+                    <h4>Analysis</h4>
+                    <a class="more" href="#" data-type="a"><i class="fas fa-plus-circle fa-lg"></i></a>
+                    <!--Current Card | Analysis-->
+                    <div class="card working border-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" id="fn-analysis"></h5>
+                            <!--Analysis Module Buttons-->
+                            <div class="modules"></div>
+                            <!--Analysis Function Buttons-->
+                            <div class="functions"></div>
+                            <!--Analysis Forms-->
+                            <div id="forms-a"></div>
+                            <button id="submit-a" type="submit" class="btn btn-primary" style="display:none">Submit</button>
                         </div>
                     </div>
-                    <div class="modules"></div><div class="functions"></div>
-                </div>
-                <div class="type-instructions collection">
-                    <h2>Collection</h2>
-                    <div data-type="collection" class="sub mod">
-                        Choose a module <span class="chosen"></span>
-                        <div class="sub fn">
-                            Choose a function <span class="chosen"></span>
-                        </div>
-                    </div>
-                    <div class="modules"></div><div class="functions"></div>
-                </div>
-                <div class="ruler"></div>
-
-                <div id="forms">
+                    <!--completed analysis-->
+                    <div class="completed analysis"></div>
                 </div>
             </div>
 
-        </div><!--/.inner -->
+            <div class="col-lg-6" style="text-align: center;">
 
-    </aside>
-    <footer id="footer"></footer>
-</div><!--/#container -->
+                <div class="type-instructions visualization">
+                    <h4>Visualization</h4>
+                    <a class="more" href="#" data-type="v"><i class="fas fa-plus-circle fa-lg"></i></a>
+                    <!--Current Card | Visualization-->
+                    <div class="card working border-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title tool-title">Visualization</h5>
+                            <h5 class="card-title" id="fn-visualization"></h5>
+                            <!--<h5 class="card-title">Card 1</h5>-->
+                            <!--Visualization Module Buttons-->
+                            <div class="modules"></div>
+                            <!--Visualization Function Buttons-->
+                            <div class="functions"></div>
+                            <!--Visualization Forms-->
+                            <div id="forms-v"></div>
+                            <button id="submit-v" type="submit" class="btn btn-primary" style="display:none">Submit</button>
+                        </div>
+                    </div>
+                    <!--completed visualization-->
+                    <div class="completed visualization"></div>
+                </div>
+            </div>
 
+        </div>
+
+    </div>
+</div>
+
+    <!--jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 {% include "app_js.html" %}
-
 <script>
     UI.init({
         "main" : MainScreen,
@@ -218,5 +268,25 @@
     ga('create', 'UA-42804042-11', 'peopleanalytics.org');
     ga('send', 'pageview');
 </script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#sidebar").mCustomScrollbar({
+            theme: "minimal"
+        });
+
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar, #content').toggleClass('active');
+            $('.collapse.in').toggleClass('in');
+            $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+        });
+    });
+</script>
+<!-- Bootstrap js -->
+{#<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!-- jQuery Custom Scroller CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 </body>
 </html>
+
