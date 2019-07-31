@@ -93,11 +93,9 @@ var VIS = (function(){
 	VIS.addModule("graph", specs);
 
 	var fn = function(display, working_set, param){
-		console.log(working_set);
 		var data = working_set.data;
 		var out = "";
 		var values = param['field'];
-		console.log(values);
 		var num_splits = parseInt(param['num_splits'], 10);
 		if(num_splits <= 0){
 			throw "num_splits must be positive";
@@ -169,7 +167,6 @@ var VIS = (function(){
 	var fn = function(display, working_set, param){
 		var x = param["x-field"]; //arrays of equal length corresponding to (x,y) points
 		var y = param["y-field"];
-		console.log(x);
 		//Width and height
 			var w = 500;
 			var h = 200;
@@ -300,7 +297,9 @@ var VIS = (function(){
 		      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 		      .attr("dy", ".35em")
 		      .style("text-anchor", "middle")
-		      .text(function(d) { console.log(d); return d.data.label; });
+		      .text(function(d) {
+		      	return d.data.label;
+		      });
 	};
 	VIS.addFunction("graph", "piechart", fn);
 

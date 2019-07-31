@@ -28,7 +28,6 @@ var LoginScreen = (function(){
       var uinput = $('#login-name').val();
       var pinput = $('#login-password').val();
       if (uinput){
-        console.log("Attempting to log in as: " + uinput);
         $.ajax({
             url : UTIL.CFG.api_endpoint,
             type : "POST",
@@ -51,7 +50,6 @@ var LoginScreen = (function(){
             }
         });
       }else{
-          console.log("No username")
           UI.feedback("Please enter a username.", true);
       }
     }

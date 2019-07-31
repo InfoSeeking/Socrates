@@ -31,7 +31,6 @@ var RegisterScreen = (function(){
                 alert("Username is already taken.");
               } else {
                 UI.setLoggedIn(true, uinput, pinput);
-                console.log("Registration successful");
                 alert("Registration successful! Page will refresh, please login after");
                 location.reload();
               }

@@ -48,7 +48,6 @@ var TRANS = (function(){
 		}
 	}
 	that.parseParams = function(param, paramSpecs, working_set){
-		console.log(param);
 		for(var key in param){
 			if(param[key] == "" && isOptional(paramSpecs[key])){
 				continue;
@@ -80,7 +79,6 @@ var TRANS = (function(){
 					}
 					else{
 						//data field
-						console.log("In field reference");
 						if(working_set["data"].length > 0){
 							if(!working_set["data"][0].hasOwnProperty(field)){	
 								throw "Reference to data field '" + field + "' does not exist";
