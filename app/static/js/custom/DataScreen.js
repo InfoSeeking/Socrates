@@ -10,6 +10,15 @@
 var DataScreen = (function(){
     var that = {};
 
+    function clearList(){
+      $(".screen.data #data-list, #dataset-list").empty();
+    }
+
+
+    function addWorkingSet(id, name){
+      var item = $("<li data-id='" + id + "'><a href='#' class='name'>" + name + "</a></li>");
+      $("#data-list, #dataset-list").append(item);
+    }
 
     that.show = function(){
       $(".screen.data").show();
@@ -37,16 +46,7 @@ var DataScreen = (function(){
     };
 
 
-    function clearList(){
-      $(".screen.data #data-list, #dataset-list").empty();
-    }
-    function showButtons(){
-      $(".screen.data .data-buttons").fadeIn();
-    }
-    function addWorkingSet(id, name){
-      var item = $("<li data-id='" + id + "'><a href='#' class='name'>" + name + "</a></li>");
-      $("#data-list, #dataset-list").append(item);
-    }
+
 
 
     // "Select File" functionality.  Reads a file, uploads it to the server, then updates the list of available files in the "Your Datasets" interface

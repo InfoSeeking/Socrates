@@ -68,47 +68,10 @@ var MainScreen = (function(){
         }
     };
 
-    that.showSavedDataset = function(working_set) {
-        //console.log("Showing data for " + typ + "," + index);
-        that.setCurrentWorkingSet(working_set);
-        clear();
-        var ws = working_set;//easier
-        console.log(ws);
-        var table = $("<table class='table'></table>");
-        var thead = $("<thead></thead>");
-        var tbody = $("<tbody></tbody>");
-
-        var cData = ws["data"];
-        //build the top row
-        var headRow = $("<tr></tr>")
-        headRow.append("<th>Index</th>");
-        for(var f in ws["meta"]){
-            if(ws["meta"].hasOwnProperty(f)){
-                headRow.append("<th class='field' data-type='collection' data-fieldtype='" + ws["meta"][f] + "'>" + f + "</th>");
-            }
-        }
-        tbody.append(thead.append(headRow));
-        for(var i = 0; i < cData.length; i++){
-            var row = $("<tr><td>" + i + "</td></tr>");
-            for(var f in ws["meta"]){
-                if(ws["meta"].hasOwnProperty(f)){
-                    row.append("<td>" + cData[i][f] + "</td>");
-                }
-            }
-
-            tbody.append(row);
-        }
-
-        //now add rows
-        var html = $("<table class='table table-hover table-responsive'></table>").empty().append(thead).append(tbody);
-        UI.overlay(html, "data", "Your Data");
-        $(".type-instructions.analysis, .type-instructions.visualization").show();
-    };
-
     that.removeWorkingSet = function(working_set_id, callback){
         UI.toggleLoader(true);
         $.ajax({
-        url: UTIL.CFG.api_endpoint,
+            url: UTIL.CFG.api_endpoint,
             dataType: "json",
             type: "POST",
             data: JSON.stringify({
@@ -155,14 +118,14 @@ var MainScreen = (function(){
         });
     };
 
-    //downloads just dataset as CSV
+     //downloads just dataset as CSV
     that.downloadDatasetCSV = function(working_set_id){
         that.getWorkingSet(working_set_id, function(working_set){
             var json = JSON.stringify(working_set);
         });
-        var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=csv&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id;
+
         $.ajax({
-            url: url,
+            url: UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=csv&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id,
             dataType: "text",
             type: "GET",
             contentType:"application/json",
@@ -174,7 +137,6 @@ var MainScreen = (function(){
                 UI.toggleLoader(false);
             }
         });
-        //var win = window.open();
     }
 
     //downloads just dataset as JSON
@@ -182,9 +144,8 @@ var MainScreen = (function(){
         that.getWorkingSet(working_set_id, function(working_set){
             var json = JSON.stringify(working_set);
         });
-        var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
         $.ajax({
-            url: url,
+            url: UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=true&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id,
             dataType: "json",
             type: "GET",
             contentType:"application/json",
@@ -197,19 +158,15 @@ var MainScreen = (function(){
                 UI.toggleLoader(false);
             }
         });
-        //var win = window.open();
     }
 
     //downloads entire workflow as JSON
     that.downloadWorkingSet = function(working_set_id){
         that.getWorkingSet(working_set_id, function(working_set){
             var json = JSON.stringify(working_set);
-            //var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
         });
-        // download("hello world", "dlText.txt", "text/plain");
-        var url = UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=false&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id
         $.ajax({
-            url: url,
+            url: UTIL.CFG.api_endpoint + "?force_download=true&fetch=true&datasetonly=false&format=json&username=" + UI.getUsername() + "&password=" + UI.getPassword() + "&working_set_id=" + working_set_id,
             dataType: "json",
             type: "GET",
             contentType:"application/json",
@@ -223,6 +180,483 @@ var MainScreen = (function(){
             }
         });
     }
+
+
+    /*
+    Given the working_set, it will create a new box for the most recently created data.
+    */
+    function showResults(working_set, type, analysis_index, fn_name){
+        console.log(fn_name);
+        var setName = working_set["working_set_name"];
+        $("#workspace #intro").hide(); //.detach()
+        //if type is collection, add collection data
+        //if type is analysis, add most recent analysis
+        var card = createResultCard(type);
+        var box = createBox(type);
+        var h2 = box.find("h2");
+        if(type == "collection"){
+            that.setCurrentWorkingSet(working_set);
+            //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
+            h2.html("Collection");
+            h2.append(" (" + setName + ")");
+            var table = createTable(type, working_set);//this is the HTML created table
+            box.append(table);
+            box.append(showAllDataBtn().attr("data-type", "collection"));
+            // box.append(getDownloadButton().attr("data-type", "collection"));
+            $("#workspace").append(box);
+        }
+        else if(type == "analysis") {
+            /*h2.html("Analysis");
+            h2.parent().append(closeBoxButton());
+            box.append(createTable(type, working_set, fn_name));
+            var curIndex = working_set["analysis"].length - 1;
+            if(analysis_index !== undefined){
+                curIndex = analysis_index;
+            }
+            console.log("Showing " + curIndex);
+            if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
+                box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
+                // box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
+            }*/
+            showSummary(working_set, type, analysis_index, fn_name);
+        }
+
+        else if(type == "upload"){
+            h2.html("Imported Data");
+            h2.append(" (" + setName + ")");
+            h2.parent().append(closeBoxButton());
+            var table = createTable(type, working_set);//this is the HTML created table
+            box.append(table);
+            box.append(showAllDataBtn().attr("data-type", "collection"));
+            // box.append(getDownloadButton().attr("data-type", "collection"));
+        }
+        manageDownloadButtons();
+
+        //box.hide().fadeIn();
+    }
+
+    /*function showDataset(working_set) {
+        that.setCurrentWorkingSet(working_set);
+        that.getWorkingSet(that.getCurrentWorkingSetID(), function(ws) {
+            showAllData(ws, "collection");
+        });
+    }*/
+
+    function showSummary(working_set, analysis_index) {
+        if(showResults.first) {
+            showResults.first = false;
+        }
+        var card = createResultCard(type);
+        var card_body = $("<div class='analysis_section card-body'></div>");
+        if(analysis_index == undefined){ //you need to get the index of the recently added analysis
+            analysis_index = working_set["analysis"].length - 1;
+        }
+        var aData = working_set['analysis'][analysis_index];
+        card.append("<h4 class='card-header'>"+ aData['fn_name'] +"</h4>");
+
+        if(aData['aggregate_meta']) {
+            card_body.append("<h5 class='card-title' style='text-align:left;'>Aggregate Data</h5>");
+            var table = $("<table class='table table-light table-sm'></table>");
+            table.append("<thead><tr><th>Field</th><th>Type</th><th>Value</th></tr></thead>");
+            var table_body = $("<tbody></tbody>");
+            for(var field in aData.aggregate_meta){
+                var type = aData['aggregate_meta'][field];
+                if(typeof(type) == "object"){
+                    type = type.type;//lol
+                }
+                var values = aData['aggregate_analysis'][field];
+                var row = $("<tr><th>" + field + "</th><td>" + type + "</td><td>" + values + "</td></tr>");
+                table_body.append(row);
+            }
+            card.append(card_body.append(table.append(table_body)));
+        }
+
+        if(aData.entry_meta) {
+            card_body.append("<h5 class='card-title' style='text-align:left;'>Results</h5>");
+            var table = $("<table class='table table-light table-sm'></table>");
+            table.append("<thead><tr><th>Field</th><th>Type</th><th>Sample (from first entry)</th></tr></thead>");
+            var table_body = $("<tbody></tbody>");
+            for(var field in aData.entry_meta) {
+                var type = aData['entry_meta'][field];
+                if(typeof(type) == "object"){
+                    type = type.type;//lol
+                }
+                var sample = aData['entry_analysis'][field][0];
+                var row = $("<tr><th>" + field + "</th><td>" + type + "</td><td>" + sample + "</td></tr>");
+                table_body.append(row);
+            }
+            card.append(card_body.append(table.append(table_body)));
+        }
+
+        console.log("Showing " + analysis_index);
+        $(".completed.analysis").append(card);
+        card.hide().fadeIn();
+    }
+
+    function showVisualization(working_set, index) {
+        console.log('hello');
+        var ws = working_set;
+        var data = ws['data'];
+        var vis_data = ws['visualization'];
+        //console.log(vis_data);
+        var selected_data = [];
+
+        if(index == undefined && vis_data.length != 0) { //if you're adding new vis
+            index = vis_data.length-1; //get the most recent vis data
+        }
+        var input = vis_data[index]['input'];
+        var fn = vis_data[index]['function'];
+        var field = '', x_field='', y_field='', id = '';
+        if(fn == 'histogram' || fn == 'piechart') {
+            field = input['field'];
+            id = fn + '_' + field;
+        }
+        else {
+            x_field = input['x-field'];
+            y_field = input['y-field'];
+            id = fn + '_' + x_field + '_' + y_field;
+        }
+
+        var duplicate = document.getElementById(id);
+        if(duplicate) {
+            return;
+        }
+
+        //create result card
+        var card = createResultCard('visualization');
+        $(".completed.visualization").append(card);
+        card.append("<div class='card-body'><h4 class='card-title'>" + fn +"</h4><div><canvas id='" + id + "'></canvas></div></div>");
+
+
+        if(fn == 'histogram') {
+            console.log(field);
+            var index = [];
+
+            for (var p = 0; p < data.length; p++) {
+                index.push(p);
+                selected_data.push(data[p][field]); //create an array of selected data
+            }
+            console.log(selected_data);
+            $(document).ready(function() {
+                var myChart = document.getElementById(id).getContext('2d');
+                var newChart = new Chart(myChart, {
+                    type: 'bar',
+
+                    data: {
+                        labels: index,
+                        datasets: [{
+                            label: field,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: selected_data
+                        }]
+                    },
+                    // Configuration options go here
+                    options: {}
+                })
+            })
+
+
+        }
+
+        else if(fn == 'scatterplot') {
+            var index = [];
+            var dict = [];
+            for (var i = 0; i<data.length; i++) {
+                index.push(i);
+                var point = {
+                    x: data[i][x_field],
+                    y: data[i][y_field]
+                };
+                console.log(point);
+                dict.push(point);
+            }
+            console.log(dict);
+
+            //create chart
+            $(document).ready(function() {
+                var myChart = document.getElementById(id).getContext('2d');
+                var newChart = new Chart(myChart, {
+                    type: 'scatter',
+                    // The data for our dataset
+                    data: {
+                        //label: index,
+                        datasets: [{
+                            label: '('+x_field + ', ' + y_field+')',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: dict
+                        }]
+                    },
+                    // Configuration options go here
+                    options: {}
+                })
+            })
+        }
+
+        else if (fn == 'piechart') {
+            var index = [];
+
+            for (var p = 0; p < data.length; p++) {
+                index.push(p);
+                selected_data.push(data[p][field]); //create an array of selected data
+            }
+            var map = {};//map from label to count
+            for(var i = 0; i < selected_data.length; i++){
+                var v = selected_data[i];
+                if(!map.hasOwnProperty(v)){
+                    map[v] = 1;
+                }
+                else{
+                    map[v]++;
+                }
+            }
+            console.log(map);
+            var labels = Object.keys(map);
+            var values = Object.values(map);
+            console.log(labels);
+            console.log(values);
+
+            //create chart
+            $(document).ready(function() {
+                var myChart = document.getElementById(id).getContext('2d');
+                var newChart = new Chart(myChart, {
+                    type: 'pie',
+                    // The data for our dataset
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: field,
+                            data: values
+                        }]
+                    },
+                    // Configuration options go here
+                    options: {}
+                });
+
+            });
+        }
+
+        else if (fn == 'regression') {
+            var index = [];
+            var dict = [];
+            var x = [];
+            var y = [];
+            for (var i = 0; i<data.length; i++) {
+                index.push(i);
+                var point = {
+                    x: data[i][x_field],
+                    y: data[i][y_field]
+                };
+                console.log(point);
+                dict.push(point);
+                x.push(data[i][x_field]);
+                y.push(data[i][y_field]);
+            }
+            console.log(dict);
+
+            //var x = params['input']["x-field"]; //arrays of equal length corresponding to (x,y) points
+            //var y = params['input']["y-field"];
+            var sumX = 0;
+            var sumY = 0;
+            var sumX2 = 0;
+            var sumY2 = 0;
+            var sumXY = 0;
+            for (var i = 0; i < x.length; i++){
+                sumX += x[i];
+                sumY += y[i];
+                sumX2 += x[i] * x[i];
+                sumY2 += y[i] * y[i];
+                sumXY += x[i] * y[i];
+            }
+            var a_value = (1.0*sumY*sumX2 - sumX*sumXY)/(x.length*sumX2 - sumX*sumX);
+            var b_value = (1.0*x.length*sumXY - sumX*sumY)/(x.length*sumX2 - sumX*sumX);
+            //end regression values
+
+            //two set of points for plotting line
+            var min = Math.min.apply(null, x);
+            var	max = Math.max.apply(null, x);
+            var	min_output = a_value + min*b_value;
+            var max_output = a_value + max*b_value;
+            var y_data = [min_output, max_output];
+            var lineData = 	[{"x": min, "y": min_output}, {"x": max, "y": max_output}];
+
+
+            //create chart
+            $(document).ready(function() {
+                var myChart = document.getElementById(id).getContext('2d');
+                var newChart = new Chart(myChart, {
+                    type: 'scatter',
+
+                    // The data for our dataset
+                    data: {
+                        datasets: [{
+                            label: '('+x_field + ', ' + y_field+')',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: dict
+                        }, {
+                            type: 'line',
+                            label: 'Linear Regression',
+                            data: lineData,
+                            showLine: true,
+                            fill: false
+                         }]
+                    },
+                    // Configuration options go here
+                    options: {
+                    }
+                })
+            })
+        }
+    }
+
+    that.showWorkingSet = function(working_set, name){
+        that.setCurrentWorkingSet(working_set);
+        //clear current working set area
+        clear();
+        console.log(working_set);
+        //add box for collection
+        showResults(working_set, "collection");
+        handleDataButton("collection");
+        //add box for each analysis
+        if(working_set.analysis){
+            for(var i = 0; i < working_set.analysis.length; i++){
+                showResults(working_set, "analysis", i);
+            }
+        }
+        if (working_set.visualization) {
+            for(var i = 0; i < working_set.visualization.length; i++){
+                showVisualization(working_set, i);
+            }
+            $('.completed.visualization .card').show();
+
+        }
+        $(".type-instructions.analysis, .type-instructions.visualization").show();
+        //passCollectionPhase();
+    };
+
+    that.showSavedWorkFlow = function(working_set) {
+        that.setCurrentWorkingSet(working_set);
+        clear();
+        console.log(working_set);
+        showDataset(working_set);
+        if(working_set.analysis) {
+            for (var i = 0; i < working_set.analysis.length; i++) {
+                showSummary(working_set, i);
+            }
+        }
+        if (working_set.visualization) {
+            for(var i = 0; i < working_set.visualization.length; i++){
+                showVisualization(working_set, i);
+            }
+            $('.completed.visualization .card').show();
+        }
+        $(".type-instructions.analysis, .type-instructions.visualization").show();
+    };
+
+
+    function clear() {
+        $("#workspace table, .completed.analysis, .completed.visualization").empty(); //clear dataset
+        $("#fn-analysis, #fn-visualization").empty();
+        $(".type-instructions.analysis .modules .options, .type-instructions.analysis .functions .options, .type-instructions.visualization .modules .options, .type-instructions.visualization .functions .options").hide();
+        $("#submit-a, #submit-v").hide();
+        $("#overlay, #forms-a .function, #forms-v .function, .type-instructions.analysis .card, .type-instructions.visualization .card").hide();
+        $(".type-instructions.analysis, .type-instructions.visualization, #intro").hide();
+    }
+
+    that.showSavedDataset = function(working_set) {
+        //console.log("Showing data for " + typ + "," + index);
+        that.setCurrentWorkingSet(working_set);
+        clear();
+        var ws = working_set;//easier
+        var thead = $("<thead></thead>");
+        var tbody = $("<tbody></tbody>");
+
+        var cData = ws["data"];
+        //build the top row
+        var headRow = $("<tr></tr>")
+        headRow.append("<th>Index</th>");
+        for(var f in ws["meta"]){
+            if(ws["meta"].hasOwnProperty(f)){
+                headRow.append("<th class='field' data-type='collection' data-fieldtype='" + ws["meta"][f] + "'>" + f + "</th>");
+            }
+        }
+        tbody.append(thead.append(headRow));
+        for(var i = 0; i < cData.length; i++){
+            var row = $("<tr><td>" + i + "</td></tr>");
+            for(var f in ws["meta"]){
+                if(ws["meta"].hasOwnProperty(f)){
+                    row.append("<td>" + cData[i][f] + "</td>");
+                }
+            }
+
+            tbody.append(row);
+        }
+
+        //now add rows
+        var html = $("<table class='table table-hover table-responsive'></table>").empty().append(thead).append(tbody);
+        UI.overlay(html, "data", "Your Data");
+        $(".type-instructions.analysis, .type-instructions.visualization").show();
+    };
+
+     function showDataset(working_set){
+        $("#intro").hide();
+        var ws = working_set;//easier
+        var aData = ws['analysis'];
+        var thead = $("<thead></thead>");
+        var tbody = $("<tbody></tbody>");
+
+        var cData = ws["data"];
+        //build the top row
+        var headRow = $("<tr></tr>")
+        headRow.append("<th>Index</th>");
+        for(var f in ws["meta"]){
+            if(ws["meta"].hasOwnProperty(f)){
+                headRow.append("<th class='field' data-type='collection' data-fieldtype='" + ws["meta"][f] + "'>" + f + "</th>");
+            }
+        }
+
+        //add heading for every analysis
+        if(aData){
+            for(var i = 0; i < aData.length; i++){
+                for(var f in aData[i]["entry_meta"]){
+                    if(aData[i]["entry_meta"].hasOwnProperty(f)){
+                        headRow.append("<th class='a'>" + f + "</th>");
+                    }
+                }
+            }
+        }
+        tbody.append(thead.append(headRow));
+
+        for(var i = 0; i < cData.length; i++){
+            var row = $("<tr><td> " + i + "</td></tr>");
+            for(var f in ws["meta"]){
+                if(ws["meta"].hasOwnProperty(f)){
+                    row.append("<td>" + cData[i][f] + "</td>");
+                }
+            }
+            if(aData){
+                for(var j = 0; j < aData.length; j++){
+                    for(var f in aData[j]["entry_meta"]){
+                        if(aData[j]["entry_meta"].hasOwnProperty(f)){
+                            row.append("<td class='a'>" + aData[j]["entry_analysis"][f][i] + "</td>");
+                        }
+                    }
+                }
+            }
+            tbody.append(row);
+        }
+
+
+        //now add rows
+        var html = $("<table class='table table-hover table-responsive'></table>").empty().append(thead).append(tbody);
+        UI.overlay(html, "data", "Your Data");
+    }
+
+
+
+
     /*
     END FUCNTIONS FOR WORKING SETS
     */
@@ -232,7 +666,6 @@ var MainScreen = (function(){
     Get all specs, build forms, set up event listeners
     */
     that.init = function(){
-        console.log("hello");
         //UI.toggleLoader(true);
         $.ajax({
             url: UTIL.CFG.api_endpoint,
@@ -1147,84 +1580,10 @@ var MainScreen = (function(){
     */
 
 
-    function clear() {
-        $("#workspace table, .completed.analysis, .completed.visualization").empty(); //clear dataset
-        $("#fn-analysis, #fn-visualization").empty();
-        $(".type-instructions.analysis .modules .options, .type-instructions.analysis .functions .options, .type-instructions.visualization .modules .options, .type-instructions.visualization .functions .options").hide();
-        $("#submit-a, #submit-v").hide();
-        $("#overlay, #forms-a .function, #forms-v .function, .type-instructions.analysis .card, .type-instructions.visualization .card").hide();
-        $(".type-instructions.analysis, .type-instructions.visualization, #intro").hide();
-    }
-    //.modules .options
-
-    function showDataset(working_set){
-        //console.log("Showing data for " + typ + "," + index);
-        $("#intro").hide();
-        var ws = working_set;//easier
-        var aData = ws['analysis'];
-        console.log(ws);
-        var table = $("<table class='table'></table>");
-        var thead = $("<thead></thead>");
-        var tbody = $("<tbody></tbody>");
-
-        var cData = ws["data"];
-        //build the top row
-        var headRow = $("<tr></tr>")
-        headRow.append("<th>Index</th>");
-        for(var f in ws["meta"]){
-            if(ws["meta"].hasOwnProperty(f)){
-                headRow.append("<th class='field' data-type='collection' data-fieldtype='" + ws["meta"][f] + "'>" + f + "</th>");
-            }
-        }
-
-        //add heading for every analysis
-        if(aData){
-            for(var i = 0; i < aData.length; i++){
-                for(var f in aData[i]["entry_meta"]){
-                    if(aData[i]["entry_meta"].hasOwnProperty(f)){
-                        headRow.append("<th class='a'>" + f + "</th>");
-                    }
-                }
-            }
-        }
-        tbody.append(thead.append(headRow));
-
-        for(var i = 0; i < cData.length; i++){
-            var row = $("<tr><td> " + i + "</td></tr>");
-            for(var f in ws["meta"]){
-                if(ws["meta"].hasOwnProperty(f)){
-                    row.append("<td>" + cData[i][f] + "</td>");
-                }
-            }
-            if(aData){
-                for(var j = 0; j < aData.length; j++){
-                    for(var f in aData[j]["entry_meta"]){
-                        if(aData[j]["entry_meta"].hasOwnProperty(f)){
-                            row.append("<td class='a'>" + aData[j]["entry_analysis"][f][i] + "</td>");
-                        }
-                    }
-                }
-            }
-            tbody.append(row);
-        }
-        /*if(typ == "analysis"){
-            //show the entry data alongside collection data
-            if(index !== undefined){
-                //show only one
-                aData = new Array(ws["analysis"][index]);
-            }
-            else{
-                aData = ws["analysis"];
-            }
-        }*/
 
 
-        //now add rows
-        var html = $("<table class='table table-hover table-responsive'></table>").empty().append(thead).append(tbody);
-        //console.log(html.html());
-        UI.overlay(html, "data", "Your Data");
-        //console.log(html.html());
-    }
+
+
 
     function handleDataButton(typ){
         UI.toggleLoader(true);
@@ -1372,9 +1731,6 @@ var MainScreen = (function(){
         downloadButtonFunction(that.downloadWorkingSet);
     }
 
-    function removeData(){
-        $("#data-list").toggleClass("remove");
-    }
 
     function closeBoxButton(){
         return $("<a class='button close'>X</a>").click(closeBox);
@@ -1409,532 +1765,16 @@ var MainScreen = (function(){
         manageDownloadButtons(); //check whether to show or hide buttons
     }
 
-    function csvesc(txt){
-        return ("" + txt).replace(/,|\n/g, "");
-    }
-
-    function downloadBoxXML(working_set){
-        var xml = "<XML>";
-        xml += json2xml(working_set);
-        xml += "</XML>"
-
-        var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(xml), "_blank");
-    }
-
-    function downloadBoxjson(working_set){
-        var json = JSON.stringify(working_set);
-        var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(json), "_blank");
-    }
-
-    function downloadBoxtsv(working_set, typ, index){
-        var aData = null;
-        var ws = working_set;//easier
-        var tsv = "";
-        if(typ == "analysis"){
-            //show the entry data alongside collection data
-            if(index !== null){
-                //show only one
-                aData = new Array(ws["analysis"][index]);
-            }
-            else{
-                aData = ws["analysis"];
-            }
-        }
-
-        var cData = ws["data"];
-        //build the top row
-        var thead = $("<tr><th>Index</th></tr>");
-        var first = true;
-        for(var f in ws["meta"]){
-            if(ws["meta"].hasOwnProperty(f)){
-                if(first){
-                    first = false;
-                }
-                else{
-                    tsv += "\t";
-                }
-                tsv += csvesc(f);
-            }
-        }
-        //add heading for every analysis
-        if(aData){
-            for(var i = 0; i < aData.length; i++){
-                for(var f in aData[i]["entry_meta"]){
-                    if(aData[i]["entry_meta"].hasOwnProperty(f)){
-                        tsv += "\t" + csvesc(f);
-                    }
-                }
-            }
-        }
-        tsv += "\n";
-        for(var i = 0; i < cData.length; i++){
-            var row = $("<tr><td> " + i + "</td></tr>");
-            first = true;
-            for(var f in ws["meta"]){
-                if(ws["meta"].hasOwnProperty(f)){
-                    if(first){
-                        first = false;
-                    }
-                    else{
-                        tsv += "\t";
-                    }
-                    tsv += csvesc(cData[i][f]);
-                }
-            }
-            if(aData){
-                for(var j = 0; j < aData.length; j++){
-                    for(var f in aData[j]["entry_meta"]){
-                        if(aData[j]["entry_meta"].hasOwnProperty(f)){
-                            tsv += "\t" + csvesc(aData[j]["entry_analysis"][f][i]);
-                        }
-                    }
-                }
-            }
-            tsv += "\n";
-        }
-        var win = window.open("data:application/tsv;charset=utf8," + encodeURIComponent(tsv), "_blank");
-    }
-
-    function downloadBoxcsv(working_set, typ, index){
-        var aData = null;
-        var ws = working_set;//easier
-        var csv = "";
-        if(typ == "analysis"){
-            //show the entry data alongside collection data
-            if(index !== null){
-                //show only one
-                aData = new Array(ws["analysis"][index]);
-            }
-            else{
-                aData = ws["analysis"];
-            }
-        }
-        var cData = ws["data"];
-        //build the top row
-        var thead = $("<tr><th>Index</th></tr>");
-        var first = true;
-        for(var f in ws["meta"]){
-            if(ws["meta"].hasOwnProperty(f)){
-                if(first) {
-                    first = false;
-                }
-                else {
-                    csv += ",";
-                }
-                csv += csvesc(f);
-            }
-        }
-        //add heading for every analysis
-        if(aData){
-            for(var i = 0; i < aData.length; i++){
-                for(var f in aData[i]["entry_meta"]){
-                    if(aData[i]["entry_meta"].hasOwnProperty(f)){
-                        csv += "," + csvesc(f);
-                    }
-                }
-            }
-        }
-        csv += "\n";
-        for(var i = 0; i < cData.length; i++){
-            var row = $("<tr><td> " + i + "</td></tr>");
-            first = true;
-            for(var f in ws["meta"]){
-                if(ws["meta"].hasOwnProperty(f)){
-                    if(first){
-                        first = false;
-                    }
-                else{
-                    csv += ",";
-                }
-                csv += csvesc(cData[i][f]);
-                }
-            }
-            if(aData){
-                for(var j = 0; j < aData.length; j++){
-                    for(var f in aData[j]["entry_meta"]){
-                        if(aData[j]["entry_meta"].hasOwnProperty(f)){
-                            csv += "," + csvesc(aData[j]["entry_analysis"][f][i]);
-                        }
-                    }
-                }
-            }
-            csv += "\n";
-        }
-        var win = window.open("data:application/csv;charset=utf8," + encodeURIComponent(csv), "_blank");
-    }
-
-    that.showWorkingSet = function(working_set, name){
-        that.setCurrentWorkingSet(working_set);
-        //clear current working set area
-        clear();
-        console.log(working_set);
-        //add box for collection
-        showResults(working_set, "collection");
-        handleDataButton("collection");
-        //add box for each analysis
-        if(working_set.analysis){
-            for(var i = 0; i < working_set.analysis.length; i++){
-                showResults(working_set, "analysis", i);
-            }
-        }
-        if (working_set.visualization) {
-            for(var i = 0; i < working_set.visualization.length; i++){
-                showVisualization(working_set, i);
-            }
-            $('.completed.visualization .card').show();
-
-        }
-        $(".type-instructions.analysis, .type-instructions.visualization").show();
-        //passCollectionPhase();
-    };
-
-    that.showSavedWorkFlow = function(working_set) {
-        that.setCurrentWorkingSet(working_set);
-        clear();
-        console.log(working_set);
-        showDataset(working_set);
-        if(working_set.analysis) {
-            for (var i = 0; i < working_set.analysis.length; i++) {
-                showSummary(working_set, i);
-            }
-        }
-        if (working_set.visualization) {
-            for(var i = 0; i < working_set.visualization.length; i++){
-                showVisualization(working_set, i);
-            }
-            $('.completed.visualization .card').show();
-        }
-        $(".type-instructions.analysis, .type-instructions.visualization").show();
-    };
-
-    /*
-    Given the working_set, it will create a new box for the most recently created data.
-    */
-    function showResults(working_set, type, analysis_index, fn_name){
-        console.log(fn_name);
-        var setName = working_set["working_set_name"];
-        $("#workspace #intro").hide(); //.detach()
-        //if type is collection, add collection data
-        //if type is analysis, add most recent analysis
-        var card = createResultCard(type);
-        var box = createBox(type);
-        var h2 = box.find("h2");
-        if(type == "collection"){
-            that.setCurrentWorkingSet(working_set);
-            //$("#download-json").attr("href", CFG.host + "/fetch/" + curRefId).show();
-            h2.html("Collection");
-            h2.append(" (" + setName + ")");
-            var table = createTable(type, working_set);//this is the HTML created table
-            box.append(table);
-            box.append(showAllDataBtn().attr("data-type", "collection"));
-            // box.append(getDownloadButton().attr("data-type", "collection"));
-            $("#workspace").append(box);
-        }
-        else if(type == "analysis") {
-            /*h2.html("Analysis");
-            h2.parent().append(closeBoxButton());
-            box.append(createTable(type, working_set, fn_name));
-            var curIndex = working_set["analysis"].length - 1;
-            if(analysis_index !== undefined){
-                curIndex = analysis_index;
-            }
-            console.log("Showing " + curIndex);
-            if(working_set["analysis"][curIndex].hasOwnProperty("entry_meta")){
-                box.append(showAllDataBtn().attr("data-type", "analysis").attr('data-index', curIndex));
-                // box.append(getDownloadButton().attr("data-type", "analysis").attr('data-index', curIndex));
-            }*/
-            showSummary(working_set, type, analysis_index, fn_name);
-        }
-
-        else if(type == "upload"){
-            h2.html("Imported Data");
-            h2.append(" (" + setName + ")");
-            h2.parent().append(closeBoxButton());
-            var table = createTable(type, working_set);//this is the HTML created table
-            box.append(table);
-            box.append(showAllDataBtn().attr("data-type", "collection"));
-            // box.append(getDownloadButton().attr("data-type", "collection"));
-        }
-        manageDownloadButtons();
-
-        //box.hide().fadeIn();
-    }
-
-    /*function showDataset(working_set) {
-        that.setCurrentWorkingSet(working_set);
-        that.getWorkingSet(that.getCurrentWorkingSetID(), function(ws) {
-            showAllData(ws, "collection");
-        });
-    }*/
-
-    function showSummary(working_set, analysis_index) {
-        if(showResults.first) {
-            showResults.first = false;
-        }
-        var card = createResultCard(type);
-        var card_body = $("<div class='analysis_section card-body'></div>");
-        if(analysis_index == undefined){ //you need to get the index of the recently added analysis
-            analysis_index = working_set["analysis"].length - 1;
-        }
-        var aData = working_set['analysis'][analysis_index];
-        card.append("<h4 class='card-header'>"+ aData['fn_name'] +"</h4>");
-
-        if(aData['aggregate_meta']) {
-            card_body.append("<h5 class='card-title' style='text-align:left;'>Aggregate Data</h5>");
-            var table = $("<table class='table table-light table-sm'></table>");
-            table.append("<thead><tr><th>Field</th><th>Type</th><th>Value</th></tr></thead>");
-            var table_body = $("<tbody></tbody>");
-            for(var field in aData.aggregate_meta){
-                var type = aData['aggregate_meta'][field];
-                if(typeof(type) == "object"){
-                    type = type.type;//lol
-                }
-                var values = aData['aggregate_analysis'][field];
-                var row = $("<tr><th>" + field + "</th><td>" + type + "</td><td>" + values + "</td></tr>");
-                table_body.append(row);
-            }
-            card.append(card_body.append(table.append(table_body)));
-        }
-
-        if(aData.entry_meta) {
-            card_body.append("<h5 class='card-title' style='text-align:left;'>Results</h5>");
-            var table = $("<table class='table table-light table-sm'></table>");
-            table.append("<thead><tr><th>Field</th><th>Type</th><th>Sample (from first entry)</th></tr></thead>");
-            var table_body = $("<tbody></tbody>");
-            for(var field in aData.entry_meta) {
-                var type = aData['entry_meta'][field];
-                if(typeof(type) == "object"){
-                    type = type.type;//lol
-                }
-                var sample = aData['entry_analysis'][field][0];
-                var row = $("<tr><th>" + field + "</th><td>" + type + "</td><td>" + sample + "</td></tr>");
-                table_body.append(row);
-            }
-            card.append(card_body.append(table.append(table_body)));
-        }
-
-        console.log("Showing " + analysis_index);
-        $(".completed.analysis").append(card);
-        card.hide().fadeIn();
-    }
-
-    function showVisualization(working_set, index) {
-        console.log('hello');
-        var ws = working_set;
-        var data = ws['data'];
-        var vis_data = ws['visualization'];
-        //console.log(vis_data);
-        var selected_data = [];
-
-        if(index == undefined && vis_data.length != 0) { //if you're adding new vis
-            index = vis_data.length-1; //get the most recent vis data
-        }
-        var input = vis_data[index]['input'];
-        var fn = vis_data[index]['function'];
-        var field = '', x_field='', y_field='', id = '';
-        if(fn == 'histogram' || fn == 'piechart') {
-            field = input['field'];
-            id = fn + '_' + field;
-        }
-        else {
-            x_field = input['x-field'];
-            y_field = input['y-field'];
-            id = fn + '_' + x_field + '_' + y_field;
-        }
-
-        var duplicate = document.getElementById(id);
-        if(duplicate) {
-            return;
-        }
-
-        //create result card
-        var card = createResultCard('visualization');
-        $(".completed.visualization").append(card);
-        card.append("<div class='card-body'><h4 class='card-title'>" + fn +"</h4><div><canvas id='" + id + "'></canvas></div></div>");
 
 
-        if(fn == 'histogram') {
-            console.log(field);
-            var index = [];
-
-            for (var p = 0; p < data.length; p++) {
-                index.push(p);
-                selected_data.push(data[p][field]); //create an array of selected data
-            }
-            console.log(selected_data);
-            $(document).ready(function() {
-                var myChart = document.getElementById(id).getContext('2d');
-                var newChart = new Chart(myChart, {
-                    type: 'bar',
-
-                    data: {
-                        labels: index,
-                        datasets: [{
-                            label: field,
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: selected_data
-                        }]
-                    },
-                    // Configuration options go here
-                    options: {}
-                })
-            })
 
 
-        }
-
-        else if(fn == 'scatterplot') {
-            var index = [];
-            var dict = [];
-            for (var i = 0; i<data.length; i++) {
-                index.push(i);
-                var point = {
-                    x: data[i][x_field],
-                    y: data[i][y_field]
-                };
-                console.log(point);
-                dict.push(point);
-            }
-            console.log(dict);
-
-            //create chart
-            $(document).ready(function() {
-                var myChart = document.getElementById(id).getContext('2d');
-                var newChart = new Chart(myChart, {
-                    type: 'scatter',
-                    // The data for our dataset
-                    data: {
-                        //label: index,
-                        datasets: [{
-                            label: '('+x_field + ', ' + y_field+')',
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: dict
-                        }]
-                    },
-                    // Configuration options go here
-                    options: {}
-                })
-            })
-        }
-
-        else if (fn == 'piechart') {
-            var index = [];
-
-            for (var p = 0; p < data.length; p++) {
-                index.push(p);
-                selected_data.push(data[p][field]); //create an array of selected data
-            }
-            var map = {};//map from label to count
-            for(var i = 0; i < selected_data.length; i++){
-                var v = selected_data[i];
-                if(!map.hasOwnProperty(v)){
-                    map[v] = 1;
-                }
-                else{
-                    map[v]++;
-                }
-            }
-            console.log(map);
-            var labels = Object.keys(map);
-            var values = Object.values(map);
-            console.log(labels);
-            console.log(values);
-
-            //create chart
-            $(document).ready(function() {
-                var myChart = document.getElementById(id).getContext('2d');
-                var newChart = new Chart(myChart, {
-                    type: 'pie',
-                    // The data for our dataset
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: field,
-                            data: values
-                        }]
-                    },
-                    // Configuration options go here
-                    options: {}
-                });
-
-            });
-        }
-
-        else if (fn == 'regression') {
-            var index = [];
-            var dict = [];
-            var x = [];
-            var y = [];
-            for (var i = 0; i<data.length; i++) {
-                index.push(i);
-                var point = {
-                    x: data[i][x_field],
-                    y: data[i][y_field]
-                };
-                console.log(point);
-                dict.push(point);
-                x.push(data[i][x_field]);
-                y.push(data[i][y_field]);
-            }
-            console.log(dict);
-
-            //var x = params['input']["x-field"]; //arrays of equal length corresponding to (x,y) points
-            //var y = params['input']["y-field"];
-            var sumX = 0;
-            var sumY = 0;
-            var sumX2 = 0;
-            var sumY2 = 0;
-            var sumXY = 0;
-            for (var i = 0; i < x.length; i++){
-                sumX += x[i];
-                sumY += y[i];
-                sumX2 += x[i] * x[i];
-                sumY2 += y[i] * y[i];
-                sumXY += x[i] * y[i];
-            }
-            var a_value = (1.0*sumY*sumX2 - sumX*sumXY)/(x.length*sumX2 - sumX*sumX);
-            var b_value = (1.0*x.length*sumXY - sumX*sumY)/(x.length*sumX2 - sumX*sumX);
-            //end regression values
-
-            //two set of points for plotting line
-            var min = Math.min.apply(null, x);
-            var	max = Math.max.apply(null, x);
-            var	min_output = a_value + min*b_value;
-            var max_output = a_value + max*b_value;
-            var y_data = [min_output, max_output];
-            var lineData = 	[{"x": min, "y": min_output}, {"x": max, "y": max_output}];
 
 
-            //create chart
-            $(document).ready(function() {
-                var myChart = document.getElementById(id).getContext('2d');
-                var newChart = new Chart(myChart, {
-                    type: 'scatter',
 
-                    // The data for our dataset
-                    data: {
-                        datasets: [{
-                            label: '('+x_field + ', ' + y_field+')',
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: dict
-                        }, {
-                            type: 'line',
-                            label: 'Linear Regression',
-                            data: lineData,
-                            showLine: true,
-                            fill: false
-                         }]
-                    },
-                    // Configuration options go here
-                    options: {
-                    }
-                })
-            })
-        }
-    }
+
+
+
 
     /*
     data should be an object containing fields
@@ -2052,51 +1892,6 @@ var MainScreen = (function(){
         }
     }
 
-    function json2xml(o, tab) {
-      /*  This work is licensed under Creative Commons GNU LGPL License.
-
-      License: http://creativecommons.org/licenses/LGPL/2.1/
-       Version: 0.9
-      Author:  Stefan Goessner/2006
-      Web:     http://goessner.net/
-    */
-       var toXml = function(v, name, ind) {
-          var xml = "";
-          if (v instanceof Array) {
-             for (var i=0, n=v.length; i<n; i++)
-                xml += ind + toXml(v[i], name, ind+"\t") + "\n";
-          }
-          else if (typeof(v) == "object") {
-             var hasChild = false;
-             xml += ind + "<" + name;
-             for (var m in v) {
-                if (m.charAt(0) == "@")
-                   xml += " " + m.substr(1) + "=\"" + v[m].toString() + "\"";
-                else
-                   hasChild = true;
-             }
-             xml += hasChild ? ">" : "/>";
-             if (hasChild) {
-                for (var m in v) {
-                   if (m == "#text")
-                      xml += v[m];
-                   else if (m == "#cdata")
-                      xml += "<![CDATA[" + v[m] + "]]>";
-                   else if (m.charAt(0) != "@")
-                      xml += toXml(v[m], m, ind+"\t");
-                }
-                xml += (xml.charAt(xml.length-1)=="\n"?ind:"") + "</" + name + ">";
-             }
-          }
-          else {
-             xml += ind + "<" + name + ">" + v.toString() +  "</" + name + ">";
-          }
-          return xml;
-       }, xml="";
-       for (var m in o)
-          xml += toXml(o[m], m, "");
-       return tab ? xml.replace(/\t/g, tab) : xml.replace(/\t|\n/g, "");
-    };
 
     return that;
 }());
