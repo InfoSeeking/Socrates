@@ -1390,6 +1390,9 @@ var MainScreen = (function(){
                     }
                     //hide card & modal titles
                     $("#fn-collection, #fn-analysis, #fn-visualization").html("");
+                    $("#fn-collection").html("Collect Data: " + mod);
+                    console.log("Attrs");
+                    console.log(a);
                     //show buttons and the modal
                     typ.find(".functions .options[data-type=" + type + "][data-mod=" + mod + "]").fadeIn(); //show all collection functions available for that specific social media
                     $("#submit-c, #submit-a, #submit-v").hide();
@@ -1420,6 +1423,7 @@ var MainScreen = (function(){
                     //$(".type-instructions .functions .button, #forms .function").hide();
                     $("#forms-c .function, #forms-a .function, #forms-v .function").hide();
                     $("#fn-collection, #fn-analysis, #fn-visualization").html("");
+                    $("#fn-collection").html("Collect Data: " + mod);
 
                     console.log(type=="collection");
                     if(type == "collection") {
