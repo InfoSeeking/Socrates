@@ -17,6 +17,7 @@ SPECS = {
 					'comment': 'If true, stopwords are ignored in counting'
 				}
 			},
+			'fn_name': 'Word Count',
 			'aggregate_result': {
 				'total': 'numeric',
 				'avg_word_count' : 'numeric',
@@ -35,6 +36,7 @@ SPECS = {
 					'comment': 'The text to analyze',
 				}
 			},
+			'fn_name': 'Sentiment',
 			'entry_result' : {
 				'polarity' : 'numeric',
 				'subjectivity': 'numeric'
@@ -77,6 +79,7 @@ def word_count(working_set, param=False):
 	avg_word_count /= len(fieldVals)
 	return {
 		#'meta' : res_meta,
+		'fn_name': 'Word Count',
 		'aggregate_analysis': {
 			'total': total,
 			'avg_word_count' : avg_word_count,
@@ -101,6 +104,7 @@ def sentiment(working_set, param):
 		subjectivities.append(post.sentiment.subjectivity)
 
 	return {
+		'fn_name': 'Sentiment',
 		'entry_analysis' : {
 			'polarity' : polarities,
 			'subjectivity': subjectivities

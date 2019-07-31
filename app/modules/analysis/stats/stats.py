@@ -16,11 +16,11 @@ SPECS = {
 					'comment': 'x values',
 				}
 			},
+			'fn_name': 'General Math',
 			'entry_result': {
 				'result' : 'numeric'
 			}
 		},
-	
 				
 		'basic' : {
 			'name': 'Basic',
@@ -30,6 +30,7 @@ SPECS = {
 					'comment': 'Field to analyze',
 				}
 			},
+			'fn_name': 'Basic',
 			'aggregate_result': {
 				'total': 'numeric',
 				'max' : 'numeric',
@@ -39,6 +40,7 @@ SPECS = {
 				'standard_deviation' : 'numeric'
 			}
 		},
+
 		"binary_operation" : {
 			'name': 'Binary Operation',
 			'param_order': ['field_1', 'operation', 'field_2'],
@@ -58,10 +60,12 @@ SPECS = {
 					}
 				}
 			},
+			'fn_name': 'Binary Operation',
 			'entry_result': {
 				'result' : 'numeric'
 			}
 		},
+
 		"correlation" : {
 			'name': 'Correlation',
 			'param': {
@@ -74,6 +78,7 @@ SPECS = {
 					'comment': 'Second field'
 				}
 			},
+			'fn_name': 'Correlation',
 			'aggregate_result': {
 				'correlation' : 'numeric'
 			}
@@ -90,6 +95,7 @@ SPECS = {
 					'comment': 'Second field (Y-axis)'
 				}
 			},
+			'fn_name': 'Regression',
 			'aggregate_result': {
 				'a_value': 'numeric',
 				'b_value': 'numeric',
@@ -115,6 +121,7 @@ def gen_math(working_set, param=False):
 		r=parser.eval(modified_formula)
 		results.append(r)
 	return 	{
+		'fn_name': 'General Math',
 		'entry_analysis' : {
 			'result' : results
 		}
@@ -144,6 +151,7 @@ def basic(working_set, param=False):
 
 	return {
 		#'meta' : res_meta,
+		'fn_name': 'Basic',
 		'aggregate_analysis': {
 				'total': total,
 				'max' : maxVal,
@@ -172,6 +180,7 @@ def binary_operation(working_set, param=False):
 			r = v1*v2
 		results.append(r)
 	return {
+		'fn_name': 'Binary Operation',
 		'entry_analysis' : {
 			'result' : results
 		}
@@ -195,6 +204,7 @@ def correlation(working_set, param=False):
 	result = (len(field1Vals)*sumXY - sumX*sumY) / ((len(field1Vals)*sumX2 - sumX**2)**(0.5) * (len(field1Vals)*sumY2 - sumY**2)**(0.5))
 
 	return {
+		'fn_name': 'Correlation',
 		'aggregate_analysis' : {
 			'correlation': result
 		}
@@ -219,6 +229,7 @@ def regression(working_set, param=False):
 	b_value = (1.0*len(field1Vals)*sumXY - sumX*sumY)/(len(field1Vals)*sumX2 - sumX**2)
 
 	return {
+		'fn_name': 'Regression',
 		'aggregate_analysis' : {
 			'a_value': a_value,
 			'b_value': b_value,
