@@ -1536,9 +1536,15 @@ var MainScreen = (function(){
         }
         console.log(ordering);
         var id=0;
+
+        //Mandatory fields
         for(var n = 0; n < ordering.length; n++){
+
             var p = ordering[n];
             if(!data.hasOwnProperty(p)){continue;}
+            if(data[p].hasOwnProperty("optional") && data[p]["optional"]){
+                continue
+            }
             var row = $("<div class='form-group row'></div>");
             var input = null;
             //var inputType = "text";
@@ -1614,6 +1620,97 @@ var MainScreen = (function(){
             row.prepend(div).prepend("<label for='" + p + "' class='col-sm-4 col-form-label'>" + p + "</label>");//use prepend in case comments were added
             form.append(row);
         }
+
+        //Advanced. TODO: copy-paste of mandatory loop above, with some edits
+        var first_optional = true;
+        for(var n = 0; n < ordering.length; n++){
+
+            var p = ordering[n];
+            if(!data.hasOwnProperty(p)){continue;}
+            if(!(data[p].hasOwnProperty("optional") && data[p]["optional"])){
+                continue;
+            }
+
+            if(first_optional){
+                form.append("<h4>Advanced (optional)</h4><br>");
+                first_optional = false;
+            }
+            var row = $("<div class='form-group row'></div>");
+            var input = null;
+            //var inputType = "text";
+            var fieldType = "";
+            //var extra = "";
+            var div = $("<div class='col-sm-8'></div>")
+            if(typeof(data[p]) == "string"){
+                fieldType = data[p];
+            }
+            else if(typeof(data[p] == "object")){
+                fieldType = data[p].type;
+            }
+            switch(fieldType){
+                case "numeric":
+                    input = $("<input type='number' class='form-control' step='any'/>");
+                    break;
+                case "boolean":
+                    input = $("<select class='form-control'><option value='true'>True</option><option value='false'>False</option></select>");
+                    break;
+                default:
+                    input = $("<input type='text' class='form-control'/>");
+                    break;
+            }
+            var fr = /^field_reference\s+(\w+)$/i;
+            var match = fr.exec(fieldType);
+            if(match){
+                input = $("<input type='hidden'/><span class='fieldChooser' data-fieldtype='" + match[1] + "'>Choose a Field</span>");
+            }
+
+            if(typeof(data[p] == "object")){
+                console.log(data[p]);
+                //check other options
+                var hasComment = false;
+                var comment = $("<small class='text-muted' id='" + id + "'></small>");
+                var optional = "";
+                if(data[p].hasOwnProperty("optional") && data[p]["optional"]){
+                    hasComment = true;
+                    comment.html("optional");
+                    //add id to input
+                    input.attr('aria-describedby', id);
+                    id++;
+                }
+                if(data[p].hasOwnProperty("comment")){
+                    hasComment = true;
+                    comment.html(data[p]["comment"]);
+                    if(data[p]["type"] == "field_reference numeric" || data[p]["type"] == "field_reference text") { //make sure the comment is below the input box
+                        comment.addClass("form-text");
+                    }
+                    input.attr('aria-describedby', id);
+                    id++;
+                }
+                if(hasComment){
+                    div.append(comment);
+                }
+                if(data[p].hasOwnProperty("constraints")){
+                    if(data[p].constraints.hasOwnProperty("choices")){
+                        var choices = data[p].constraints.choices;
+                        //create select field
+                        input = $("<select class='form-control'></select>");
+                        for(var i = 0; i < choices.length; i++){
+                            input.append("<option value='" + choices[i] + "'>" + choices[i] + "</option>");
+                        }
+                    }
+                }
+                if(data[p].hasOwnProperty("default")){
+                    //only works for text/numeric fields right now, create a new method to set value
+                    input.val(data[p]["default"]);
+                }
+            }
+
+            input.addClass("toSend").attr("name", p);
+            div.prepend(input);
+            row.prepend(div).prepend("<label for='" + p + "' class='col-sm-4 col-form-label'>" + p + "</label>");//use prepend in case comments were added
+            form.append(row);
+        }
+
         //form.append("<input type='submit' class='button' />");
         if (type == "collection"){
             //injection of dataset name field (ehh...)
