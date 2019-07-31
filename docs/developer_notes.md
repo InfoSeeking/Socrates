@@ -2,7 +2,7 @@
 
 The following notes are for developers who wish to understand the structure of the code to further develop SOCRATES.
 
-To determine how to set up SOCRATES on your machine, please refer to the [getting started](docs/getting_started.md) documentation.
+To determine how to set up SOCRATES on your machine/server, please refer to the [getting started](docs/getting_started.md) documentation.
 
 ------
 
@@ -78,7 +78,7 @@ The following is an overview of each table in the MongoDB database, including
 
 - **log**: A log of workspace-related actions.  Keys are: `namespace` (current value is `'run'`), `type` (`'collection'` or `'analysis''`), `module` (the name of the module - e.g. `'twitter'`), `function` (the name of the function - e.g. `'twitter_search''`), and `user_id` (the user's ID)
 - **users**: The users.  Keys are:`_id` (the user's ID, which is unique), `username` (the username), `hashed_password` (The SHA1-encrypted version of the password.) 
-- **working_set**: Each working set that has been run.  Used to store, retrieve, and share working sets. Keys are: `_id` (the working set's ID), `user_id` (the user ID of the creator), `analysis` (if an analysis was done, contains the results of the analysis), `meta` (contains column names for the data), `input` (contains the inputs that generated the data), `working_set_id` (same as `_id`), and `data` (the data, with columns corresponding to `meta`)
+- **working_set**: Each working set that has been run.  Used to store, retrieve, and share working sets. Keys are: `_id` (the working set's ID), `user_id` (the user ID of the creator), `analysis` (if an analysis was done, contains the results of the analysis), `visualization` (if a visualization was done, contains the results of the visualization), `meta` (contains column names for the data), `input` (contains the inputs that generated the data), `working_set_id` (same as `_id`), and `data` (the data, with columns corresponding to `meta`)
 
 
 # External API References #

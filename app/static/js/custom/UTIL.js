@@ -34,13 +34,10 @@ var UTIL = (function(){
 		async:false,
 		success:function(json) {
 			json = JSON.parse(json);
-			console.log(json);
-			console.log("obtained");
 			that.CFG.api_endpoint = json.api_endpoint;
 			that.CFG.login_endpoint = json.login_endpoint;
 			that.CFG.ui_endpoint = json.ui_endpoint;
 			that.CFG.debug = json.debug;
-			console.log(that);
 
 		}
 	});*/
