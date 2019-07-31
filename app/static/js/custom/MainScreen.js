@@ -1391,7 +1391,22 @@ var MainScreen = (function(){
                         }]
                     },
                     // Configuration options go here
-                    options: {}
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: x_field
+                                }
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: y_field
+                                }
+                            }]
+                        }
+                    }
                 })
             })
         }
@@ -1507,6 +1522,20 @@ var MainScreen = (function(){
                     },
                     // Configuration options go here
                     options: {
+                        scales: {
+                            xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: x_field
+                                }
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: y_field
+                                }
+                            }]
+                        }
                     }
                 })
             })
