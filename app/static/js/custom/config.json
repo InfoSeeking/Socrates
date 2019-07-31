@@ -1,6 +1,13 @@
+/*{
+	"api_endpoint": "http://socrates.peopleanalytics.org/socrates",
+	"login_endpoint": "http://socrates.peopleanalytics.org/dev",
+	"ui_endpoint": "http://socrates.peopleanalytics.org/dev",
+	"debug": true
+}*/
+
 {
-	"api_endpoint": "http://http://socrates.peopleanalytics.org/socrates",
-	"login_endpoint": "http://http://socrates.peopleanalytics.org/dev",
-	"ui_endpoint": "http://http://socrates.peopleanalytics.org/dev",
+	"api_endpoint": "http://localhost:5000/socrates",
+	"login_endpoint": "http://localhost:5000/dev",
+	"ui_endpoint": "http://localhost:5000/dev",
 	"debug": true
 }
