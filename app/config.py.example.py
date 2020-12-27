@@ -6,10 +6,11 @@ Fill in your values for oauth keys and rename this file to config.py (without .e
 
 CREDS = {
     "reddit" : {
-    "client_id" : "",
-    "secret": "",
-    "uname": "",
-    "pass": ""
+        "client_id" : "",
+        "client_secret": "",
+        "username": "",
+        "passwd": "",
+        "user_agent": ""
     },
        "facebook_token" : "",
        "nyt_comment" : "",
